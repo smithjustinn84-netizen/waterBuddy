@@ -87,6 +87,21 @@ technical stack and architectural constraints, targeting both Android and iOS.
   - A feature-based architecture typically follows a "Vertical Slice" pattern where dependencies flow from the UI down to the Core, but never horizontally between features. 
   - Dependency Flow: Features can depend on core, but features should rarely depend directly on each other. If Feature A needs data from Feature B, they should usually communicate through a shared core repository or via the Navigation layer.
 
+## 9. Testing
+- Unit Tests:
+- UI Tests:
+- Use `kotlinx-coroutines-test` for coroutine-based tests.
+- use `mockkery` for mocking.
+- use `turbine` for testing state flows.
+- use `compose-test` for Compose UI tests.
+- use `kotlin.test` for regular unit tests.
+- use `kover` for code coverage.
+- use `detekt` for static analysis.
+- use `ktlint` for code formatting.
+- use `gradle-versions-plugin` for dependency updates.
+- use `gradle-dependency-version-check` for dependency version updates.
+- use `gradle-versions-plugin` for dependency updates.
+
 ## Code Examples
 
 ```kotlin
