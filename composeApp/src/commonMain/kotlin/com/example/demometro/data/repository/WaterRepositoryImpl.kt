@@ -1,15 +1,19 @@
 package com.example.demometro.data.repository
 
+import com.example.demometro.data.local.dao.DailyGoalDao
+import com.example.demometro.data.local.dao.WaterIntakeDao
+import com.example.demometro.data.local.entity.DailyGoalEntity
+import com.example.demometro.data.local.entity.WaterIntakeEntity
+import com.example.demometro.di.AppScope
 import com.example.demometro.domain.model.DailyWaterStats
 import com.example.demometro.domain.model.WaterIntake
 import com.example.demometro.domain.repository.WaterRepository
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.SingleIn
-import com.example.demometro.di.AppScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
@@ -20,24 +24,23 @@ import kotlin.time.ExperimentalTime
 @SingleIn(AppScope::class)
 @ContributesBinding(AppScope::class)
 @Inject
-class WaterRepositoryImpl : WaterRepository {
-
-    // In-memory storage for demo purposes
-    // In production, this would use Room database
-    private val waterIntakes = MutableStateFlow<List<WaterIntake>>(emptyList())
-    private var dailyGoalMl = 2000 // Default goal: 2 liters
+class WaterRepositoryImpl(
+    private val waterIntakeDao: WaterIntakeDao,
+    private val dailyGoalDao: DailyGoalDao
+) : WaterRepository {
 
     override fun observeDailyStats(date: LocalDate): Flow<DailyWaterStats> {
-        return waterIntakes.map { intakes ->
-            val todayIntakes = intakes.filter { intake ->
-                val intakeDate = intake.timestamp.date
-                intakeDate == date
-            }
+        return combine(
+            waterIntakeDao.getAllWaterIntakes(),
+            dailyGoalDao.getDailyGoal()
+        ) { intakes, goalEntity ->
+            val todayIntakes = intakes.filter { it.timestamp.date == date }
+            val goal = goalEntity?.goalMl ?: 2000
 
             DailyWaterStats(
                 totalMl = todayIntakes.sumOf { it.amountMl },
-                goalMl = dailyGoalMl,
-                entries = todayIntakes.sortedByDescending { it.timestamp }
+                goalMl = goal,
+                entries = todayIntakes.map { it.toDomain() }
             )
         }
     }
@@ -45,13 +48,14 @@ class WaterRepositoryImpl : WaterRepository {
     override suspend fun addWaterIntake(amountMl: Int, note: String?): Result<Unit> {
         return try {
             val now = Clock.System.now()
-            val newIntake = WaterIntake(
+            val timestamp = now.toLocalDateTime(TimeZone.currentSystemDefault())
+            val entity = WaterIntakeEntity(
                 id = now.toEpochMilliseconds().toString(),
                 amountMl = amountMl,
-                timestamp = now.toLocalDateTime(TimeZone.currentSystemDefault()),
+                timestamp = timestamp,
                 note = note
             )
-            waterIntakes.value += newIntake
+            waterIntakeDao.insertWaterIntake(entity)
             Result.success(Unit)
         } catch (e: Exception) {
             Result.failure(e)
@@ -60,7 +64,7 @@ class WaterRepositoryImpl : WaterRepository {
 
     override suspend fun deleteWaterIntake(id: String): Result<Unit> {
         return try {
-            waterIntakes.value = waterIntakes.value.filterNot { it.id == id }
+            waterIntakeDao.deleteWaterIntakeById(id)
             Result.success(Unit)
         } catch (e: Exception) {
             Result.failure(e)
@@ -69,14 +73,23 @@ class WaterRepositoryImpl : WaterRepository {
 
     override suspend fun updateDailyGoal(goalMl: Int): Result<Unit> {
         return try {
-            dailyGoalMl = goalMl
-            // Trigger refresh by emitting current value
-            waterIntakes.value = waterIntakes.value.toList()
+            dailyGoalDao.insertDailyGoal(DailyGoalEntity(goalMl = goalMl))
             Result.success(Unit)
         } catch (e: Exception) {
             Result.failure(e)
         }
     }
 
-    override suspend fun getDailyGoal(): Int = dailyGoalMl
+    override suspend fun getDailyGoal(): Int {
+        return dailyGoalDao.getGoalValue() ?: 2000
+    }
+
+    private fun WaterIntakeEntity.toDomain(): WaterIntake {
+        return WaterIntake(
+            id = id,
+            amountMl = amountMl,
+            timestamp = timestamp,
+            note = note
+        )
+    }
 }

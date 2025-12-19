@@ -8,15 +8,12 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.demometro.di.AppComponent
 import com.example.demometro.presentation.water.WaterTrackerScreen
-import dev.zacsweers.metro.createGraph
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
-@Preview
-fun App() {
+fun App(component: AppComponent) {
     MaterialTheme {
         val navController = rememberNavController()
-        val component = remember { createGraph<AppComponent>() }
 
         NavHost(
             navController = navController,
