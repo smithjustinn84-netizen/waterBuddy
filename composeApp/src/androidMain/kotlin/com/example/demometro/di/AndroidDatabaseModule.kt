@@ -3,7 +3,8 @@ package com.example.demometro.di
 import android.content.Context
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.example.demometro.data.local.AppDatabase
+import com.example.demometro.core.database.AppDatabase
+import com.example.demometro.core.di.AppScope
 import dev.zacsweers.metro.ContributesTo
 import dev.zacsweers.metro.Provides
 

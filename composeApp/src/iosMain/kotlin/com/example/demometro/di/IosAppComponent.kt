@@ -1,5 +1,7 @@
 package com.example.demometro.di
 
+import com.example.demometro.core.di.AppComponent
+import com.example.demometro.core.di.AppScope
 import dev.zacsweers.metro.DependencyGraph
 
 @DependencyGraph(AppScope::class)

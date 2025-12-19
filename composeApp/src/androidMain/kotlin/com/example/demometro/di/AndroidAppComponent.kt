@@ -2,6 +2,8 @@ package com.example.demometro.di
 
 import android.app.Application
 import android.content.Context
+import com.example.demometro.core.di.AppComponent
+import com.example.demometro.core.di.AppScope
 import dev.zacsweers.metro.DependencyGraph
 import dev.zacsweers.metro.Provides
 
