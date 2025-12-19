@@ -50,3 +50,4 @@ kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", versio
 metro = { id = "dev.zacsweers.metro", version.ref = "metro" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 room = { id = "androidx.room", version.ref = "room" }
+kover = { id = "org.jetbrains.kotlinx.kover", version = "0.9.4" }
