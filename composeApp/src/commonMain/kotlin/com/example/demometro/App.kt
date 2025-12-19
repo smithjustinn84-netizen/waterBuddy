@@ -21,14 +21,17 @@ import androidx.navigation.compose.rememberNavController
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
+import dev.zacsweers.metro.createGraph
 import demometro.composeapp.generated.resources.Res
 import demometro.composeapp.generated.resources.compose_multiplatform
+import com.example.demometro.di.AppComponent
 
 @Composable
 @Preview
 fun App() {
     MaterialTheme {
         val navController = rememberNavController()
+        val component = remember { createGraph<AppComponent>() }
 
         NavHost(
             navController = navController,
@@ -36,6 +39,7 @@ fun App() {
         ) {
             composable<Home> {
                 HomeScreen(
+                    viewModel = component.homeViewModel,
                     onNavigateToDetails = {
                         navController.navigate(Details)
                     }
@@ -53,7 +57,10 @@ fun App() {
 }
 
 @Composable
-fun HomeScreen(onNavigateToDetails: () -> Unit) {
+fun HomeScreen(
+    viewModel: HomeViewModel,
+    onNavigateToDetails: () -> Unit
+) {
     var showContent by remember { mutableStateOf(false) }
     Column(
         modifier = Modifier
@@ -72,7 +79,10 @@ fun HomeScreen(onNavigateToDetails: () -> Unit) {
             Text("Click me!")
         }
         AnimatedVisibility(showContent) {
-            val greeting = remember { Greeting().greet() }
+            val greeting by viewModel.greetingText.collectAsState()
+            LaunchedEffect(Unit) {
+                viewModel.loadGreeting()
+            }
             Column(
                 modifier = Modifier.fillMaxWidth().padding(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
