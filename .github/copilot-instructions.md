@@ -12,7 +12,7 @@ technical stack and architectural constraints, targeting both Android and iOS.
     - Events: Use a MutableSharedFlow for one-time side effects (Navigation, Snacking, Toasts) referred to as SharedState.
     - Actions: Use a sealed interface UiIntent or UiAction for user inputs sent to the ViewModel.
 - **UI Framework:** Compose Multiplatform for all UI components (Android & iOS).
-- **Dependency Injection:** Use the **Metro** DI framework (compiler-plugin based).
+- **Dependency Injection:** Use the **Metro** DI framework (compiler-plugin-based).
 
 ## 2. Technical Stack Implementation
 ### Dependency Injection (Metro)
@@ -148,7 +148,7 @@ sealed class ProfileUiEvent {
 }
 
 class ProfileViewModel : ViewModel() {
-    // ... (StateFlow code from previous example remains the same) ...
+    // ... (StateFlow code from the previous example remains the same) ...
 
     // 2. The SharedFlow for Side Effects
     private val _events = MutableSharedFlow<ProfileUiEvent>()
@@ -228,10 +228,6 @@ plugins {
 }
 ```
 
-…and that's it! This will add Metro's runtime dependencies and do all the necessary compiler plugin wiring.
-
-See [Installation](installation.md) for other build systems (like Bazel) and IDE support options.
-
 ## Basic Setup
 
 ### 1. Define your dependency graph
@@ -302,7 +298,7 @@ interface Repository {
   fun getData(): Data
 }
 
-// This class is automatically bound as Repository in any graph with AppScope
+// This class is automatically bound as a Repository in any graph with AppScope
 @ContributesBinding(AppScope::class)
 @Inject
 class RepositoryImpl(private val apiClient: ApiClient) : Repository {
@@ -316,14 +312,13 @@ interface AppGraph {
 }
 ```
 
-!!! tip
-`@ContributesBinding` infers the bound type from the single supertype. For classes with multiple supertypes, specify it explicitly: `binding = binding<YourInterface>()`.
+@ContributesBinding` infers the bound type from the single supertype. For classes with multiple supertypes, specify it explicitly: `binding = binding<YourInterface>()`.
 
 ## Common Patterns
 
 ### Providing third-party classes
 
-For classes you don't control (e.g. OkHttp), use `@Provides` in a contributed interface:
+For classes, you don't control (e.g., OkHttp), use `@Provides` in a contributed interface:
 
 ```kotlin
 @ContributesTo(AppScope::class)
@@ -373,5 +368,26 @@ class RepositoryTest {
   object FakeBindings {
     @Provides fun provideRepository(): Repository = FakeRepository()
   }
+}
+```
+
+When mixing contributions between common and platform-specific source sets, you must define your final `@DependencyGraph` in the platform-specific code. This is because a graph defined in commonMain wouldn’t have full visibility of contributions from platform-specific types. A good pattern for this is to define your canonical graph in commonMain *without* a `@DependencyGraph` annotation and then a `{Platform}{Graph}` type in the platform source set that extends it and does have the `@DependencyGraph`. Metro automatically exposes bindings of the base graph type on the graph for any injections that need it.
+
+```kotlin
+// In commonMain
+interface AppGraph {
+  val httpClient: HttpClient
+}
+
+// In jvmMain
+@DependencyGraph
+interface JvmAppGraph : AppGraph {
+  @Provides fun provideHttpClient(): HttpClient = HttpClient(Netty)
+}
+
+// In androidMain
+@DependencyGraph
+interface AndroidAppGraph : AppGraph {
+  @Provides fun provideHttpClient(): HttpClient = HttpClient(OkHttp)
 }
 ```
