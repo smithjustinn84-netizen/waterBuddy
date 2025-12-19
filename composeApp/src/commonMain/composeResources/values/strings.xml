@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">Demo Metro</string>
+    <string name="water_tracker_title">Water Tracker</string>
+    <string name="goal_button">Goal</string>
+    <string name="goal_reached_message">🎉 Congratulations! Daily goal reached!</string>
+    <string name="consumed_label">Consumed</string>
+    <string name="goal_label">Goal</string>
+    <string name="exceeded_label">Exceeded</string>
+    <string name="remaining_label">Remaining</string>
+    <string name="quick_add_title">Quick Add</string>
+    <string name="glass_label">Glass</string>
+    <string name="bottle_label">Bottle</string>
+    <string name="large_label">Large</string>
+    <string name="todays_entries">Today\'s Entries</string>
+    <string name="empty_state_title">No water logged yet today</string>
+    <string name="empty_state_subtitle">Tap a quick add button to start tracking</string>
+    <string name="set_goal_title">Set Daily Goal</string>
+    <string name="set_goal_description">Enter your daily water intake goal in milliliters</string>
+    <string name="goal_input_label">Goal (ml)</string>
+    <string name="ml_suffix">ml</string>
+    <string name="save_button">Save</string>
+    <string name="cancel_button">Cancel</string>
+</resources>
+

@@ -17,7 +17,29 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.demometro.domain.model.WaterIntake
+import demometro.composeapp.generated.resources.Res
+import demometro.composeapp.generated.resources.bottle_label
+import demometro.composeapp.generated.resources.cancel_button
+import demometro.composeapp.generated.resources.consumed_label
+import demometro.composeapp.generated.resources.empty_state_subtitle
+import demometro.composeapp.generated.resources.empty_state_title
+import demometro.composeapp.generated.resources.exceeded_label
+import demometro.composeapp.generated.resources.glass_label
+import demometro.composeapp.generated.resources.goal_button
+import demometro.composeapp.generated.resources.goal_input_label
+import demometro.composeapp.generated.resources.goal_label
+import demometro.composeapp.generated.resources.goal_reached_message
+import demometro.composeapp.generated.resources.large_label
+import demometro.composeapp.generated.resources.ml_suffix
+import demometro.composeapp.generated.resources.quick_add_title
+import demometro.composeapp.generated.resources.remaining_label
+import demometro.composeapp.generated.resources.save_button
+import demometro.composeapp.generated.resources.set_goal_description
+import demometro.composeapp.generated.resources.set_goal_title
+import demometro.composeapp.generated.resources.todays_entries
+import demometro.composeapp.generated.resources.water_tracker_title
 import kotlinx.datetime.LocalDateTime
+import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -27,6 +49,8 @@ fun WaterTrackerScreen(
     val state by viewModel.state.collectAsStateWithLifecycle()
     val showGoalDialog by viewModel.showGoalDialog.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
+
+    val successMessage = stringResource(Res.string.goal_reached_message)
 
     // Handle UI events
     LaunchedEffect(Unit) {
@@ -46,7 +70,7 @@ fun WaterTrackerScreen(
                 }
                 WaterTrackerUiEvent.GoalReached -> {
                     snackbarHostState.showSnackbar(
-                        message = "🎉 Congratulations! Daily goal reached!",
+                        message = successMessage,
                         duration = SnackbarDuration.Long
                     )
                 }
@@ -58,10 +82,10 @@ fun WaterTrackerScreen(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             TopAppBar(
-                title = { Text("Water Tracker") },
+                title = { Text(stringResource(Res.string.water_tracker_title)) },
                 actions = {
                     TextButton(onClick = { viewModel.handleIntent(WaterTrackerUiIntent.ShowGoalDialog) }) {
-                        Text("⚙️ Goal")
+                        Text("⚙️ ${stringResource(Res.string.goal_button)}")
                     }
                 }
             )
@@ -100,7 +124,7 @@ fun WaterTrackerScreen(
                 // Today's Entries Header
                 item {
                     Text(
-                        text = "Today's Entries",
+                        text = stringResource(Res.string.todays_entries),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.padding(top = 8.dp)
@@ -194,10 +218,10 @@ private fun WaterProgressCard(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                StatItem(label = "Consumed", value = "${totalMl}ml")
-                StatItem(label = "Goal", value = "${goalMl}ml")
+                StatItem(label = stringResource(Res.string.consumed_label), value = "${totalMl}ml")
+                StatItem(label = stringResource(Res.string.goal_label), value = "${goalMl}ml")
                 StatItem(
-                    label = if (isGoalReached) "Exceeded" else "Remaining",
+                    label = if (isGoalReached) stringResource(Res.string.exceeded_label) else stringResource(Res.string.remaining_label),
                     value = if (isGoalReached) "+${totalMl - goalMl}ml" else "${remainingMl}ml"
                 )
             }
@@ -229,7 +253,7 @@ private fun QuickAddSection(onAddWater: (Int) -> Unit) {
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Text(
-                text = "Quick Add",
+                text = stringResource(Res.string.quick_add_title),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.SemiBold
             )
@@ -240,21 +264,21 @@ private fun QuickAddSection(onAddWater: (Int) -> Unit) {
             ) {
                 QuickAddButton(
                     amount = 250,
-                    label = "Glass",
+                    label = stringResource(Res.string.glass_label),
                     emoji = "🥤",
                     onClick = { onAddWater(250) },
                     modifier = Modifier.weight(1f)
                 )
                 QuickAddButton(
                     amount = 500,
-                    label = "Bottle",
+                    label = stringResource(Res.string.bottle_label),
                     emoji = "💧",
                     onClick = { onAddWater(500) },
                     modifier = Modifier.weight(1f)
                 )
                 QuickAddButton(
                     amount = 750,
-                    label = "Large",
+                    label = stringResource(Res.string.large_label),
                     emoji = "☕",
                     onClick = { onAddWater(750) },
                     modifier = Modifier.weight(1f)
@@ -364,12 +388,12 @@ private fun EmptyStateMessage() {
         )
         Spacer(modifier = Modifier.height(16.dp))
         Text(
-            text = "No water logged yet today",
+            text = stringResource(Res.string.empty_state_title),
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
         Text(
-            text = "Tap a quick add button to start tracking",
+            text = stringResource(Res.string.empty_state_subtitle),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
         )
@@ -386,17 +410,17 @@ private fun GoalDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Set Daily Goal") },
+        title = { Text(stringResource(Res.string.set_goal_title)) },
         text = {
             Column {
-                Text("Enter your daily water intake goal in milliliters")
+                Text(stringResource(Res.string.set_goal_description))
                 Spacer(modifier = Modifier.height(16.dp))
                 OutlinedTextField(
                     value = goalText,
                     onValueChange = { goalText = it.filter { char -> char.isDigit() } },
-                    label = { Text("Goal (ml)") },
+                    label = { Text(stringResource(Res.string.goal_input_label)) },
                     singleLine = true,
-                    suffix = { Text("ml") }
+                    suffix = { Text(stringResource(Res.string.ml_suffix)) }
                 )
             }
         },
@@ -407,12 +431,12 @@ private fun GoalDialog(
                     onConfirm(goal)
                 }
             ) {
-                Text("Save")
+                Text(stringResource(Res.string.save_button))
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Cancel")
+                Text(stringResource(Res.string.cancel_button))
             }
         }
     )
@@ -429,4 +453,3 @@ private fun formatTime(dateTime: LocalDateTime): String {
     }
     return "$displayHour:$minute $amPm"
 }
-

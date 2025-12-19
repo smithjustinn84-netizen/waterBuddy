@@ -79,6 +79,14 @@ technical stack and architectural constraints, targeting both Android and iOS.
 - Error Handling: Wrap repository operations in `Result<T>` and map them to UI-friendly error states in the ViewModel.
 - Concurrency: Use Kotlin Coroutines with appropriate Dispatchers (Dispatchers.IO for Data, Dispatchers.Default for heavy logic).
 
+## 8. use a feature-based folder structure (also known as "Package by Feature"):
+  - organizes code by what it is to the user (e.g., "Login," "Profile," "Cart") rather than what it does technically (e.g., "ViewModels," "Models," "Repositories").
+  - The "Core" Exception: Not everything can be a feature. Shared items like your AppTheme, NetworkClient, or a StandardButton belong in a core or common package.
+  - Encapsulation: Try to keep feature-specific logic internal. If the AuthRepository is only used by the auth feature, it should stay in that folder.
+  - UI Sub-folders: As discussed earlier, inside each feature folder, create a ui sub-folder to separate the Compose code from the business logic (ViewModels/Models).
+  - A feature-based architecture typically follows a "Vertical Slice" pattern where dependencies flow from the UI down to the Core, but never horizontally between features. 
+  - Dependency Flow: Features can depend on core, but features should rarely depend directly on each other. If Feature A needs data from Feature B, they should usually communicate through a shared core repository or via the Navigation layer.
+
 ## Code Examples
 
 ```kotlin
