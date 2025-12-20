@@ -16,4 +16,3 @@ abstract class AndroidAppComponent : AppComponent {
         fun create(@Provides application: Application): AndroidAppComponent
     }
 }
-

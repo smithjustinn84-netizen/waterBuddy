@@ -14,9 +14,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -48,6 +45,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.demometro.features.insights.domain.model.HydrationInsights
 import com.example.demometro.features.watertracker.domain.model.DailyWaterStats
+import dev.zacsweers.metrox.viewmodel.metroViewModel
 import kotlinx.datetime.DayOfWeek
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.format
@@ -62,7 +60,7 @@ private val HydrationLightBlue = Color(0xFF90CAF9)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HydrationInsightsScreen(
-    viewModel: HydrationInsightsViewModel
+    viewModel: HydrationInsightsViewModel = metroViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -107,11 +105,20 @@ fun HydrationInsightsScreen(
             // 1. Top Segmented Button
             TimeRangeSelector(
                 selectedRange = state.selectedTimeRange,
-                onRangeSelected = { viewModel.handleIntent(HydrationInsightsUiIntent.SelectTimeRange(it)) }
+                onRangeSelected = {
+                    viewModel.handleIntent(
+                        HydrationInsightsUiIntent.SelectTimeRange(
+                            it
+                        )
+                    )
+                }
             )
 
             if (state.isLoading) {
-                Box(modifier = Modifier.fillMaxWidth().height(300.dp), contentAlignment = Alignment.Center) {
+                Box(
+                    modifier = Modifier.fillMaxWidth().height(300.dp),
+                    contentAlignment = Alignment.Center
+                ) {
                     CircularProgressIndicator(color = HydrationBlue)
                 }
             } else if (state.insights != null) {
@@ -124,7 +131,7 @@ fun HydrationInsightsScreen(
                 } else {
                     MonthlyHeatmap(
                         data = state.insights!!.monthlyTrend,
-                        modifier = Modifier.fillMaxWidth().height(300.dp)
+                        modifier = Modifier.fillMaxWidth()
                     )
                 }
 
@@ -151,8 +158,10 @@ fun TimeRangeSelector(
         ) {
             TimeRange.entries.forEach { range ->
                 val isSelected = range == selectedRange
-                val containerColor = if (isSelected) MaterialTheme.colorScheme.surface else Color.Transparent
-                val contentColor = if (isSelected) HydrationBlue else MaterialTheme.colorScheme.onSurfaceVariant
+                val containerColor =
+                    if (isSelected) MaterialTheme.colorScheme.surface else Color.Transparent
+                val contentColor =
+                    if (isSelected) HydrationBlue else MaterialTheme.colorScheme.onSurfaceVariant
                 val shadowElevation = if (isSelected) 2.dp else 0.dp
 
                 Surface(
@@ -233,7 +242,8 @@ fun WeeklyBarChart(
                     verticalAlignment = Alignment.Bottom
                 ) {
                     data.forEach { stat ->
-                        val barHeightFraction = (stat.totalMl.toFloat() / maxVal.toFloat()).coerceIn(0f, 1f)
+                        val barHeightFraction =
+                            (stat.totalMl.toFloat() / maxVal.toFloat()).coerceIn(0f, 1f)
 
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,
@@ -325,30 +335,43 @@ fun MonthlyHeatmap(
             Spacer(modifier = Modifier.height(8.dp))
 
             // Heatmap Grid (Calendar style)
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(7),
+            Column(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                userScrollEnabled = false
             ) {
-                items(displayData) { stat ->
-                    val alpha = (stat.progressPercentage).coerceIn(0.1f, 1f)
-                    val color = if (stat.isGoalReached) HydrationBlue else HydrationBlue.copy(alpha = alpha)
-
-                    Box(
-                        modifier = Modifier
-                            .aspectRatio(1f)
-                            .background(
-                                color = color,
-                                shape = RoundedCornerShape(6.dp)
-                            ),
-                        contentAlignment = Alignment.Center
+                displayData.chunked(7).forEach { weekData ->
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
                     ) {
-                        Text(
-                            text = "${stat.date.dayOfMonth}",
-                            style = MaterialTheme.typography.labelSmall,
-                            color = if (stat.progressPercentage > 0.5f) Color.White else MaterialTheme.colorScheme.onSurface
-                        )
+                        weekData.forEach { stat ->
+                            val alpha = (stat.progressPercentage).coerceIn(0.1f, 1f)
+                            val color =
+                                if (stat.isGoalReached) HydrationBlue else HydrationBlue.copy(alpha = alpha)
+
+                            Box(
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .aspectRatio(1f)
+                                    .background(
+                                        color = color,
+                                        shape = RoundedCornerShape(6.dp)
+                                    ),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    text = "${stat.date.dayOfMonth}",
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = if (stat.progressPercentage > 0.5f) Color.White else MaterialTheme.colorScheme.onSurface
+                                )
+                            }
+                        }
+                        // Add spacers for the rest of the week if it's not a full week
+                        val emptyCells = 7 - weekData.size
+                        if (emptyCells > 0) {
+                            repeat(emptyCells) {
+                                Spacer(modifier = Modifier.weight(1f).aspectRatio(1f))
+                            }
+                        }
                     }
                 }
             }

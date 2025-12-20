@@ -69,13 +69,14 @@ import demometro.composeapp.generated.resources.set_goal_description
 import demometro.composeapp.generated.resources.set_goal_title
 import demometro.composeapp.generated.resources.todays_entries
 import demometro.composeapp.generated.resources.water_tracker_title
+import dev.zacsweers.metrox.viewmodel.metroViewModel
 import kotlinx.datetime.LocalDateTime
 import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WaterTrackerScreen(
-    viewModel: WaterTrackerViewModel
+    viewModel: WaterTrackerViewModel = metroViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val showGoalDialog by viewModel.showGoalDialog.collectAsStateWithLifecycle()

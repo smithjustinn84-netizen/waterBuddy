@@ -1,11 +1,8 @@
 package com.example.demometro.core.di
 
 import com.example.demometro.core.navigation.Navigator
-import com.example.demometro.features.insights.ui.HydrationInsightsViewModel
-import com.example.demometro.features.watertracker.ui.WaterTrackerViewModel
+import dev.zacsweers.metrox.viewmodel.ViewModelGraph
 
-interface AppComponent {
-    val waterTrackerViewModel: WaterTrackerViewModel
-    val hydrationInsightsViewModel: HydrationInsightsViewModel
+interface AppComponent : ViewModelGraph {
     val navigator: Navigator
 }

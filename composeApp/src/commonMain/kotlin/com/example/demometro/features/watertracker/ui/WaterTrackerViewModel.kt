@@ -2,12 +2,15 @@ package com.example.demometro.features.watertracker.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.demometro.core.di.AppScope
 import com.example.demometro.core.navigation.Navigator
 import com.example.demometro.features.watertracker.domain.usecase.AddWaterIntakeUseCase
 import com.example.demometro.features.watertracker.domain.usecase.DeleteWaterIntakeUseCase
 import com.example.demometro.features.watertracker.domain.usecase.ObserveDailyWaterStatsUseCase
 import com.example.demometro.features.watertracker.domain.usecase.UpdateDailyGoalUseCase
+import dev.zacsweers.metro.ContributesIntoMap
 import dev.zacsweers.metro.Inject
+import dev.zacsweers.metrox.viewmodel.ViewModelKey
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Instant
@@ -19,6 +22,8 @@ import kotlin.time.ExperimentalTime
 @OptIn(ExperimentalTime::class)
 @Suppress("DEPRECATION")
 @Inject
+@ViewModelKey(WaterTrackerViewModel::class)
+@ContributesIntoMap(AppScope::class)
 class WaterTrackerViewModel(
     private val observeDailyWaterStatsUseCase: ObserveDailyWaterStatsUseCase,
     private val addWaterIntakeUseCase: AddWaterIntakeUseCase,
