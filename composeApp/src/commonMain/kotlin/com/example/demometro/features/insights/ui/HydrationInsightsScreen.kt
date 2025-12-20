@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.demometro.features.insights.domain.model.HydrationInsights
 import com.example.demometro.features.water.domain.model.DailyWaterStats
+import kotlinx.datetime.DayOfWeek
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.format
 import kotlinx.datetime.format.MonthNames
@@ -279,6 +280,28 @@ fun MonthlyHeatmap(
                 return@Column
             }
 
+            val displayData = data.takeLast(28)
+
+            // Day Labels
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                val firstDayOfWeek = displayData.first().date.dayOfWeek
+                repeat(7) { i ->
+                    val dayOfWeek = DayOfWeek.entries[(firstDayOfWeek.ordinal + i) % 7]
+                    Text(
+                        text = dayOfWeek.name.take(1),
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.weight(1f)
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
             // Heatmap Grid (Calendar style)
             LazyVerticalGrid(
                 columns = GridCells.Fixed(7),
@@ -286,7 +309,7 @@ fun MonthlyHeatmap(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 userScrollEnabled = false
             ) {
-                items(data.takeLast(28)) { stat ->
+                items(displayData) { stat ->
                     val alpha = (stat.progressPercentage).coerceIn(0.1f, 1f)
                     val color = if (stat.isGoalReached) HydrationBlue else HydrationBlue.copy(alpha = alpha)
 
