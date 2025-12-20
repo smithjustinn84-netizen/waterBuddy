@@ -2,16 +2,13 @@ package com.example.demometro.features.water.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.demometro.core.navigation.Navigator
 import com.example.demometro.features.water.domain.usecase.AddWaterIntakeUseCase
 import com.example.demometro.features.water.domain.usecase.DeleteWaterIntakeUseCase
 import com.example.demometro.features.water.domain.usecase.ObserveDailyWaterStatsUseCase
 import com.example.demometro.features.water.domain.usecase.UpdateDailyGoalUseCase
 import dev.zacsweers.metro.Inject
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
@@ -26,7 +23,8 @@ class WaterTrackerViewModel(
     private val observeDailyWaterStatsUseCase: ObserveDailyWaterStatsUseCase,
     private val addWaterIntakeUseCase: AddWaterIntakeUseCase,
     private val deleteWaterIntakeUseCase: DeleteWaterIntakeUseCase,
-    private val updateDailyGoalUseCase: UpdateDailyGoalUseCase
+    private val updateDailyGoalUseCase: UpdateDailyGoalUseCase,
+    private val navigator: Navigator
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(WaterTrackerUiState())
