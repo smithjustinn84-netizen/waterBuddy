@@ -1,6 +1,9 @@
 package com.example.demometro.features.water.domain.model
 
+import kotlinx.datetime.LocalDate
+
 data class DailyWaterStats(
+    val date: LocalDate,
     val totalMl: Int,
     val goalMl: Int,
     val entries: List<WaterIntake>
