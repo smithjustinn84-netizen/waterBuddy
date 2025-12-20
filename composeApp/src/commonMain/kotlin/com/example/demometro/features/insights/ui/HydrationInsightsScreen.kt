@@ -319,8 +319,15 @@ fun MonthlyHeatmap(
                             .background(
                                 color = color,
                                 shape = RoundedCornerShape(6.dp)
-                            )
-                    )
+                            ),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "${stat.date.dayOfMonth}",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = if (stat.progressPercentage > 0.5f) Color.White else MaterialTheme.colorScheme.onSurface
+                        )
+                    }
                 }
             }
         }
