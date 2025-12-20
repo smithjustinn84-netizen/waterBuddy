@@ -7,8 +7,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.demometro.core.di.AppComponent
+import com.example.demometro.core.navigation.HydrationInsights
 import com.example.demometro.core.navigation.NavigationCommand
 import com.example.demometro.core.navigation.WaterTracker
+import com.example.demometro.features.insights.ui.HydrationInsightsScreen
 import com.example.demometro.features.water.ui.WaterTrackerScreen
 import kotlinx.coroutines.flow.collectLatest
 
@@ -41,6 +43,11 @@ fun App(component: AppComponent) {
             composable<WaterTracker> {
                 WaterTrackerScreen(
                     viewModel = component.waterTrackerViewModel
+                )
+            }
+            composable<HydrationInsights> {
+                HydrationInsightsScreen(
+                    viewModel = component.hydrationInsightsViewModel
                 )
             }
         }

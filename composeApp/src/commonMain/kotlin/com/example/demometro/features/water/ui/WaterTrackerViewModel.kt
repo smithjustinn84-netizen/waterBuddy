@@ -24,7 +24,7 @@ class WaterTrackerViewModel(
     private val addWaterIntakeUseCase: AddWaterIntakeUseCase,
     private val deleteWaterIntakeUseCase: DeleteWaterIntakeUseCase,
     private val updateDailyGoalUseCase: UpdateDailyGoalUseCase,
-    private val navigator: Navigator
+    val navigator: Navigator
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(WaterTrackerUiState())

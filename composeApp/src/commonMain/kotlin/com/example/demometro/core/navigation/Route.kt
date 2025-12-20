@@ -6,3 +6,5 @@ import kotlinx.serialization.Serializable
 @Serializable
 object WaterTracker
 
+@Serializable
+object HydrationInsights

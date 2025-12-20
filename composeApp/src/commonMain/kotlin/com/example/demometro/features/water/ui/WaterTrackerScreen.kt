@@ -16,6 +16,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.demometro.core.navigation.HydrationInsights
 import com.example.demometro.features.water.domain.model.WaterIntake
 import demometro.composeapp.generated.resources.*
 import kotlinx.datetime.LocalDateTime
@@ -64,6 +65,9 @@ fun WaterTrackerScreen(
             TopAppBar(
                 title = { Text(stringResource(Res.string.water_tracker_title)) },
                 actions = {
+                    IconButton(onClick = { viewModel.navigator.navigate(HydrationInsights) }) {
+                        Text("📊")
+                    }
                     TextButton(onClick = { viewModel.handleIntent(WaterTrackerUiIntent.ShowGoalDialog) }) {
                         Text("⚙️ ${stringResource(Res.string.goal_button)}")
                     }
