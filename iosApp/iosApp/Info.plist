@@ -3,6 +3,15 @@
 <plist version="1.0">
     <dict>
         <key>CADisableMinimumFrameDurationOnPhone</key>
-        <true/>
+        <true />
+        <key>UILaunchScreen</key>
+        <dict>
+            <key>UIColorName</key>
+            <string>LaunchBackgroundColor</string>
+            <key>UIImageName</key>
+            <string>LaunchImage</string>
+            <key>UIImageRespectsSafeAreaInsets</key>
+            <true />
+        </dict>
     </dict>
 </plist>
