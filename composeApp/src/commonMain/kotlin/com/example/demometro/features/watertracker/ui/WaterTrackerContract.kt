@@ -1,6 +1,6 @@
-package com.example.demometro.features.water.ui
+package com.example.demometro.features.watertracker.ui
 
-import com.example.demometro.features.water.domain.model.WaterIntake
+import com.example.demometro.features.watertracker.domain.model.WaterIntake
 
 data class WaterTrackerUiState(
     val totalMl: Int = 0,

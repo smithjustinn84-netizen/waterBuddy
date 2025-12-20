@@ -1,6 +1,6 @@
 package com.example.demometro.features.insights.domain.model
 
-import com.example.demometro.features.water.domain.model.DailyWaterStats
+import com.example.demometro.features.watertracker.domain.model.DailyWaterStats
 import kotlinx.datetime.LocalDate
 
 data class HydrationInsights(

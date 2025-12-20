@@ -1,19 +1,24 @@
-package com.example.demometro.features.water.data.repository
+package com.example.demometro.features.watertracker.data.repository
 
 import com.example.demometro.core.di.AppScope
-import com.example.demometro.features.water.data.local.dao.DailyGoalDao
-import com.example.demometro.features.water.data.local.dao.WaterIntakeDao
-import com.example.demometro.features.water.data.local.entity.DailyGoalEntity
-import com.example.demometro.features.water.data.local.entity.WaterIntakeEntity
-import com.example.demometro.features.water.domain.model.DailyWaterStats
-import com.example.demometro.features.water.domain.model.WaterIntake
-import com.example.demometro.features.water.domain.repository.WaterRepository
+import com.example.demometro.features.watertracker.data.local.dao.DailyGoalDao
+import com.example.demometro.features.watertracker.data.local.dao.WaterIntakeDao
+import com.example.demometro.features.watertracker.data.local.entity.DailyGoalEntity
+import com.example.demometro.features.watertracker.data.local.entity.WaterIntakeEntity
+import com.example.demometro.features.watertracker.domain.model.DailyWaterStats
+import com.example.demometro.features.watertracker.domain.model.WaterIntake
+import com.example.demometro.features.watertracker.domain.repository.WaterRepository
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.SingleIn
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
-import kotlinx.datetime.*
+import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.daysUntil
+import kotlinx.datetime.plus
+import kotlinx.datetime.toLocalDateTime
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 

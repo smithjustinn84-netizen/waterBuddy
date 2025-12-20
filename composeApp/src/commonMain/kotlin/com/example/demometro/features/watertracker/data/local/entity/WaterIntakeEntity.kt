@@ -1,4 +1,4 @@
-package com.example.demometro.features.water.data.local.entity
+package com.example.demometro.features.watertracker.data.local.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

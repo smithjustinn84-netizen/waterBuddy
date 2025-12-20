@@ -1,6 +1,6 @@
-package com.example.demometro.features.water.domain.repository
+package com.example.demometro.features.watertracker.domain.repository
 
-import com.example.demometro.features.water.domain.model.DailyWaterStats
+import com.example.demometro.features.watertracker.domain.model.DailyWaterStats
 import kotlinx.coroutines.flow.Flow
 import kotlinx.datetime.LocalDate
 

@@ -1,12 +1,16 @@
 package com.example.demometro.features.insights.domain.usecase
 
 import com.example.demometro.features.insights.domain.model.HydrationInsights
-import com.example.demometro.features.water.domain.model.DailyWaterStats
-import com.example.demometro.features.water.domain.repository.WaterRepository
+import com.example.demometro.features.watertracker.domain.model.DailyWaterStats
+import com.example.demometro.features.watertracker.domain.repository.WaterRepository
 import dev.zacsweers.metro.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import kotlinx.datetime.*
+import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.minus
+import kotlinx.datetime.todayIn
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 

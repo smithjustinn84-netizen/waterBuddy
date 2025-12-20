@@ -3,8 +3,8 @@ package com.example.demometro.core.di
 import androidx.room.RoomDatabase
 import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import com.example.demometro.core.database.AppDatabase
-import com.example.demometro.features.water.data.local.dao.DailyGoalDao
-import com.example.demometro.features.water.data.local.dao.WaterIntakeDao
+import com.example.demometro.features.watertracker.data.local.dao.DailyGoalDao
+import com.example.demometro.features.watertracker.data.local.dao.WaterIntakeDao
 import dev.zacsweers.metro.ContributesTo
 import dev.zacsweers.metro.Provides
 import dev.zacsweers.metro.SingleIn

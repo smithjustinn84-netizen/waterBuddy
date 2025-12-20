@@ -1,11 +1,11 @@
-package com.example.demometro.features.water.data.local.dao
+package com.example.demometro.features.watertracker.data.local.dao
 
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.example.demometro.features.water.data.local.entity.WaterIntakeEntity
+import com.example.demometro.features.watertracker.data.local.entity.WaterIntakeEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -16,7 +16,7 @@ interface WaterIntakeDao {
     @Query("SELECT * FROM water_intake WHERE date(timestamp) = date('now') ORDER BY timestamp DESC")
     fun getTodayWaterIntakes(): Flow<List<WaterIntakeEntity>>
 
-    @Insert(onConflict = OnConflictStrategy.Companion.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertWaterIntake(waterIntake: WaterIntakeEntity)
 
     @Delete

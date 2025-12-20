@@ -1,12 +1,12 @@
-package com.example.demometro.features.water.ui
+package com.example.demometro.features.watertracker.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.demometro.core.navigation.Navigator
-import com.example.demometro.features.water.domain.usecase.AddWaterIntakeUseCase
-import com.example.demometro.features.water.domain.usecase.DeleteWaterIntakeUseCase
-import com.example.demometro.features.water.domain.usecase.ObserveDailyWaterStatsUseCase
-import com.example.demometro.features.water.domain.usecase.UpdateDailyGoalUseCase
+import com.example.demometro.features.watertracker.domain.usecase.AddWaterIntakeUseCase
+import com.example.demometro.features.watertracker.domain.usecase.DeleteWaterIntakeUseCase
+import com.example.demometro.features.watertracker.domain.usecase.ObserveDailyWaterStatsUseCase
+import com.example.demometro.features.watertracker.domain.usecase.UpdateDailyGoalUseCase
 import dev.zacsweers.metro.Inject
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch

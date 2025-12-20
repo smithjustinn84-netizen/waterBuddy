@@ -2,7 +2,7 @@ package com.example.demometro.core.di
 
 import com.example.demometro.core.navigation.Navigator
 import com.example.demometro.features.insights.ui.HydrationInsightsViewModel
-import com.example.demometro.features.water.ui.WaterTrackerViewModel
+import com.example.demometro.features.watertracker.ui.WaterTrackerViewModel
 
 interface AppComponent {
     val waterTrackerViewModel: WaterTrackerViewModel

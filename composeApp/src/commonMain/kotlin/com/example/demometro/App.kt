@@ -11,7 +11,7 @@ import com.example.demometro.core.navigation.HydrationInsights
 import com.example.demometro.core.navigation.NavigationCommand
 import com.example.demometro.core.navigation.WaterTracker
 import com.example.demometro.features.insights.ui.HydrationInsightsScreen
-import com.example.demometro.features.water.ui.WaterTrackerScreen
+import com.example.demometro.features.watertracker.ui.WaterTrackerScreen
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable

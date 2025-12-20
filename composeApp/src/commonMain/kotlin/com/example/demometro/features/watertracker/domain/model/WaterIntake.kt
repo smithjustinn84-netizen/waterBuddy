@@ -1,4 +1,4 @@
-package com.example.demometro.features.water.domain.model
+package com.example.demometro.features.watertracker.domain.model
 
 import kotlinx.datetime.LocalDateTime
 
