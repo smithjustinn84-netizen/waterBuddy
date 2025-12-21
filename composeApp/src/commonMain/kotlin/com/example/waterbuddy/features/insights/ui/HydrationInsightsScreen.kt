@@ -27,11 +27,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.waterbuddy.features.insights.domain.model.HydrationInsights
 import com.example.waterbuddy.features.insights.ui.components.KpiGrid
 import com.example.waterbuddy.features.insights.ui.components.MonthlyHeatmap
 import com.example.waterbuddy.features.insights.ui.components.TimeRangeSelector
 import com.example.waterbuddy.features.insights.ui.components.WeeklyBarChart
+import com.example.waterbuddy.features.watertracker.domain.model.DailyWaterStats
 import dev.zacsweers.metrox.viewmodel.metroViewModel
+import kotlinx.datetime.LocalDate
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun HydrationInsightsScreen(
@@ -125,5 +129,52 @@ fun HydrationInsightsContent(
                 KpiGrid(insights = state.insights)
             }
         }
+    }
+}
+
+@Preview
+@Composable
+private fun HydrationInsightsScreenPreview() {
+    val sampleData = listOf(
+        DailyWaterStats(LocalDate(2024, 1, 1), 1500, 2000, emptyList()),
+        DailyWaterStats(LocalDate(2024, 1, 2), 2200, 2000, emptyList()),
+        DailyWaterStats(LocalDate(2024, 1, 3), 1800, 2000, emptyList()),
+        DailyWaterStats(LocalDate(2024, 1, 4), 2500, 2000, emptyList()),
+        DailyWaterStats(LocalDate(2024, 1, 5), 2000, 2000, emptyList()),
+        DailyWaterStats(LocalDate(2024, 1, 6), 1200, 2000, emptyList()),
+        DailyWaterStats(LocalDate(2024, 1, 7), 2100, 2000, emptyList())
+    )
+
+    val insights = HydrationInsights(
+        averageIntake = 1900,
+        completionRate = 0.75f,
+        longestStreak = 3,
+        peakDay = LocalDate(2024, 1, 4),
+        peakDayIntake = 2500,
+        weeklyTrend = sampleData,
+        monthlyTrend = sampleData
+    )
+
+    MaterialTheme {
+        HydrationInsightsContent(
+            state = HydrationInsightsUiState(
+                insights = insights,
+                selectedTimeRange = TimeRange.WEEK
+            ),
+            onIntent = {}
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun HydrationInsightsScreenLoadingPreview() {
+    MaterialTheme {
+        HydrationInsightsContent(
+            state = HydrationInsightsUiState(
+                isLoading = true
+            ),
+            onIntent = {}
+        )
     }
 }

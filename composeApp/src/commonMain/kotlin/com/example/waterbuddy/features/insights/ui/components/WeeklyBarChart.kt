@@ -29,6 +29,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.waterbuddy.features.watertracker.domain.model.DailyWaterStats
+import kotlinx.datetime.LocalDate
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun WeeklyBarChart(
@@ -128,5 +130,27 @@ fun WeeklyBarChart(
                 }
             }
         }
+    }
+}
+
+@Preview
+@Composable
+private fun WeeklyBarChartPreview() {
+    val sampleData = listOf(
+        DailyWaterStats(LocalDate(2024, 1, 1), 1500, 2000, emptyList()),
+        DailyWaterStats(LocalDate(2024, 1, 2), 2200, 2000, emptyList()),
+        DailyWaterStats(LocalDate(2024, 1, 3), 1800, 2000, emptyList()),
+        DailyWaterStats(LocalDate(2024, 1, 4), 2500, 2000, emptyList()),
+        DailyWaterStats(LocalDate(2024, 1, 5), 2000, 2000, emptyList()),
+        DailyWaterStats(LocalDate(2024, 1, 6), 1200, 2000, emptyList()),
+        DailyWaterStats(LocalDate(2024, 1, 7), 2100, 2000, emptyList())
+    )
+
+    MaterialTheme {
+        WeeklyBarChart(
+            data = sampleData,
+            modifier = Modifier.fillMaxWidth().height(250.dp),
+            color = MaterialTheme.colorScheme.primary
+        )
     }
 }

@@ -25,6 +25,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.waterbuddy.features.watertracker.domain.model.DailyWaterStats
 import kotlinx.datetime.DayOfWeek
+import kotlinx.datetime.LocalDate
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun MonthlyHeatmap(
@@ -117,5 +119,25 @@ fun MonthlyHeatmap(
                 }
             }
         }
+    }
+}
+
+@Preview
+@Composable
+private fun MonthlyHeatmapPreview() {
+    val sampleData = (1..28).map { i ->
+        DailyWaterStats(
+            date = LocalDate(2024, 1, i),
+            totalMl = (1000..2500).random(),
+            goalMl = 2000,
+            entries = emptyList()
+        )
+    }
+
+    MaterialTheme {
+        MonthlyHeatmap(
+            data = sampleData,
+            modifier = Modifier.fillMaxWidth().padding(16.dp)
+        )
     }
 }

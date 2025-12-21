@@ -22,6 +22,7 @@ import kotlinx.datetime.format
 import kotlinx.datetime.format.MonthNames
 import kotlinx.datetime.format.Padding
 import kotlinx.datetime.format.char
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun KpiGrid(insights: HydrationInsights) {
@@ -91,4 +92,22 @@ private fun formatDate(date: LocalDate): String {
         char(' ')
         day(padding = Padding.ZERO)
     })
+}
+
+@Preview
+@Composable
+private fun KpiGridPreview() {
+    val insights = HydrationInsights(
+        averageIntake = 1950,
+        completionRate = 0.82f,
+        longestStreak = 5,
+        peakDay = LocalDate(2024, 1, 15),
+        peakDayIntake = 2800,
+        weeklyTrend = emptyList(),
+        monthlyTrend = emptyList()
+    )
+
+    MaterialTheme {
+        KpiGrid(insights = insights)
+    }
 }
