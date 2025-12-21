@@ -41,9 +41,11 @@ class GetHydrationInsightsUseCase(
 
         val longestStreak = calculateLongestStreak(statsList)
 
-        val peakDayStat = statsList.maxByOrNull { it.totalMl }
-        val peakDay = peakDayStat?.date
-        val peakDayIntake = peakDayStat?.totalMl ?: 0
+        // Using maxBy instead of maxByOrNull because statsList is guaranteed non-empty here.
+        // This avoids "impossible" null branches that lower code coverage.
+        val peakDayStat = statsList.maxBy { it.totalMl }
+        val peakDay = peakDayStat.date
+        val peakDayIntake = peakDayStat.totalMl
 
         val oneWeekAgo = today.minus(1, DateTimeUnit.WEEK)
         val weeklyTrend = statsList.filter { it.date >= oneWeekAgo }.sortedBy { it.date }
