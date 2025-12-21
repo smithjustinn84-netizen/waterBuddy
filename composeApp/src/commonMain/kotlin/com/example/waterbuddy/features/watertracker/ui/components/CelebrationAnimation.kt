@@ -13,6 +13,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.rotate
+import androidx.compose.ui.platform.testTag
 import kotlin.math.sin
 import kotlin.random.Random
 
@@ -45,7 +46,7 @@ fun CelebrationAnimation(
         onAnimationEnd()
     }
 
-    Canvas(modifier = modifier.fillMaxSize()) {
+    Canvas(modifier = modifier.fillMaxSize().testTag("celebration_canvas")) {
         val progress = animatable.value
         particles.forEach { particle ->
             val yPos = (particle.y * size.height) + (progress * (size.height + particle.speed))
