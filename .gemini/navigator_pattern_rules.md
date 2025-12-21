@@ -1,72 +1,46 @@
-## Navigation Architecture: The Navigator Pattern
+# Navigation: The Navigator Pattern
 
-**Core Principle:** ViewModels must NEVER depend on `androidx.navigation.NavController` or any Android-specific
-navigation framework classes. Navigation is a side-effect that must be abstracted.
+ViewModels must NEVER depend on `NavController`. Use the `Navigator` abstraction.
 
-### 1. The Navigator Interface
-
-* **Requirement:** All navigation logic must be routed through a `Navigator` interface defined in the `commonMain`
-  `core` module.
-* **Mechanism:** The Navigator must expose a `Flow<NavigationCommand>` (or similar) that the UI layer observes.
-* **Injection:** The `Navigator` must be a `@SingleIn(AppScope::class)` singleton injected into ViewModels via Metro.
-
-### 2. Forbidden Patterns
-
-* ❌ **Prohibited:** Injecting `NavController` into a ViewModel.
-* ❌ **Prohibited:** Passing `NavController` lambdas (e.g., `onNext: () -> Unit`) into ViewModels.
-* ❌ **Prohibited:** Handling navigation logic directly in Composable `onClick` handlers without passing through the
-  ViewModel/Navigator.
-
-### 3. Required Implementation Structure
-
-**The Contract (Common):**
-
+## 1. The Interface (`commonMain/core/navigation`)
 ```kotlin
 interface Navigator {
-    fun navigate(destination: Any, clearBackStack: Boolean = false)
-    fun goBack()
+    val commands: Flow<NavigationCommand>
+    fun navigate(route: Route)
+    fun pop()
+}
+
+sealed interface NavigationCommand {
+    data class To(val route: Route) : NavigationCommand
+    data object Back : NavigationCommand
 }
 ```
 
-**The Implementation (core/navigation)**
+## 2. The Implementation
 
-We implement this as a Singleton using Metro. It holds a Channel that the UI will listen to.
+- Implement as a `@SingleIn(AppScope::class)` singleton.
+- Use a `Channel(Channel.BUFFERED)` to hold commands.
 
-```kotlin
-@SingleIn(AppScope::class)
-@ContributesBinding(AppScope::class)
-@Inject
-class NavigatorImpl : Navigator {
-
-    private val _commands = Channel<NavigationCommand>(Channel.BUFFERED)
-    override val commands: Flow<NavigationCommand> = _commands.receiveAsFlow()
-
-    override fun navigate(destination: Any, clearBackStack: Boolean) {
-        _commands.trySend(NavigationCommand.NavigateTo(destination, clearBackStack))
-    }
-
-    override fun goBack() {
-        _commands.trySend(NavigationCommand.NavigateUp)
-    }
-}
-```
-
-The Usage (ViewModel):
-
+## 3. ViewModel Usage
 ```kotlin
 @Inject
-class FeatureViewModel(
-    private val navigator: Navigator // ✅ Correct: Abstracted dependency
-) : BaseViewModel<T>() {
+class SettingsViewModel(private val navigator: Navigator) : ViewModel() {
+    fun onBackClicked() = navigator.pop()
+    fun onAboutClicked() = navigator.navigate(Route.About)
+}
+```
 
-    fun onConfirm() {
-        // ✅ Correct: Type-safe, testable navigation call
-        navigator.navigate(Destination.Dashboard) 
+## 4. Compose Integration
+
+Observe the `navigator.commands` in the root Composable and execute them using the `NavController`.
+```kotlin
+val commands by navigator.commands.collectAsStateWithLifecycle(null)
+LaunchedEffect(commands) {
+    when(val cmd = commands) {
+        is To -> navController.navigate(cmd.route)
+        is Back -> navController.popBackStack()
     }
 }
 ```
 
-### 4. UI Layer Responsibility
-
-- The root Composable (or Activity) is the only place allowed to hold a reference to NavController.
-- It must observe the Navigator's commands and forward them to the NavController.
+All routes must be defined in `core/navigation/Route.kt` using `@Serializable` objects.

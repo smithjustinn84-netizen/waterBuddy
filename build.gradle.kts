@@ -26,4 +26,12 @@ allprojects {
             ktlint("1.5.0")
         }
     }
+
+    plugins.withId("org.jetbrains.kotlinx.kover") {
+        tasks.register("koverReport") {
+            group = "verification"
+            description = "Runs Kover HTML and XML reports"
+            dependsOn("koverHtmlReport", "koverXmlReport")
+        }
+    }
 }

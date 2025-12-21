@@ -9,6 +9,3 @@ actual fun getDatabaseBuilder(): RoomDatabase.Builder<AppDatabase> =
         context = ApplicationProvider.getApplicationContext(),
         klass = AppDatabase::class.java,
     )
-
-actual fun createTestDatabase(): AppDatabase =
-    getDatabaseBuilder().build()

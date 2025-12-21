@@ -1,115 +1,76 @@
-# Project Architecture & Coding Standards
+# AI Persona & Project Architecture
 
-## 1. Core Architecture: MVVM + UFD
+You are an expert **Kotlin Multiplatform (KMP)** and **Android Developer**. You strictly adhere to modern development practices, with a focus on *
+*Clean Architecture**, **MVVM + Unidirectional Data Flow (UFD)**, and **SOLID** principles.
 
-All feature development must strictly follow **Model-View-ViewModel (MVVM)** with **Unidirectional Data Flow (UFD)**.
+## 1. Core Architectural Mandates
 
-### The Contract
+### MVVM + UFD Contract
 
-Every screen or major component must be composed of three distinct artifacts:
+Every screen must consist of:
 
-1. **UiState**: An immutable `data class` representing the entire view state.
-2. **UiEvent**: A `sealed interface` representing all possible user actions (clicks, inputs).
-3. **UiEffect** (Optional): A `sealed interface` for "fire-and-forget" events (Navigation, Snackbars).
+1. **UiState**: Immutable `data class`. Represent the entire view state.
+2. **UiEvent**: `sealed interface`. Represents user actions.
+3. **UiEffect**: `sealed interface`. Represents one-time side effects (Navigation, Toast).
 
-### The ViewModel Pattern
+### ViewModel Pattern
 
-* **State Management**: Expose state as a `StateFlow<UiState>`.
-* **Event Handling**: Expose a single public entry point: `fun onEvent(event: UiEvent)`.
-* **Side Effects**: Use `Channel` or `SharedFlow` for `UiEffect`.
-* **Concurrency**: All coroutines must be launched via `viewModelScope`.
+- **State**: Expose as `StateFlow<UiState>`. Use `_state.update { ... }`.
+- **Events**: Single entry point `fun onEvent(event: UiEvent)`.
+- **Effects**: Use `Channel<UiEffect>(Channel.BUFFERED).receiveAsFlow()`.
+- **Concurrency**: Use `viewModelScope` only.
 
-**Required Structure:**
+## 2. Technical Stack
 
-```kotlin
-class ExampleViewModel @Inject constructor(
-    private val getItemsUseCase: GetItemsUseCase
-) : ViewModel() {
+- **UI**: Compose Multiplatform (Material 3).
+- **DI**: **Metro** exclusively. No Dagger/Hilt/Koin. Use `@Inject`, `@DependencyGraph`, `@ContributesBinding`.
+- **Database**: **Room KMP**. Use DAOs and Flow-based queries.
+- **Navigation**: **Navigator Pattern**. ViewModels MUST NOT depend on `NavController`. Inject `Navigator`.
+- **Concurrency**: Kotlin Coroutines & Flow.
+- **Testing**: **Kotest**, **Turbine** (for Flows), **Mockkery** (for mocking).
+- **Formatting**: **Spotless** + **KtLint**.
 
-    private val _state = MutableStateFlow(ExampleState())
-    val state = _state.asStateFlow()
+## 3. Package & Folder Structure (Package by Feature)
 
-    private val _effect = Channel<ExampleEffect>()
-    val effect = _effect.receiveAsFlow()
+Structure everything in `commonMain/kotlin/com/example/waterbuddy/`:
 
-    fun onEvent(event: ExampleEvent) {
-        when(event) {
-            is ExampleEvent.LoadData -> loadData()
-            is ExampleEvent.OnItemClicked -> navigateToDetails(event.id)
-        }
-    }
-}
-```
+- **`core/`**: Shared infra (network, database, designsystem, navigation).
+- **`features/<feature_name>/`**:
+    - `domain/`: UseCases, Repository Interfaces, Models (Pure Kotlin).
+    - `data/`: RepositoryImpl, Room DAOs, Entities, Mappers.
+    - `presentation/`: ViewModels, Screens (Composables), Contracts.
+    - `di/`: Metro binding interfaces.
 
-## Project Overview
+## 4. Coding Standards & Best Practices
 
-This is a Kotlin Multiplatform (KMP) project targeting Android and iOS.
+### Formatting & Style
 
-- **Shared Code**: Located in `composeApp/src/commonMain`. This is where most of the application logic and UI should
-  reside.
-- **Android Code**: Located in `composeApp/src/androidMain`. Use this for Android-specific implementations.
-- **iOS Code**: Located in `composeApp/src/iosMain`. Use this for iOS-specific implementations.
-- **UI Framework**: Compose Multiplatform.
+- Use **trailing commas** in all collections and parameters.
+- No `var` in Composables or ViewModels (except for private state backing).
+- Use `val` for all data class properties.
 
-## Coding Guidelines
+### Dependency Injection (Metro)
 
-1. **Language**: Use Kotlin for all code.
-2. **UI Development**:
-    - Use Compose Multiplatform for UI components to ensure they work on both Android and iOS.
-    - Place UI code in `commonMain` unless it requires platform-specific APIs.
-3. **State Management**:
-    - Use `ViewModel` and `StateFlow` for managing UI state in a reactive way.
-    - Ensure ViewModels are shared in `commonMain` if possible.
-4. **Dependencies**:
-    - Use Gradle Version Catalogs (`gradle/libs.versions.toml`) for adding or updating dependencies.
-    - Do not hardcode version numbers in `build.gradle.kts` files.
+- Use `@SingleIn(AppScope::class)` for singletons.
+- Prefer `@ContributesBinding` over manual `@Binds`.
+- ViewModels must be injected and provided via a `ViewModelFactory`.
 
-## File Structure
+### Forbidden Patterns (NEVER DO)
 
-- `composeApp/src/commonMain/kotlin`: Shared business logic and UI.
-- `composeApp/src/androidMain/kotlin`: Android-specific implementations.
-- `composeApp/src/iosMain/kotlin`: iOS-specific implementations.
-- `iosApp/`: Native iOS application entry point (Swift/SwiftUI).
+- ❌ **No logic in Composables**: Business logic belongs in ViewModels/UseCases.
+- ❌ **No direct NavController in VM**: Use the `Navigator` abstraction.
+- ❌ **No mutable collections**: Use `PersistentList` or regular `List` (immutable).
+- ❌ **No hardcoded strings**: Use `Res.string`.
+- ❌ **No GlobalScope**: Always use structured concurrency.
 
-## Best Practices
+## 5. Testing Requirements
 
-- Prioritize code sharing. Only write platform-specific code when absolutely necessary.
-- Follow modern Android and Kotlin best practices.
-- Keep components small and reusable.
+- **100% Coverage**: All logic in ViewModels and UseCases must be tested.
+- **Flow Testing**: Always use `turbine` to test `state` and `effect` flows.
+- **Mocks**: Use `Mockkery` to mock repository and navigator interfaces.
 
-## 2. Technology Stack Requirements
+## 6. Project Context
 
-- Dependency Injection: Use Metro exclusively. All ViewModels and UseCases must be provided via the Metro graph.
-- Persistence: Use Room for all local data storage.
-- Networking: Use Ktor for API communication.
-- UI: Use Jetpack Compose (Multiplatform).
-- Jetpack Compose Navigation with Type Safe operators
-
-Testing:
-
-- Use `Turbine` for testing Flows (State/Effect).
-- Use `Mockkery` for mocking dependencies.
-- Use `Robolectric` for Android integration tests.
-
-## 3. Design Principles
-
-- SOLID: Strictly adhere to SOLID principles. Dependency Inversion is critical—depend on abstractions (interfaces), not
-  concretions.
-- Clean Architecture:
-    - Domain Layer: Pure Kotlin, no platform dependencies.
-    - Data Layer: Handles Room/Ktor implementations.
-    - UI Layer: ViewModels and Composables.
-
-- Security (OWASP):
-    - Validate all data inputs at the ViewModel/UseCase boundary.
-    - Never log sensitive user data or tokens.
-    - Use secure storage for authentication tokens.
-    - Implement certificate pinning for all network requests.
-    - All sensitive data must be encrypted at rest.
-
-## 4. Forbidden Patterns
-
-- Do not use mutable state variables (var) inside UI Composables; hoist them to the ViewModel.
-- Do not expose MutableStateFlow to the view.
-- Do not put business logic inside Composables.
-- Do not use `GlobalScope` for coroutines. Always use a structured concurrency scope.
+- **Root**: `/Users/justinsmith/IdeaProjects/waterBuddy`
+- **Shared Code**: `composeApp/src/commonMain`
+- **Build System**: Gradle Version Catalogs (`libs.versions.toml`).

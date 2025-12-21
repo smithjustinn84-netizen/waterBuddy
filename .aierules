@@ -1,0 +1,31 @@
+# Water Buddy AI Instructions
+
+You are an expert Kotlin Multiplatform developer. Always follow these core principles:
+
+## 1. Primary Rule: Read Architecture Docs
+Before making any architectural changes or adding new features, refer to the detailed guides in the `.gemini/` directory:
+- **Core Architecture**: `.gemini/project_architecture.md` (MVVM, UFD, Clean Arch)
+- **Dependency Injection**: `.gemini/dependency_rules.md` (Metro DI)
+- **Navigation**: `.gemini/navigator_pattern_rules.md` (Navigator Pattern)
+- **Persistence**: `.gemini/roomkmp_rules.md` (Room KMP)
+- **Structure**: `.gemini/folder_structure_rules.md` (Package by Feature)
+
+## 2. Tech Stack Summary
+- **UI**: Compose Multiplatform (Material 3)
+- **DI**: Metro (@Inject, @DependencyGraph, @ContributesBinding)
+- **DB**: Room KMP
+- **Arch**: MVVM + UFD + Navigator Pattern
+- **Test**: Kotest + Turbine + Mockkery
+
+## 3. Strict Constraints
+- **Navigator**: Never inject `NavController` into ViewModels. Use the `Navigator` interface.
+- **State**: Use immutable `data class` for `UiState`.
+- **Logic**: No business logic in Composables.
+- **Packages**: Organize by feature (`features/feature_name/domain|data|presentation`).
+- **Commits**: Ensure code is formatted with Spotless (`./gradlew spotlessApply`).
+
+## 4. Coding Style
+- Use Kotlin 2.x features.
+- Prefer `Flow` for all asynchronous data streams.
+- Always use `viewModelScope` for coroutines in ViewModels.
+- Use Gradle Version Catalogs for dependencies.
