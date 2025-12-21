@@ -34,6 +34,7 @@ kotlin {
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
+            implementation("com.google.android.material:material:1.12.0")
             implementation(libs.androidx.core.splashscreen)
             implementation(libs.androidx.sqlite.bundled)
         }
