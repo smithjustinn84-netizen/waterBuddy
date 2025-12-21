@@ -167,4 +167,20 @@ class HydrationInsightsViewModelTest {
             assertEquals("Synchronous error", state.errorMessage)
         }
     }
+
+    @Test
+    fun `ShowError event is emitted on synchronous failure`() = runTest {
+        every {
+            repository.observeStatsRange(
+                any(),
+                any()
+            )
+        } throws RuntimeException("Synchronous error")
+
+        val viewModel = HydrationInsightsViewModel(GetHydrationInsightsUseCase(repository))
+
+        viewModel.events.test {
+            assertEquals(HydrationInsightsUiEvent.ShowError("Synchronous error"), awaitItem())
+        }
+    }
 }
