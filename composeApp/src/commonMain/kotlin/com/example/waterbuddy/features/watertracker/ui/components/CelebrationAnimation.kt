@@ -22,19 +22,20 @@ fun CelebrationAnimation(
     modifier: Modifier = Modifier,
     onAnimationEnd: () -> Unit = {},
 ) {
-    val particles = remember {
-        List(100) {
-            ConfettiParticle(
-                x = Random.nextFloat(),
-                y = Random.nextFloat() * -0.5f, // Start above the screen
-                color = confettiColors.random(),
-                size = Random.nextFloat() * 20f + 10f,
-                speed = Random.nextFloat() * 1000f + 500f,
-                angle = Random.nextFloat() * 360f,
-                rotationSpeed = Random.nextFloat() * 360f - 180f,
-            )
+    val particles =
+        remember {
+            List(100) {
+                ConfettiParticle(
+                    x = Random.nextFloat(),
+                    y = Random.nextFloat() * -0.5f, // Start above the screen
+                    color = confettiColors.random(),
+                    size = Random.nextFloat() * 20f + 10f,
+                    speed = Random.nextFloat() * 1000f + 500f,
+                    angle = Random.nextFloat() * 360f,
+                    rotationSpeed = Random.nextFloat() * 360f - 180f,
+                )
+            }
         }
-    }
 
     val animatable = remember { Animatable(0f) }
 
@@ -76,21 +77,22 @@ private data class ConfettiParticle(
     val rotationSpeed: Float,
 )
 
-private val confettiColors = listOf(
-    Color(0xFFF44336),
-    Color(0xFFE91E63),
-    Color(0xFF9C27B0),
-    Color(0xFF673AB7),
-    Color(0xFF3F51B5),
-    Color(0xFF2196F3),
-    Color(0xFF03A9F4),
-    Color(0xFF00BCD4),
-    Color(0xFF009688),
-    Color(0xFF4CAF50),
-    Color(0xFF8BC34A),
-    Color(0xFFCDDC39),
-    Color(0xFFFFEB3B),
-    Color(0xFFFFC107),
-    Color(0xFFFF9800),
-    Color(0xFFFF5722),
-)
+private val confettiColors =
+    listOf(
+        Color(0xFFF44336),
+        Color(0xFFE91E63),
+        Color(0xFF9C27B0),
+        Color(0xFF673AB7),
+        Color(0xFF3F51B5),
+        Color(0xFF2196F3),
+        Color(0xFF03A9F4),
+        Color(0xFF00BCD4),
+        Color(0xFF009688),
+        Color(0xFF4CAF50),
+        Color(0xFF8BC34A),
+        Color(0xFFCDDC39),
+        Color(0xFFFFEB3B),
+        Color(0xFFFFC107),
+        Color(0xFFFF9800),
+        Color(0xFFFF5722),
+    )
