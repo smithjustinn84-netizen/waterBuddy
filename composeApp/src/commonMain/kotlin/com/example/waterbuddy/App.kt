@@ -1,6 +1,5 @@
 package com.example.waterbuddy
 
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -11,6 +10,7 @@ import com.example.waterbuddy.core.di.AppComponent
 import com.example.waterbuddy.core.navigation.HydrationInsights
 import com.example.waterbuddy.core.navigation.NavigationCommand
 import com.example.waterbuddy.core.navigation.WaterTracker
+import com.example.waterbuddy.core.theme.WaterBuddyTheme
 import com.example.waterbuddy.features.insights.ui.HydrationInsightsScreen
 import com.example.waterbuddy.features.watertracker.ui.WaterTrackerScreen
 import dev.zacsweers.metrox.viewmodel.LocalMetroViewModelFactory
@@ -19,7 +19,7 @@ import kotlinx.coroutines.flow.collectLatest
 @Composable
 fun App(component: AppComponent) {
     CompositionLocalProvider(LocalMetroViewModelFactory provides component.metroViewModelFactory) {
-        MaterialTheme {
+        WaterBuddyTheme {
             val navController = rememberNavController()
             val navigator = component.navigator
 

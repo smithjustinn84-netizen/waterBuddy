@@ -53,10 +53,6 @@ import kotlinx.datetime.format.MonthNames
 import kotlinx.datetime.format.Padding
 import kotlinx.datetime.format.char
 
-// Define Hydration Colors
-private val HydrationBlue = Color(0xFF2196F3)
-private val HydrationLightBlue = Color(0xFF90CAF9)
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HydrationInsightsScreen(
@@ -119,14 +115,15 @@ fun HydrationInsightsScreen(
                     modifier = Modifier.fillMaxWidth().height(300.dp),
                     contentAlignment = Alignment.Center
                 ) {
-                    CircularProgressIndicator(color = HydrationBlue)
+                    CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
                 }
             } else if (state.insights != null) {
                 // 2. Chart Section
                 if (state.selectedTimeRange == TimeRange.WEEK) {
                     WeeklyBarChart(
                         data = state.insights!!.weeklyTrend,
-                        modifier = Modifier.fillMaxWidth().height(300.dp)
+                        modifier = Modifier.fillMaxWidth().height(300.dp),
+                        color = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)
                     )
                 } else {
                     MonthlyHeatmap(
@@ -161,7 +158,7 @@ fun TimeRangeSelector(
                 val containerColor =
                     if (isSelected) MaterialTheme.colorScheme.surface else Color.Transparent
                 val contentColor =
-                    if (isSelected) HydrationBlue else MaterialTheme.colorScheme.onSurfaceVariant
+                    if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
                 val shadowElevation = if (isSelected) 2.dp else 0.dp
 
                 Surface(
@@ -188,7 +185,8 @@ fun TimeRangeSelector(
 @Composable
 fun WeeklyBarChart(
     data: List<DailyWaterStats>,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    color: Color
 ) {
     Card(
         modifier = modifier,
@@ -227,7 +225,7 @@ fun WeeklyBarChart(
                     // Draw Goal Line
                     val goalY = size.height - (goal.toFloat() / maxVal.toFloat() * size.height)
                     drawLine(
-                        color = HydrationBlue.copy(alpha = 0.5f),
+                        color = color,
                         start = Offset(0f, goalY),
                         end = Offset(size.width, goalY),
                         strokeWidth = 2.dp.toPx(),
@@ -255,7 +253,7 @@ fun WeeklyBarChart(
                                     .fillMaxWidth(0.6f)
                                     .fillMaxHeight(barHeightFraction)
                                     .background(
-                                        color = if (stat.isGoalReached) HydrationBlue else HydrationLightBlue,
+                                        color = if (stat.isGoalReached) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondary,
                                         shape = RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp)
                                     )
                             )
@@ -346,8 +344,8 @@ fun MonthlyHeatmap(
                         weekData.forEach { stat ->
                             val alpha = (stat.progressPercentage).coerceIn(0.1f, 1f)
                             val color =
-                                if (stat.isGoalReached) HydrationBlue else HydrationBlue.copy(alpha = alpha)
-
+                                if (stat.isGoalReached) MaterialTheme.colorScheme.primary
+                                else MaterialTheme.colorScheme.primary.copy(alpha = alpha)
                             Box(
                                 modifier = Modifier
                                     .weight(1f)
