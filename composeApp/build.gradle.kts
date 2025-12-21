@@ -9,6 +9,7 @@ plugins {
     alias(libs.plugins.metro)
     alias(libs.plugins.ksp)
     alias(libs.plugins.room)
+    alias(libs.plugins.mokkery)
 }
 
 kotlin {
