@@ -21,8 +21,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.waterbuddy.core.theme.WaterBuddyTheme
+import com.example.waterbuddy.core.util.formatTime
 import com.example.waterbuddy.features.watertracker.domain.model.WaterIntake
-import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -84,18 +84,6 @@ fun WaterEntryItem(
             }
         }
     }
-}
-
-private fun formatTime(dateTime: LocalDateTime): String {
-    val hour = dateTime.hour
-    val minute = dateTime.minute.toString().padStart(2, '0')
-    val amPm = if (hour >= 12) "PM" else "AM"
-    val displayHour = when {
-        hour == 0 -> 12
-        hour > 12 -> hour - 12
-        else -> hour
-    }
-    return "$displayHour:$minute $amPm"
 }
 
 @OptIn(ExperimentalTime::class)
