@@ -143,12 +143,14 @@ fun WaterTrackerScreen(
                     )
                 }
                 is WaterTrackerUiEvent.ShowError -> {
+                    snackbarHostState.currentSnackbarData?.dismiss()
                     snackbarHostState.showSnackbar(
                         message = event.message,
                         duration = SnackbarDuration.Long
                     )
                 }
                 WaterTrackerUiEvent.GoalReached -> {
+                    snackbarHostState.currentSnackbarData?.dismiss()
                     snackbarHostState.showSnackbar(
                         message = successMessage,
                         duration = SnackbarDuration.Long

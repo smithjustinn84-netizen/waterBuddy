@@ -11,6 +11,7 @@ import com.example.waterbuddy.features.watertracker.domain.usecase.UpdateDailyGo
 import dev.zacsweers.metro.ContributesIntoMap
 import dev.zacsweers.metro.Inject
 import dev.zacsweers.metrox.viewmodel.ViewModelKey
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Instant
@@ -36,7 +37,11 @@ class WaterTrackerViewModel(
     val state = _state.asStateFlow()
 
     private val _events = MutableSharedFlow<WaterTrackerUiEvent>()
-    val events = _events.asSharedFlow()
+
+    @OptIn(FlowPreview::class)
+    val events = _events
+        .asSharedFlow()
+        .debounce(500)
 
     var showGoalDialog = MutableStateFlow(false)
         private set
@@ -93,7 +98,11 @@ class WaterTrackerViewModel(
                     _events.emit(WaterTrackerUiEvent.ShowSuccess("Added ${amountMl}ml"))
                 },
                 onFailure = { error ->
-                    _events.emit(WaterTrackerUiEvent.ShowError(error.message ?: "Failed to add water"))
+                    _events.emit(
+                        WaterTrackerUiEvent.ShowError(
+                            error.message ?: "Failed to add water"
+                        )
+                    )
                 }
             )
 
@@ -108,7 +117,11 @@ class WaterTrackerViewModel(
                     _events.emit(WaterTrackerUiEvent.ShowSuccess("Entry deleted"))
                 },
                 onFailure = { error ->
-                    _events.emit(WaterTrackerUiEvent.ShowError(error.message ?: "Failed to delete entry"))
+                    _events.emit(
+                        WaterTrackerUiEvent.ShowError(
+                            error.message ?: "Failed to delete entry"
+                        )
+                    )
                 }
             )
         }
@@ -122,7 +135,11 @@ class WaterTrackerViewModel(
                     _events.emit(WaterTrackerUiEvent.ShowSuccess("Goal updated to ${goalMl}ml"))
                 },
                 onFailure = { error ->
-                    _events.emit(WaterTrackerUiEvent.ShowError(error.message ?: "Failed to update goal"))
+                    _events.emit(
+                        WaterTrackerUiEvent.ShowError(
+                            error.message ?: "Failed to update goal"
+                        )
+                    )
                 }
             )
         }
