@@ -178,8 +178,20 @@ kover {
                     "*TypeKt*",        // Excludes Type.kt files
                     "*ShapeKt*",       // Excludes Shape.kt files
                     "*ComposableSingletons*", // Internal Compose artifacts
-                    $$"*$MetroFactory*",
-                    $$"*$MetroFactory$*"
+                    "*MetroFactory*",
+                    "com.example.waterbuddy.App", // Excludes the Android Application class
+                    "*AppKt*",                    // Excludes the file containing the App composable
+
+                    // Exclude UI Components (hard to test with unit tests)
+                    "*WeeklyBarChartKt*",
+                    "*MonthlyHeatmapKt*",
+                    "*KpiCardsKt*",
+                    "*TimeRangeSelectorKt*",
+
+                    // Synthetic/Compiler generated classes
+                    "*$*inlined$*",
+                    "*$*lambda$*",
+                    "*$*sam$*"
                 )
             }
         }
