@@ -104,7 +104,7 @@ fun MonthlyHeatmap(
                                 contentAlignment = Alignment.Center
                             ) {
                                 Text(
-                                    text = "${stat.date.dayOfMonth}",
+                                    text = "${stat.date.day}",
                                     style = MaterialTheme.typography.labelSmall,
                                     color = if (stat.progressPercentage > 0.5f) Color.White else MaterialTheme.colorScheme.onSurface
                                 )
