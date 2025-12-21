@@ -1,4 +1,4 @@
-rootProject.name = "demometro"
+rootProject.name = "waterbuddy"
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 pluginManagement {

@@ -66,11 +66,11 @@ room {
 }
 
 android {
-    namespace = "com.example.demometro"
+    namespace = "com.example.waterbuddy"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
-        applicationId = "com.example.demometro"
+        applicationId = "com.example.waterbuddy"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
