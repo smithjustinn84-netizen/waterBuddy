@@ -8,5 +8,5 @@ plugins {
     alias(libs.plugins.composeCompiler) apply false
     alias(libs.plugins.kotlinSerialization) apply false
     alias(libs.plugins.metro) apply false
-    id("org.jetbrains.kotlinx.kover") version "0.9.4"
+    alias(libs.plugins.kover)
 }

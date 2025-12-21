@@ -10,6 +10,7 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.room)
     alias(libs.plugins.mokkery)
+    alias(libs.plugins.kover)
 }
 
 kotlin {
@@ -123,4 +124,24 @@ dependencies {
     add("kspIosArm64", libs.androidx.room.compiler)
     add("kspIosSimulatorArm64", libs.androidx.room.compiler)
     add("kspJvm", libs.androidx.room.compiler)
+}
+
+kover {
+    reports {
+        filters {
+            excludes {
+                classes(
+                    "*.BuildConfig",
+                    "*_Factory",
+                    "*_MembersInjector",
+                    "*_Provide*Factory",
+                    "*_Component",
+                    "*_Module",
+                    "*.ComposableSingletons*",
+                    "*ComposableInvoker*",
+                    "*ScreenKt*"
+                )
+            }
+        }
+    }
 }
