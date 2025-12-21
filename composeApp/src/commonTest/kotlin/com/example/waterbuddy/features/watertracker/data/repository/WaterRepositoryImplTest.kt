@@ -5,6 +5,7 @@ import com.example.waterbuddy.features.watertracker.data.local.dao.DailyGoalDao
 import com.example.waterbuddy.features.watertracker.data.local.dao.WaterIntakeDao
 import com.example.waterbuddy.features.watertracker.data.local.entity.DailyGoalEntity
 import com.example.waterbuddy.features.watertracker.data.local.entity.WaterIntakeEntity
+import com.example.waterbuddy.features.watertracker.domain.repository.WaterRepository
 import dev.mokkery.answering.returns
 import dev.mokkery.answering.throws
 import dev.mokkery.every
@@ -24,7 +25,8 @@ class WaterRepositoryImplTest {
 
     private val waterIntakeDao = mock<WaterIntakeDao>()
     private val dailyGoalDao = mock<DailyGoalDao>()
-    private val repository = WaterRepositoryImpl(waterIntakeDao, dailyGoalDao)
+    private val repositoryImpl = WaterRepositoryImpl(waterIntakeDao, dailyGoalDao)
+    private val repository: WaterRepository = repositoryImpl
 
     @Test
     fun `observeDailyStats combines intakes and goal correctly`() = runTest {
@@ -103,6 +105,20 @@ class WaterRepositoryImplTest {
 
         assertTrue(result.isSuccess)
         verifySuspend { waterIntakeDao.insertWaterIntake(any()) }
+    }
+
+    @Test
+    fun `addWaterIntake with default note parameter calls dao and returns success`() = runTest {
+        everySuspend { waterIntakeDao.insertWaterIntake(any()) } returns Unit
+
+        // Calling without the second parameter to exercise the default parameter in the interface
+        val result = repository.addWaterIntake(250)
+
+        assertTrue(result.isSuccess)
+        verifySuspend {
+            // We use any() because the timestamp and ID are generated inside the method
+            waterIntakeDao.insertWaterIntake(any())
+        }
     }
 
     @Test
