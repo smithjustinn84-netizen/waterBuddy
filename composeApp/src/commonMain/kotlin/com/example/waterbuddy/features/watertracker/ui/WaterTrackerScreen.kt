@@ -31,6 +31,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.waterbuddy.core.navigation.HydrationInsights
 import com.example.waterbuddy.core.theme.WaterBuddyTheme
 import com.example.waterbuddy.features.watertracker.domain.model.WaterIntake
+import com.example.waterbuddy.features.watertracker.ui.components.CelebrationAnimation
 import com.example.waterbuddy.features.watertracker.ui.components.DrinkOverlay
 import com.example.waterbuddy.features.watertracker.ui.components.EmptyStateMessage
 import com.example.waterbuddy.features.watertracker.ui.components.GoalDialog
@@ -58,6 +59,7 @@ fun WaterTrackerScreen(viewModel: WaterTrackerViewModel = metroViewModel()) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val showGoalDialog by viewModel.showGoalDialog.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
+    var showCelebration by remember { mutableStateOf(false) }
 
     val successMessage = stringResource(Res.string.goal_reached_message)
 
@@ -81,6 +83,7 @@ fun WaterTrackerScreen(viewModel: WaterTrackerViewModel = metroViewModel()) {
                 }
 
                 WaterTrackerUiEvent.GoalReached -> {
+                    showCelebration = true
                     snackbarHostState.currentSnackbarData?.dismiss()
                     snackbarHostState.showSnackbar(
                         message = successMessage,
@@ -94,6 +97,8 @@ fun WaterTrackerScreen(viewModel: WaterTrackerViewModel = metroViewModel()) {
     WaterTrackerContent(
         state = state,
         showGoalDialog = showGoalDialog,
+        showCelebration = showCelebration,
+        onCelebrationEnd = { showCelebration = false },
         snackbarHostState = snackbarHostState,
         onIntent = viewModel::handleIntent,
         onNavigateToInsights = { viewModel.navigator.navigate(HydrationInsights) },
@@ -105,6 +110,8 @@ fun WaterTrackerScreen(viewModel: WaterTrackerViewModel = metroViewModel()) {
 fun WaterTrackerContent(
     state: WaterTrackerUiState,
     showGoalDialog: Boolean,
+    showCelebration: Boolean,
+    onCelebrationEnd: () -> Unit,
     snackbarHostState: SnackbarHostState,
     onIntent: (WaterTrackerUiIntent) -> Unit,
     onNavigateToInsights: () -> Unit,
@@ -228,6 +235,14 @@ fun WaterTrackerContent(
                     modifier = Modifier.fillMaxSize(),
                 )
             }
+
+            // Celebration Overlay
+            if (showCelebration) {
+                CelebrationAnimation(
+                    modifier = Modifier.fillMaxSize(),
+                    onAnimationEnd = onCelebrationEnd,
+                )
+            }
         }
     }
 
@@ -280,6 +295,8 @@ fun WaterTrackerPreview() {
             WaterTrackerContent(
                 state = previewState,
                 showGoalDialog = false,
+                showCelebration = false,
+                onCelebrationEnd = {},
                 snackbarHostState = remember { SnackbarHostState() },
                 onIntent = {},
                 onNavigateToInsights = {},
@@ -296,6 +313,8 @@ fun WaterTrackerDarkModePreview() {
             WaterTrackerContent(
                 state = previewState,
                 showGoalDialog = false,
+                showCelebration = false,
+                onCelebrationEnd = {},
                 snackbarHostState = remember { SnackbarHostState() },
                 onIntent = {},
                 onNavigateToInsights = {},
@@ -312,6 +331,8 @@ fun WaterTrackerEmptyPreview() {
             WaterTrackerContent(
                 state = WaterTrackerUiState(),
                 showGoalDialog = false,
+                showCelebration = false,
+                onCelebrationEnd = {},
                 snackbarHostState = remember { SnackbarHostState() },
                 onIntent = {},
                 onNavigateToInsights = {},
