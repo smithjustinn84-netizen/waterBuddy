@@ -1,18 +1,21 @@
 package com.example.waterbuddy.features.watertracker.ui
 
 import app.cash.turbine.test
-import com.example.waterbuddy.core.navigation.NavigationCommand
 import com.example.waterbuddy.core.navigation.Navigator
-import com.example.waterbuddy.core.navigation.Route
 import com.example.waterbuddy.features.watertracker.domain.model.DailyWaterStats
 import com.example.waterbuddy.features.watertracker.domain.repository.WaterRepository
 import com.example.waterbuddy.features.watertracker.domain.usecase.AddWaterIntakeUseCase
 import com.example.waterbuddy.features.watertracker.domain.usecase.DeleteWaterIntakeUseCase
 import com.example.waterbuddy.features.watertracker.domain.usecase.ObserveDailyWaterStatsUseCase
 import com.example.waterbuddy.features.watertracker.domain.usecase.UpdateDailyGoalUseCase
+import dev.mokkery.answering.returns
+import dev.mokkery.every
+import dev.mokkery.everySuspend
+import dev.mokkery.matcher.any
+import dev.mokkery.mock
+import dev.mokkery.verifySuspend
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
@@ -25,6 +28,8 @@ import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class WaterTrackerViewModelTest {
@@ -33,44 +38,33 @@ class WaterTrackerViewModelTest {
     private val testDate = LocalDate(2023, 10, 27)
 
     private lateinit var viewModel: WaterTrackerViewModel
+    private lateinit var repository: WaterRepository
+    private lateinit var navigator: Navigator
+    
     private val statsFlow = MutableSharedFlow<DailyWaterStats>(replay = 1)
-
-    private val fakeRepository = object : WaterRepository {
-        override fun observeDailyStats(date: LocalDate): Flow<DailyWaterStats> = statsFlow
-        override fun observeStatsRange(
-            startDate: LocalDate,
-            endDate: LocalDate
-        ): Flow<List<DailyWaterStats>> = flowOf(emptyList())
-
-        override suspend fun addWaterIntake(amountMl: Int, note: String?): Result<Unit> =
-            Result.success(Unit)
-
-        override suspend fun deleteWaterIntake(id: String): Result<Unit> = Result.success(Unit)
-        override suspend fun updateDailyGoal(goalMl: Int): Result<Unit> = Result.success(Unit)
-        override suspend fun getDailyGoal(): Int = 2000
-    }
-
-    private val fakeNavigator = object : Navigator {
-        override val commands = MutableSharedFlow<NavigationCommand>()
-        override fun navigate(destination: Route, clearBackStack: Boolean) {}
-        override fun goBack() {}
-    }
 
     @BeforeTest
     fun setup() {
         Dispatchers.setMain(testDispatcher)
 
-        val observeUseCase = ObserveDailyWaterStatsUseCase(fakeRepository)
-        val addUseCase = AddWaterIntakeUseCase(fakeRepository)
-        val deleteUseCase = DeleteWaterIntakeUseCase(fakeRepository)
-        val updateUseCase = UpdateDailyGoalUseCase(fakeRepository)
+        repository = mock<WaterRepository>()
+        navigator = mock<Navigator>()
+
+        every { repository.observeDailyStats(any()) } returns statsFlow
+        every { repository.observeStatsRange(any(), any()) } returns flowOf(emptyList())
+        everySuspend { repository.getDailyGoal() } returns 2000
+
+        val observeUseCase = ObserveDailyWaterStatsUseCase(repository)
+        val addUseCase = AddWaterIntakeUseCase(repository)
+        val deleteUseCase = DeleteWaterIntakeUseCase(repository)
+        val updateUseCase = UpdateDailyGoalUseCase(repository)
 
         viewModel = WaterTrackerViewModel(
             observeUseCase,
             addUseCase,
             deleteUseCase,
             updateUseCase,
-            fakeNavigator
+            navigator
         )
     }
 
@@ -83,7 +77,7 @@ class WaterTrackerViewModelTest {
     fun `initial state is loading`() = runTest {
         viewModel.state.test {
             val initialState = awaitItem()
-            assertEquals(true, initialState.isLoading)
+            assertTrue(initialState.isLoading)
         }
     }
 
@@ -91,7 +85,7 @@ class WaterTrackerViewModelTest {
     fun `state updates when stats are observed`() = runTest {
         viewModel.state.test {
             // Skip initial state
-            assertEquals(true, awaitItem().isLoading)
+            assertTrue(awaitItem().isLoading)
 
             val stats = DailyWaterStats(
                 date = testDate,
@@ -105,7 +99,7 @@ class WaterTrackerViewModelTest {
             val updatedState = awaitItem()
             assertEquals(500, updatedState.totalMl)
             assertEquals(2000, updatedState.goalMl)
-            assertEquals(false, updatedState.isLoading)
+            assertFalse(updatedState.isLoading)
         }
     }
 
@@ -131,5 +125,81 @@ class WaterTrackerViewModelTest {
 
             assertEquals(WaterTrackerUiEvent.GoalReached, awaitItem())
         }
+    }
+
+    @Test
+    fun `add water intent calls repository and shows success`() = runTest {
+        everySuspend { repository.addWaterIntake(250, any()) } returns Result.success(Unit)
+
+        viewModel.events.test {
+            viewModel.handleIntent(WaterTrackerUiIntent.AddWater(250))
+
+            // Should emit success
+            val event = awaitItem()
+            assertTrue(event is WaterTrackerUiEvent.ShowSuccess)
+            assertEquals("Added 250ml", event.message)
+
+            verifySuspend { repository.addWaterIntake(250, null) }
+        }
+    }
+
+    @Test
+    fun `add water intent shows error on failure`() = runTest {
+        everySuspend {
+            repository.addWaterIntake(
+                250,
+                any()
+            )
+        } returns Result.failure(Exception("DB Error"))
+
+        viewModel.events.test {
+            viewModel.handleIntent(WaterTrackerUiIntent.AddWater(250))
+
+            val event = awaitItem()
+            assertTrue(event is WaterTrackerUiEvent.ShowError)
+            assertEquals("DB Error", event.message)
+        }
+    }
+
+    @Test
+    fun `delete entry intent calls repository and shows success`() = runTest {
+        everySuspend { repository.deleteWaterIntake("123") } returns Result.success(Unit)
+
+        viewModel.events.test {
+            viewModel.handleIntent(WaterTrackerUiIntent.DeleteEntry("123"))
+
+            val event = awaitItem()
+            assertTrue(event is WaterTrackerUiEvent.ShowSuccess)
+            assertEquals("Entry deleted", event.message)
+
+            verifySuspend { repository.deleteWaterIntake("123") }
+        }
+    }
+
+    @Test
+    fun `update goal intent calls repository and shows success`() = runTest {
+        everySuspend { repository.updateDailyGoal(3000) } returns Result.success(Unit)
+
+        viewModel.events.test {
+            viewModel.handleIntent(WaterTrackerUiIntent.UpdateGoal(3000))
+
+            val event = awaitItem()
+            assertTrue(event is WaterTrackerUiEvent.ShowSuccess)
+            assertEquals("Goal updated to 3000ml", event.message)
+
+            // Should also close dialog
+            assertFalse(viewModel.showGoalDialog.value)
+
+            verifySuspend { repository.updateDailyGoal(3000) }
+        }
+    }
+
+    @Test
+    fun `show and dismiss goal dialog intents update state`() = runTest {
+        viewModel.handleIntent(WaterTrackerUiIntent.ShowGoalDialog)
+        assertTrue(viewModel.showGoalDialog.value)
+
+        viewModel.handleIntent(WaterTrackerUiIntent.DismissGoalDialog)
+        assertFalse(viewModel.showGoalDialog.value)
     }
 }

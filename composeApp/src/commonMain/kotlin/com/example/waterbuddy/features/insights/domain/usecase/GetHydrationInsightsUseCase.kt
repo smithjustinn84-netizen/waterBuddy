@@ -34,10 +34,10 @@ class GetHydrationInsightsUseCase(
         }
 
         val totalIntake = statsList.sumOf { it.totalMl }
-        val averageIntake = if (statsList.isNotEmpty()) totalIntake / statsList.size else 0
+        val averageIntake = totalIntake / statsList.size
 
         val daysMetGoal = statsList.count { it.isGoalReached }
-        val completionRate = if (statsList.isNotEmpty()) daysMetGoal.toFloat() / statsList.size else 0f
+        val completionRate = daysMetGoal.toFloat() / statsList.size
 
         val longestStreak = calculateLongestStreak(statsList)
 

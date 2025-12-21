@@ -83,7 +83,7 @@ class HydrationInsightsViewModelTest {
     }
 
     @Test
-    fun `error handling when use case fails`() = runTest {
+    fun `error handling when use case fails with flow exception`() = runTest {
         val trigger = MutableSharedFlow<Unit>()
         val failingRepository = object : WaterRepository {
             override fun observeDailyStats(date: LocalDate): Flow<DailyWaterStats> =
@@ -117,6 +117,43 @@ class HydrationInsightsViewModelTest {
             val state = awaitItem()
             assertEquals(false, state.isLoading)
             assertEquals("Test error", state.errorMessage)
+        }
+    }
+
+    @Test
+    fun `error handling when use case throws synchronously`() = runTest {
+        val failingRepository = object : WaterRepository {
+            override fun observeDailyStats(date: LocalDate): Flow<DailyWaterStats> =
+                error("Not used")
+
+            override fun observeStatsRange(
+                startDate: LocalDate,
+                endDate: LocalDate
+            ): Flow<List<DailyWaterStats>> {
+                throw RuntimeException("Synchronous error")
+            }
+
+            override suspend fun addWaterIntake(amountMl: Int, note: String?): Result<Unit> =
+                Result.success(Unit)
+
+            override suspend fun deleteWaterIntake(id: String): Result<Unit> = Result.success(Unit)
+            override suspend fun updateDailyGoal(goalMl: Int): Result<Unit> = Result.success(Unit)
+            override suspend fun getDailyGoal(): Int = 2000
+        }
+
+        val viewModel = HydrationInsightsViewModel(GetHydrationInsightsUseCase(failingRepository))
+
+        viewModel.state.test {
+            // It might fail immediately during init, so we expect error state
+            val state = awaitItem()
+            // Depending on how fast init runs vs test collector, we might see loading then error or just error
+            if (state.isLoading) {
+                val errorState = awaitItem()
+                assertEquals(false, errorState.isLoading)
+                assertEquals("Synchronous error", errorState.errorMessage)
+            } else {
+                assertEquals("Synchronous error", state.errorMessage)
+            }
         }
     }
 

@@ -1,0 +1,3 @@
+# Allow Gemini to access Kover coverage reports even if they are in the build directory
+!**/build/reports/kover/
+!**/build/reports/kover/**

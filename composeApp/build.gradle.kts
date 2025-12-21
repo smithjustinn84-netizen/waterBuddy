@@ -164,6 +164,8 @@ kover {
                     // Exclude the generated Dependency Graph implementations
                     "*MetroAppGraph",
                     "*Metro*Graph",
+                    "*MetroContributionTo*",
+                    "*BindsMirror",
                     // Members injectors (if using field injection in Activities)
                     "*_MembersInjector",
                     // KMP / Platform specific
@@ -175,8 +177,18 @@ kover {
                     "*ColorKt*",       // Excludes Color.kt files
                     "*TypeKt*",        // Excludes Type.kt files
                     "*ShapeKt*",       // Excludes Shape.kt files
-                    "*ComposableSingletons*" // Internal Compose artifacts
+                    "*ComposableSingletons*", // Internal Compose artifacts
+                    $$"*$MetroFactory*",
+                    $$"*$MetroFactory$*"
                 )
+            }
+        }
+
+        verify {
+            rule {
+                bound {
+                    minValue = 100
+                }
             }
         }
     }
