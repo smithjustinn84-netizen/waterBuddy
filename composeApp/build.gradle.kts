@@ -57,6 +57,11 @@ kotlin {
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
+            implementation(libs.kotest.assertions.core)
+            implementation(libs.kotest.framework.engine)
+        }
+        androidUnitTest.dependencies {
+            implementation(libs.kotest.runner.junit5)
         }
     }
 }
@@ -89,6 +94,11 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
+    }
+    testOptions {
+        unitTests.all {
+            it.useJUnitPlatform()
+        }
     }
 }
 
