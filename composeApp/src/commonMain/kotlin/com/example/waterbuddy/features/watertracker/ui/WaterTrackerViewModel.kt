@@ -33,7 +33,7 @@ class WaterTrackerViewModel(
     val navigator: Navigator
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow(WaterTrackerUiState())
+    private val _state = MutableStateFlow(WaterTrackerUiState(isLoading = true))
     val state = _state.asStateFlow()
 
     private val _events = MutableSharedFlow<WaterTrackerUiEvent>()

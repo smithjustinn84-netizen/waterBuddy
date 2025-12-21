@@ -1,9 +1,9 @@
 package com.example.waterbuddy.features.watertracker.data.local.dao
 
+import app.cash.turbine.test
 import com.example.waterbuddy.core.database.AppDatabase
 import com.example.waterbuddy.core.database.createTestDatabase
 import com.example.waterbuddy.features.watertracker.data.local.entity.DailyGoalEntity
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
@@ -40,8 +40,9 @@ class DailyGoalDaoTest {
         val goal = DailyGoalEntity(id = 1, goalMl = 2000)
         dao.insertDailyGoal(goal)
 
-        val fetchedGoal = dao.getDailyGoal().first()
-        assertEquals(goal, fetchedGoal)
+        dao.getDailyGoal().test {
+            assertEquals(goal, awaitItem())
+        }
 
         val goalValue = dao.getGoalValue()
         assertEquals(2000, goalValue)
@@ -54,10 +55,13 @@ class DailyGoalDaoTest {
         val initialGoal = DailyGoalEntity(id = 1, goalMl = 2000)
         dao.insertDailyGoal(initialGoal)
 
-        val updatedGoal = DailyGoalEntity(id = 1, goalMl = 2500)
-        dao.insertDailyGoal(updatedGoal)
+        dao.getDailyGoal().test {
+            assertEquals(2000, awaitItem()?.goalMl)
 
-        val fetchedGoal = dao.getDailyGoal().first()
-        assertEquals(2500, fetchedGoal?.goalMl)
+            val updatedGoal = DailyGoalEntity(id = 1, goalMl = 2500)
+            dao.insertDailyGoal(updatedGoal)
+
+            assertEquals(2500, awaitItem()?.goalMl)
+        }
     }
 }

@@ -1,9 +1,9 @@
 package com.example.waterbuddy.features.watertracker.data.local.dao
 
+import app.cash.turbine.test
 import com.example.waterbuddy.core.database.AppDatabase
 import com.example.waterbuddy.core.database.createTestDatabase
 import com.example.waterbuddy.features.watertracker.data.local.entity.WaterIntakeEntity
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import kotlinx.datetime.LocalDateTime
 import kotlin.test.AfterTest
@@ -47,9 +47,11 @@ class WaterIntakeDaoTest {
 
         dao.insertWaterIntake(intake)
 
-        val allIntakes = dao.getAllWaterIntakes().first()
-        assertEquals(1, allIntakes.size)
-        assertEquals(intake, allIntakes.first())
+        dao.getAllWaterIntakes().test {
+            val allIntakes = awaitItem()
+            assertEquals(1, allIntakes.size)
+            assertEquals(intake, allIntakes.first())
+        }
     }
 
     @Test
@@ -65,8 +67,10 @@ class WaterIntakeDaoTest {
 
         dao.insertWaterIntake(intake)
 
-        val allIntakes = dao.getAllWaterIntakes().first()
-        assertEquals(1, allIntakes.size)
+        dao.getAllWaterIntakes().test {
+            val allIntakes = awaitItem()
+            assertEquals(1, allIntakes.size)
+        }
     }
 
     @Test
@@ -77,9 +81,16 @@ class WaterIntakeDaoTest {
         val intake = WaterIntakeEntity(id = "1", amountMl = 250, timestamp = now)
 
         dao.insertWaterIntake(intake)
-        dao.deleteWaterIntake(intake)
 
-        assertTrue(dao.getAllWaterIntakes().first().isEmpty())
+        dao.getAllWaterIntakes().test {
+            // Initial item after insert
+            assertEquals(1, awaitItem().size)
+
+            dao.deleteWaterIntake(intake)
+
+            // Item after delete
+            assertTrue(awaitItem().isEmpty())
+        }
     }
 
     @Test
@@ -90,8 +101,13 @@ class WaterIntakeDaoTest {
         val intake = WaterIntakeEntity(id = "1", amountMl = 250, timestamp = now)
 
         dao.insertWaterIntake(intake)
-        dao.deleteWaterIntakeById("1")
 
-        assertTrue(dao.getAllWaterIntakes().first().isEmpty())
+        dao.getAllWaterIntakes().test {
+            assertEquals(1, awaitItem().size)
+
+            dao.deleteWaterIntakeById("1")
+
+            assertTrue(awaitItem().isEmpty())
+        }
     }
 }
