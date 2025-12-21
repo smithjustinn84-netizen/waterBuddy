@@ -34,80 +34,86 @@ class WaterIntakeDaoTest {
     }
 
     @Test
-    fun insertAndRetrieveAllWaterIntakes() = runTest {
-        if (!::dao.isInitialized) return@runTest
+    fun insertAndRetrieveAllWaterIntakes() =
+        runTest {
+            if (!::dao.isInitialized) return@runTest
 
-        val now = LocalDateTime(2023, 10, 27, 10, 15, 30)
-        val intake = WaterIntakeEntity(
-            id = "1",
-            amountMl = 250,
-            timestamp = now,
-            note = "Glass of water"
-        )
+            val now = LocalDateTime(2023, 10, 27, 10, 15, 30)
+            val intake =
+                WaterIntakeEntity(
+                    id = "1",
+                    amountMl = 250,
+                    timestamp = now,
+                    note = "Glass of water",
+                )
 
-        dao.insertWaterIntake(intake)
+            dao.insertWaterIntake(intake)
 
-        dao.getAllWaterIntakes().test {
-            val allIntakes = awaitItem()
-            assertEquals(1, allIntakes.size)
-            assertEquals(intake, allIntakes.first())
+            dao.getAllWaterIntakes().test {
+                val allIntakes = awaitItem()
+                assertEquals(1, allIntakes.size)
+                assertEquals(intake, allIntakes.first())
+            }
         }
-    }
 
     @Test
-    fun filterTodaysWaterIntakes() = runTest {
-        if (!::dao.isInitialized) return@runTest
+    fun filterTodaysWaterIntakes() =
+        runTest {
+            if (!::dao.isInitialized) return@runTest
 
-        val now = LocalDateTime(2023, 10, 27, 10, 15, 30)
-        val intake = WaterIntakeEntity(
-            id = "1",
-            amountMl = 250,
-            timestamp = now
-        )
+            val now = LocalDateTime(2023, 10, 27, 10, 15, 30)
+            val intake =
+                WaterIntakeEntity(
+                    id = "1",
+                    amountMl = 250,
+                    timestamp = now,
+                )
 
-        dao.insertWaterIntake(intake)
+            dao.insertWaterIntake(intake)
 
-        dao.getAllWaterIntakes().test {
-            val allIntakes = awaitItem()
-            assertEquals(1, allIntakes.size)
+            dao.getAllWaterIntakes().test {
+                val allIntakes = awaitItem()
+                assertEquals(1, allIntakes.size)
+            }
         }
-    }
 
     @Test
-    fun deleteWaterIntake() = runTest {
-        if (!::dao.isInitialized) return@runTest
+    fun deleteWaterIntake() =
+        runTest {
+            if (!::dao.isInitialized) return@runTest
 
-        val now = LocalDateTime(2023, 10, 27, 10, 15, 30)
-        val intake = WaterIntakeEntity(id = "1", amountMl = 250, timestamp = now)
+            val now = LocalDateTime(2023, 10, 27, 10, 15, 30)
+            val intake = WaterIntakeEntity(id = "1", amountMl = 250, timestamp = now)
 
-        dao.insertWaterIntake(intake)
+            dao.insertWaterIntake(intake)
 
-        dao.getAllWaterIntakes().test {
-            // Initial item after insert
-            assertEquals(1, awaitItem().size)
+            dao.getAllWaterIntakes().test {
+                // Initial item after insert
+                assertEquals(1, awaitItem().size)
 
-            dao.deleteWaterIntake(intake)
+                dao.deleteWaterIntake(intake)
 
-            // Item after delete
-            assertTrue(awaitItem().isEmpty())
+                // Item after delete
+                assertTrue(awaitItem().isEmpty())
+            }
         }
-    }
 
     @Test
-    fun deleteWaterIntakeById() = runTest {
-        if (!::dao.isInitialized) return@runTest
+    fun deleteWaterIntakeById() =
+        runTest {
+            if (!::dao.isInitialized) return@runTest
 
-        val now = LocalDateTime(2023, 10, 27, 10, 15, 30)
-        val intake = WaterIntakeEntity(id = "1", amountMl = 250, timestamp = now)
+            val now = LocalDateTime(2023, 10, 27, 10, 15, 30)
+            val intake = WaterIntakeEntity(id = "1", amountMl = 250, timestamp = now)
 
-        dao.insertWaterIntake(intake)
+            dao.insertWaterIntake(intake)
 
-        dao.getAllWaterIntakes().test {
-            assertEquals(1, awaitItem().size)
+            dao.getAllWaterIntakes().test {
+                assertEquals(1, awaitItem().size)
 
-            dao.deleteWaterIntakeById("1")
+                dao.deleteWaterIntakeById("1")
 
-            assertTrue(awaitItem().isEmpty())
+                assertTrue(awaitItem().isEmpty())
+            }
         }
-    }
 }

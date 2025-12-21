@@ -40,30 +40,33 @@ fun WaterProgressCard(
     progressPercentage: Float,
     remainingMl: Int,
     isGoalReached: Boolean,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val animatedProgress by animateFloatAsState(
         targetValue = progressPercentage,
-        animationSpec = tween(durationMillis = 1000)
+        animationSpec = tween(durationMillis = 1000),
     )
 
     Card(
         modifier = modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(
-            containerColor = if (isGoalReached)
-                MaterialTheme.colorScheme.primaryContainer
-            else
-                MaterialTheme.colorScheme.surfaceVariant
-        )
+        colors =
+            CardDefaults.cardColors(
+                containerColor =
+                    if (isGoalReached) {
+                        MaterialTheme.colorScheme.primaryContainer
+                    } else {
+                        MaterialTheme.colorScheme.surfaceVariant
+                    },
+            ),
     ) {
         Column(
             modifier = Modifier.padding(24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             // Water Drop Icon with progress
             Box(
                 modifier = Modifier.size(120.dp),
-                contentAlignment = Alignment.Center
+                contentAlignment = Alignment.Center,
             ) {
                 CircularProgressIndicator(
                     progress = { animatedProgress },
@@ -76,11 +79,11 @@ fun WaterProgressCard(
                     Text(
                         text = "${(animatedProgress * 100).toInt()}%",
                         style = MaterialTheme.typography.headlineMedium,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold,
                     )
                     Text(
                         text = "💧",
-                        style = MaterialTheme.typography.displaySmall
+                        style = MaterialTheme.typography.displaySmall,
                     )
                 }
             }
@@ -90,15 +93,20 @@ fun WaterProgressCard(
             // Stats
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly
+                horizontalArrangement = Arrangement.SpaceEvenly,
             ) {
                 StatItem(label = stringResource(Res.string.consumed_label), value = "${totalMl}ml")
                 StatItem(label = stringResource(Res.string.goal_label), value = "${goalMl}ml")
                 StatItem(
-                    label = if (isGoalReached) stringResource(Res.string.exceeded_label) else stringResource(
-                        Res.string.remaining_label
-                    ),
-                    value = if (isGoalReached) "+${totalMl - goalMl}ml" else "${remainingMl}ml"
+                    label =
+                        if (isGoalReached) {
+                            stringResource(Res.string.exceeded_label)
+                        } else {
+                            stringResource(
+                                Res.string.remaining_label,
+                            )
+                        },
+                    value = if (isGoalReached) "+${totalMl - goalMl}ml" else "${remainingMl}ml",
                 )
             }
         }
@@ -106,17 +114,20 @@ fun WaterProgressCard(
 }
 
 @Composable
-private fun StatItem(label: String, value: String) {
+private fun StatItem(
+    label: String,
+    value: String,
+) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Text(
             text = value,
             style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Bold,
         )
         Text(
             text = label,
             style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
     }
 }
@@ -132,7 +143,7 @@ fun WaterProgressCardPreview() {
                 progressPercentage = 0.6f,
                 remainingMl = 800,
                 isGoalReached = false,
-                modifier = Modifier.padding(16.dp)
+                modifier = Modifier.padding(16.dp),
             )
         }
     }
@@ -149,7 +160,7 @@ fun WaterProgressCardDarkModePreview() {
                 progressPercentage = 0.6f,
                 remainingMl = 800,
                 isGoalReached = false,
-                modifier = Modifier.padding(16.dp)
+                modifier = Modifier.padding(16.dp),
             )
         }
     }
@@ -166,7 +177,7 @@ fun WaterProgressCardGoalReachedPreview() {
                 progressPercentage = 1.0f,
                 remainingMl = 0,
                 isGoalReached = true,
-                modifier = Modifier.padding(16.dp)
+                modifier = Modifier.padding(16.dp),
             )
         }
     }

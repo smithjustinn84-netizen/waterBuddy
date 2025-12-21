@@ -38,25 +38,25 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 fun WeeklyBarChart(
     data: List<DailyWaterStats>,
     modifier: Modifier = Modifier,
-    color: Color
+    color: Color,
 ) {
     Card(
         modifier = modifier,
         shape = RoundedCornerShape(24.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow),
-        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
     ) {
         Column(modifier = Modifier.padding(20.dp)) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
                     text = "Weekly Trend",
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onSurface
+                    color = MaterialTheme.colorScheme.onSurface,
                 )
             }
 
@@ -82,14 +82,14 @@ fun WeeklyBarChart(
                         end = Offset(size.width, goalY),
                         strokeWidth = 2.dp.toPx(),
                         pathEffect = PathEffect.dashPathEffect(floatArrayOf(15f, 15f), 0f),
-                        cap = StrokeCap.Round
+                        cap = StrokeCap.Round,
                     )
                 }
 
                 Row(
                     modifier = Modifier.fillMaxSize(),
                     horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.Bottom
+                    verticalAlignment = Alignment.Bottom,
                 ) {
                     data.forEach { stat ->
                         val barHeightFraction =
@@ -97,17 +97,23 @@ fun WeeklyBarChart(
 
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,
-                            modifier = Modifier.weight(1f)
+                            modifier = Modifier.weight(1f),
                         ) {
                             // Bar
                             Box(
-                                modifier = Modifier
-                                    .fillMaxWidth(0.6f)
-                                    .fillMaxHeight(barHeightFraction)
-                                    .background(
-                                        color = if (stat.isGoalReached) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondary,
-                                        shape = RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp)
-                                    )
+                                modifier =
+                                    Modifier
+                                        .fillMaxWidth(0.6f)
+                                        .fillMaxHeight(barHeightFraction)
+                                        .background(
+                                            color =
+                                                if (stat.isGoalReached) {
+                                                    MaterialTheme.colorScheme.primary
+                                                } else {
+                                                    MaterialTheme.colorScheme.secondary
+                                                },
+                                            shape = RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp),
+                                        ),
                             )
                         }
                     }
@@ -119,15 +125,17 @@ fun WeeklyBarChart(
             // X-Axis Labels
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
+                horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 data.forEach { stat ->
                     Text(
-                        text = stat.date.dayOfWeek.name.take(1),
+                        text =
+                            stat.date.dayOfWeek.name
+                                .take(1),
                         style = MaterialTheme.typography.labelMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         textAlign = TextAlign.Center,
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier.weight(1f),
                     )
                 }
             }
@@ -135,15 +143,16 @@ fun WeeklyBarChart(
     }
 }
 
-private val sampleWeeklyData = listOf(
-    DailyWaterStats(LocalDate(2024, 1, 1), 1500, 2000, emptyList()),
-    DailyWaterStats(LocalDate(2024, 1, 2), 2200, 2000, emptyList()),
-    DailyWaterStats(LocalDate(2024, 1, 3), 1800, 2000, emptyList()),
-    DailyWaterStats(LocalDate(2024, 1, 4), 2500, 2000, emptyList()),
-    DailyWaterStats(LocalDate(2024, 1, 5), 2000, 2000, emptyList()),
-    DailyWaterStats(LocalDate(2024, 1, 6), 1200, 2000, emptyList()),
-    DailyWaterStats(LocalDate(2024, 1, 7), 2100, 2000, emptyList())
-)
+private val sampleWeeklyData =
+    listOf(
+        DailyWaterStats(LocalDate(2024, 1, 1), 1500, 2000, emptyList()),
+        DailyWaterStats(LocalDate(2024, 1, 2), 2200, 2000, emptyList()),
+        DailyWaterStats(LocalDate(2024, 1, 3), 1800, 2000, emptyList()),
+        DailyWaterStats(LocalDate(2024, 1, 4), 2500, 2000, emptyList()),
+        DailyWaterStats(LocalDate(2024, 1, 5), 2000, 2000, emptyList()),
+        DailyWaterStats(LocalDate(2024, 1, 6), 1200, 2000, emptyList()),
+        DailyWaterStats(LocalDate(2024, 1, 7), 2100, 2000, emptyList()),
+    )
 
 @Preview
 @Composable
@@ -153,7 +162,7 @@ private fun WeeklyBarChartPreview() {
             WeeklyBarChart(
                 data = sampleWeeklyData,
                 modifier = Modifier.fillMaxWidth().height(250.dp).padding(16.dp),
-                color = MaterialTheme.colorScheme.primary
+                color = MaterialTheme.colorScheme.primary,
             )
         }
     }
@@ -167,7 +176,7 @@ private fun WeeklyBarChartDarkModePreview() {
             WeeklyBarChart(
                 data = sampleWeeklyData,
                 modifier = Modifier.fillMaxWidth().height(250.dp).padding(16.dp),
-                color = MaterialTheme.colorScheme.primary
+                color = MaterialTheme.colorScheme.primary,
             )
         }
     }

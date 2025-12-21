@@ -5,8 +5,7 @@ import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 
 expect fun getDatabaseBuilder(): RoomDatabase.Builder<AppDatabase>
 
-fun createTestDatabase(): AppDatabase {
-    return getDatabaseBuilder()
+fun createTestDatabase(): AppDatabase =
+    getDatabaseBuilder()
         .setDriver(BundledSQLiteDriver())
         .build()
-}

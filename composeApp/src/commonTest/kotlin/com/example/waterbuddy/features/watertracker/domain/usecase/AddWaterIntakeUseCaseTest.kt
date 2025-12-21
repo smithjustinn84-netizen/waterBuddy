@@ -10,21 +10,21 @@ import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 
 class AddWaterIntakeUseCaseTest {
-
     private val repository = mock<WaterRepository>()
     private val useCase = AddWaterIntakeUseCase(repository)
 
     @Test
-    fun `invoke calls repository and returns result`() = runTest {
-        val amountMl = 250
-        val note = "Test note"
-        val expectedResult = Result.success(Unit)
+    fun `invoke calls repository and returns result`() =
+        runTest {
+            val amountMl = 250
+            val note = "Test note"
+            val expectedResult = Result.success(Unit)
 
-        everySuspend { repository.addWaterIntake(amountMl, note) } returns expectedResult
+            everySuspend { repository.addWaterIntake(amountMl, note) } returns expectedResult
 
-        val result = useCase(amountMl, note)
+            val result = useCase(amountMl, note)
 
-        result shouldBe expectedResult
-        verifySuspend { repository.addWaterIntake(amountMl, note) }
-    }
+            result shouldBe expectedResult
+            verifySuspend { repository.addWaterIntake(amountMl, note) }
+        }
 }

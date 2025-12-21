@@ -21,9 +21,8 @@ import kotlinx.coroutines.launch
 @ViewModelKey(HydrationInsightsViewModel::class)
 @ContributesIntoMap(AppScope::class)
 class HydrationInsightsViewModel(
-    private val getHydrationInsightsUseCase: GetHydrationInsightsUseCase
+    private val getHydrationInsightsUseCase: GetHydrationInsightsUseCase,
 ) : ViewModel() {
-
     private val _state = MutableStateFlow(HydrationInsightsUiState(isLoading = true))
     val state: StateFlow<HydrationInsightsUiState> = _state.asStateFlow()
 
@@ -54,12 +53,11 @@ class HydrationInsightsViewModel(
                     .catch { e ->
                         _state.update { it.copy(isLoading = false, errorMessage = e.message) }
                         _events.send(HydrationInsightsUiEvent.ShowError(e.message ?: "Unknown error"))
-                    }
-                    .collect { insights ->
+                    }.collect { insights ->
                         _state.update {
                             it.copy(
                                 isLoading = false,
-                                insights = insights
+                                insights = insights,
                             )
                         }
                     }

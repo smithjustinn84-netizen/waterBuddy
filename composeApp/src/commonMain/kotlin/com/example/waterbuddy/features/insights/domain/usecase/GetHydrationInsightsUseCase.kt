@@ -16,7 +16,7 @@ import kotlin.time.ExperimentalTime
 
 @Inject
 class GetHydrationInsightsUseCase(
-    private val waterRepository: WaterRepository
+    private val waterRepository: WaterRepository,
 ) {
     @OptIn(ExperimentalTime::class)
     operator fun invoke(): Flow<HydrationInsights> {
@@ -28,7 +28,10 @@ class GetHydrationInsightsUseCase(
         }
     }
 
-    private fun calculateInsights(statsList: List<DailyWaterStats>, today: LocalDate): HydrationInsights {
+    private fun calculateInsights(
+        statsList: List<DailyWaterStats>,
+        today: LocalDate,
+    ): HydrationInsights {
         if (statsList.isEmpty()) {
             return HydrationInsights(0, 0f, 0, null, 0, emptyList(), emptyList())
         }
@@ -58,7 +61,7 @@ class GetHydrationInsightsUseCase(
             peakDay = peakDay,
             peakDayIntake = peakDayIntake,
             weeklyTrend = weeklyTrend,
-            monthlyTrend = monthlyTrend
+            monthlyTrend = monthlyTrend,
         )
     }
 

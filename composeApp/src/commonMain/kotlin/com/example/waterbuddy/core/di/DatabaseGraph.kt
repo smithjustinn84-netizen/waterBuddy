@@ -15,12 +15,11 @@ import kotlinx.coroutines.IO
 interface DatabaseGraph {
     @Provides
     @SingleIn(AppScope::class)
-    fun provideDatabase(builder: RoomDatabase.Builder<AppDatabase>): AppDatabase {
-        return builder
+    fun provideDatabase(builder: RoomDatabase.Builder<AppDatabase>): AppDatabase =
+        builder
             .setDriver(BundledSQLiteDriver())
             .setQueryCoroutineContext(Dispatchers.IO)
             .build()
-    }
 
     @Provides
     fun provideWaterIntakeDao(db: AppDatabase): WaterIntakeDao = db.waterIntakeDao()

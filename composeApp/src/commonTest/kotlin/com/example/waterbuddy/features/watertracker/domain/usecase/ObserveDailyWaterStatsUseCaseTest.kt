@@ -12,7 +12,6 @@ import kotlinx.datetime.LocalDate
 import kotlin.test.Test
 
 class ObserveDailyWaterStatsUseCaseTest {
-
     private val repository = mock<WaterRepository>()
     private val useCase = ObserveDailyWaterStatsUseCase(repository)
 

@@ -9,4 +9,3 @@ object WaterTracker : Route
 
 @Serializable
 object HydrationInsights : Route
-

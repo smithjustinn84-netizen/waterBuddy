@@ -28,7 +28,7 @@ import waterbuddy.composeapp.generated.resources.set_goal_title
 fun GoalDialog(
     currentGoal: Int,
     onDismiss: () -> Unit,
-    onConfirm: (Int) -> Unit
+    onConfirm: (Int) -> Unit,
 ) {
     var goalText by remember { mutableStateOf((currentGoal).toString()) }
 
@@ -44,7 +44,7 @@ fun GoalDialog(
                     onValueChange = { goalText = it.filter { char -> char.isDigit() } },
                     label = { Text(stringResource(Res.string.goal_input_label)) },
                     singleLine = true,
-                    suffix = { Text(stringResource(Res.string.ml_suffix)) }
+                    suffix = { Text(stringResource(Res.string.ml_suffix)) },
                 )
             }
         },
@@ -53,7 +53,7 @@ fun GoalDialog(
                 onClick = {
                     val goal = goalText.toIntOrNull() ?: currentGoal
                     onConfirm(goal)
-                }
+                },
             ) {
                 Text(stringResource(Res.string.save_button))
             }
@@ -62,6 +62,6 @@ fun GoalDialog(
             TextButton(onClick = onDismiss) {
                 Text(stringResource(Res.string.cancel_button))
             }
-        }
+        },
     )
 }

@@ -10,20 +10,20 @@ import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 
 class DeleteWaterIntakeUseCaseTest {
-
     private val repository = mock<WaterRepository>()
     private val useCase = DeleteWaterIntakeUseCase(repository)
 
     @Test
-    fun `invoke calls repository and returns result`() = runTest {
-        val id = "1"
-        val expectedResult = Result.success(Unit)
+    fun `invoke calls repository and returns result`() =
+        runTest {
+            val id = "1"
+            val expectedResult = Result.success(Unit)
 
-        everySuspend { repository.deleteWaterIntake(id) } returns expectedResult
+            everySuspend { repository.deleteWaterIntake(id) } returns expectedResult
 
-        val result = useCase(id)
+            val result = useCase(id)
 
-        result shouldBe expectedResult
-        verifySuspend { repository.deleteWaterIntake(id) }
-    }
+            result shouldBe expectedResult
+            verifySuspend { repository.deleteWaterIntake(id) }
+        }
 }

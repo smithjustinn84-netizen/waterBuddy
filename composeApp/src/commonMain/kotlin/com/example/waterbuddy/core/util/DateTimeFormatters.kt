@@ -11,18 +11,20 @@ fun formatTime(dateTime: LocalDateTime): String {
     val hour = dateTime.hour
     val minute = dateTime.minute.toString().padStart(2, '0')
     val amPm = if (hour >= 12) "PM" else "AM"
-    val displayHour = when {
-        hour == 0 -> 12
-        hour > 12 -> hour - 12
-        else -> hour
-    }
+    val displayHour =
+        when {
+            hour == 0 -> 12
+            hour > 12 -> hour - 12
+            else -> hour
+        }
     return "$displayHour:$minute $amPm"
 }
 
-fun formatDate(date: LocalDate): String {
-    return date.format(LocalDate.Format {
-        monthName(MonthNames.ENGLISH_ABBREVIATED)
-        char(' ')
-        day(padding = Padding.ZERO)
-    })
-}
+fun formatDate(date: LocalDate): String =
+    date.format(
+        LocalDate.Format {
+            monthName(MonthNames.ENGLISH_ABBREVIATED)
+            char(' ')
+            day(padding = Padding.ZERO)
+        },
+    )

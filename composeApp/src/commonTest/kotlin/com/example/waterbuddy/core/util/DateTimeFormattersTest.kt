@@ -6,7 +6,6 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class DateTimeFormattersTest {
-
     @Test
     fun `formatTime returns correct string for morning time`() {
         val dateTime = LocalDateTime(2023, 10, 27, 9, 30)

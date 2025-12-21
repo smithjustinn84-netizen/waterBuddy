@@ -31,43 +31,43 @@ import waterbuddy.composeapp.generated.resources.quick_add_title
 @Composable
 fun QuickAddSection(
     onAddWater: (Int) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Card(modifier = modifier.fillMaxWidth()) {
         Column(
             modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+            verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             Text(
                 text = stringResource(Res.string.quick_add_title),
                 style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.SemiBold
+                fontWeight = FontWeight.SemiBold,
             )
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 QuickAddButton(
                     amount = 250,
                     label = stringResource(Res.string.glass_label),
                     emoji = "🥤",
                     onClick = { onAddWater(250) },
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
                 )
                 QuickAddButton(
                     amount = 500,
                     label = stringResource(Res.string.bottle_label),
                     emoji = "💧",
                     onClick = { onAddWater(500) },
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
                 )
                 QuickAddButton(
                     amount = 750,
                     label = stringResource(Res.string.large_label),
                     emoji = "☕",
                     onClick = { onAddWater(750) },
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
                 )
             }
         }
@@ -80,21 +80,21 @@ private fun QuickAddButton(
     label: String,
     emoji: String,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Button(
         onClick = onClick,
         modifier = modifier.height(100.dp),
         shape = RoundedCornerShape(12.dp),
-        contentPadding = PaddingValues(4.dp)
+        contentPadding = PaddingValues(4.dp),
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+            verticalArrangement = Arrangement.Center,
         ) {
             Text(
                 text = emoji,
-                style = MaterialTheme.typography.headlineMedium
+                style = MaterialTheme.typography.headlineMedium,
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(text = "${amount}ml", style = MaterialTheme.typography.bodySmall)

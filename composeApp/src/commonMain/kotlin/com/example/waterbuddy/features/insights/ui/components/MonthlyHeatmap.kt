@@ -33,20 +33,20 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Composable
 fun MonthlyHeatmap(
     data: List<DailyWaterStats>,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Card(
         modifier = modifier,
         shape = RoundedCornerShape(24.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow),
-        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
     ) {
         Column(modifier = Modifier.padding(20.dp)) {
             Text(
                 text = "Recent Streaks",
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onSurface
+                color = MaterialTheme.colorScheme.onSurface,
             )
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -62,7 +62,7 @@ fun MonthlyHeatmap(
             // Day Labels
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 val firstDayOfWeek = displayData.first().date.dayOfWeek
                 repeat(7) { i ->
@@ -72,7 +72,7 @@ fun MonthlyHeatmap(
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         textAlign = TextAlign.Center,
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier.weight(1f),
                     )
                 }
             }
@@ -91,22 +91,26 @@ fun MonthlyHeatmap(
                         weekData.forEach { stat ->
                             val alpha = (stat.progressPercentage).coerceIn(0.1f, 1f)
                             val color =
-                                if (stat.isGoalReached) MaterialTheme.colorScheme.primary
-                                else MaterialTheme.colorScheme.primary.copy(alpha = alpha)
+                                if (stat.isGoalReached) {
+                                    MaterialTheme.colorScheme.primary
+                                } else {
+                                    MaterialTheme.colorScheme.primary.copy(alpha = alpha)
+                                }
                             Box(
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .aspectRatio(1f)
-                                    .background(
-                                        color = color,
-                                        shape = RoundedCornerShape(6.dp)
-                                    ),
-                                contentAlignment = Alignment.Center
+                                modifier =
+                                    Modifier
+                                        .weight(1f)
+                                        .aspectRatio(1f)
+                                        .background(
+                                            color = color,
+                                            shape = RoundedCornerShape(6.dp),
+                                        ),
+                                contentAlignment = Alignment.Center,
                             ) {
                                 Text(
                                     text = "${stat.date.day}",
                                     style = MaterialTheme.typography.labelSmall,
-                                    color = if (stat.progressPercentage > 0.5f) Color.White else MaterialTheme.colorScheme.onSurface
+                                    color = if (stat.progressPercentage > 0.5f) Color.White else MaterialTheme.colorScheme.onSurface,
                                 )
                             }
                         }
@@ -124,14 +128,15 @@ fun MonthlyHeatmap(
     }
 }
 
-private val sampleMonthlyData = (1..28).map { i ->
-    DailyWaterStats(
-        date = LocalDate(2024, 1, i),
-        totalMl = (1000..2500).random(),
-        goalMl = 2000,
-        entries = emptyList()
-    )
-}
+private val sampleMonthlyData =
+    (1..28).map { i ->
+        DailyWaterStats(
+            date = LocalDate(2024, 1, i),
+            totalMl = (1000..2500).random(),
+            goalMl = 2000,
+            entries = emptyList(),
+        )
+    }
 
 @Preview
 @Composable
@@ -140,7 +145,7 @@ private fun MonthlyHeatmapPreview() {
         Surface {
             MonthlyHeatmap(
                 data = sampleMonthlyData,
-                modifier = Modifier.fillMaxWidth().padding(16.dp)
+                modifier = Modifier.fillMaxWidth().padding(16.dp),
             )
         }
     }
@@ -153,7 +158,7 @@ private fun MonthlyHeatmapDarkModePreview() {
         Surface {
             MonthlyHeatmap(
                 data = sampleMonthlyData,
-                modifier = Modifier.fillMaxWidth().padding(16.dp)
+                modifier = Modifier.fillMaxWidth().padding(16.dp),
             )
         }
     }

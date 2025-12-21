@@ -34,34 +34,36 @@ class DailyGoalDaoTest {
     }
 
     @Test
-    fun insertAndRetrieveDailyGoal() = runTest {
-        if (!::dao.isInitialized) return@runTest
+    fun insertAndRetrieveDailyGoal() =
+        runTest {
+            if (!::dao.isInitialized) return@runTest
 
-        val goal = DailyGoalEntity(id = 1, goalMl = 2000)
-        dao.insertDailyGoal(goal)
+            val goal = DailyGoalEntity(id = 1, goalMl = 2000)
+            dao.insertDailyGoal(goal)
 
-        dao.getDailyGoal().test {
-            assertEquals(goal, awaitItem())
+            dao.getDailyGoal().test {
+                assertEquals(goal, awaitItem())
+            }
+
+            val goalValue = dao.getGoalValue()
+            assertEquals(2000, goalValue)
         }
-
-        val goalValue = dao.getGoalValue()
-        assertEquals(2000, goalValue)
-    }
 
     @Test
-    fun updateExistingDailyGoal() = runTest {
-        if (!::dao.isInitialized) return@runTest
+    fun updateExistingDailyGoal() =
+        runTest {
+            if (!::dao.isInitialized) return@runTest
 
-        val initialGoal = DailyGoalEntity(id = 1, goalMl = 2000)
-        dao.insertDailyGoal(initialGoal)
+            val initialGoal = DailyGoalEntity(id = 1, goalMl = 2000)
+            dao.insertDailyGoal(initialGoal)
 
-        dao.getDailyGoal().test {
-            assertEquals(2000, awaitItem()?.goalMl)
+            dao.getDailyGoal().test {
+                assertEquals(2000, awaitItem()?.goalMl)
 
-            val updatedGoal = DailyGoalEntity(id = 1, goalMl = 2500)
-            dao.insertDailyGoal(updatedGoal)
+                val updatedGoal = DailyGoalEntity(id = 1, goalMl = 2500)
+                dao.insertDailyGoal(updatedGoal)
 
-            assertEquals(2500, awaitItem()?.goalMl)
+                assertEquals(2500, awaitItem()?.goalMl)
+            }
         }
-    }
 }

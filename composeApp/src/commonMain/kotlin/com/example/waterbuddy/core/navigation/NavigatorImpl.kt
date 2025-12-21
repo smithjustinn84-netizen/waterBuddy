@@ -12,11 +12,13 @@ import kotlinx.coroutines.flow.receiveAsFlow
 @ContributesBinding(AppScope::class)
 @Inject
 class NavigatorImpl : Navigator {
-
     private val _commands = Channel<NavigationCommand>(Channel.BUFFERED)
     override val commands: Flow<NavigationCommand> = _commands.receiveAsFlow()
 
-    override fun navigate(destination: Route, clearBackStack: Boolean) {
+    override fun navigate(
+        destination: Route,
+        clearBackStack: Boolean,
+    ) {
         _commands.trySend(NavigationCommand.NavigateTo(destination, clearBackStack))
     }
 

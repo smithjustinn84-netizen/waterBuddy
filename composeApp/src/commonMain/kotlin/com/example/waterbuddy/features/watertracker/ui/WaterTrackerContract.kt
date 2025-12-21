@@ -10,20 +10,35 @@ data class WaterTrackerUiState(
     val isGoalReached: Boolean = false,
     val entries: List<WaterIntake> = emptyList(),
     val isLoading: Boolean = false,
-    val errorMessage: String? = null
+    val errorMessage: String? = null,
 )
 
 sealed interface WaterTrackerUiIntent {
-    data class AddWater(val amountMl: Int) : WaterTrackerUiIntent
-    data class DeleteEntry(val id: String) : WaterTrackerUiIntent
-    data class UpdateGoal(val goalMl: Int) : WaterTrackerUiIntent
+    data class AddWater(
+        val amountMl: Int,
+    ) : WaterTrackerUiIntent
+
+    data class DeleteEntry(
+        val id: String,
+    ) : WaterTrackerUiIntent
+
+    data class UpdateGoal(
+        val goalMl: Int,
+    ) : WaterTrackerUiIntent
+
     data object ShowGoalDialog : WaterTrackerUiIntent
+
     data object DismissGoalDialog : WaterTrackerUiIntent
 }
 
 sealed interface WaterTrackerUiEvent {
-    data class ShowSuccess(val message: String) : WaterTrackerUiEvent
-    data class ShowError(val message: String) : WaterTrackerUiEvent
+    data class ShowSuccess(
+        val message: String,
+    ) : WaterTrackerUiEvent
+
+    data class ShowError(
+        val message: String,
+    ) : WaterTrackerUiEvent
+
     data object GoalReached : WaterTrackerUiEvent
 }
-

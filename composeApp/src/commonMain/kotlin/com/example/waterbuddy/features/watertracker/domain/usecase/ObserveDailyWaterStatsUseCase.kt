@@ -8,9 +8,7 @@ import kotlinx.datetime.LocalDate
 
 @Inject
 class ObserveDailyWaterStatsUseCase(
-    private val waterRepository: WaterRepository
+    private val waterRepository: WaterRepository,
 ) {
-    operator fun invoke(date: LocalDate): Flow<DailyWaterStats> {
-        return waterRepository.observeDailyStats(date)
-    }
+    operator fun invoke(date: LocalDate): Flow<DailyWaterStats> = waterRepository.observeDailyStats(date)
 }

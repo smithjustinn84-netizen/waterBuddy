@@ -54,9 +54,7 @@ import kotlin.time.TimeSource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun WaterTrackerScreen(
-    viewModel: WaterTrackerViewModel = metroViewModel()
-) {
+fun WaterTrackerScreen(viewModel: WaterTrackerViewModel = metroViewModel()) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val showGoalDialog by viewModel.showGoalDialog.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -70,7 +68,7 @@ fun WaterTrackerScreen(
                 is WaterTrackerUiEvent.ShowSuccess -> {
                     snackbarHostState.showSnackbar(
                         message = event.message,
-                        duration = SnackbarDuration.Short
+                        duration = SnackbarDuration.Short,
                     )
                 }
 
@@ -78,7 +76,7 @@ fun WaterTrackerScreen(
                     snackbarHostState.currentSnackbarData?.dismiss()
                     snackbarHostState.showSnackbar(
                         message = event.message,
-                        duration = SnackbarDuration.Long
+                        duration = SnackbarDuration.Long,
                     )
                 }
 
@@ -86,7 +84,7 @@ fun WaterTrackerScreen(
                     snackbarHostState.currentSnackbarData?.dismiss()
                     snackbarHostState.showSnackbar(
                         message = successMessage,
-                        duration = SnackbarDuration.Long
+                        duration = SnackbarDuration.Long,
                     )
                 }
             }
@@ -98,7 +96,7 @@ fun WaterTrackerScreen(
         showGoalDialog = showGoalDialog,
         snackbarHostState = snackbarHostState,
         onIntent = viewModel::handleIntent,
-        onNavigateToInsights = { viewModel.navigator.navigate(HydrationInsights) }
+        onNavigateToInsights = { viewModel.navigator.navigate(HydrationInsights) },
     )
 }
 
@@ -110,7 +108,7 @@ fun WaterTrackerContent(
     snackbarHostState: SnackbarHostState,
     onIntent: (WaterTrackerUiIntent) -> Unit,
     onNavigateToInsights: () -> Unit,
-    initialTargetAmount: Int = 0
+    initialTargetAmount: Int = 0,
 ) {
     // Drinking Interaction State
     var targetDrinkAmount by remember { mutableStateOf(initialTargetAmount) }
@@ -161,19 +159,20 @@ fun WaterTrackerContent(
                     TextButton(onClick = { onIntent(WaterTrackerUiIntent.ShowGoalDialog) }) {
                         Text("⚙️ ${stringResource(Res.string.goal_button)}")
                     }
-                }
+                },
             )
-        }
+        },
     ) { paddingValues ->
         Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues),
         ) {
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
                 contentPadding = PaddingValues(16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
+                verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
                 // Progress Card
                 item {
@@ -182,7 +181,7 @@ fun WaterTrackerContent(
                         goalMl = state.goalMl,
                         progressPercentage = state.progressPercentage,
                         remainingMl = state.remainingMl,
-                        isGoalReached = state.isGoalReached
+                        isGoalReached = state.isGoalReached,
                     )
                 }
 
@@ -193,7 +192,7 @@ fun WaterTrackerContent(
                             if (targetDrinkAmount == 0) { // Prevent double clicks during animation
                                 targetDrinkAmount = amount
                             }
-                        }
+                        },
                     )
                 }
 
@@ -203,7 +202,7 @@ fun WaterTrackerContent(
                         text = stringResource(Res.string.todays_entries),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(top = 8.dp)
+                        modifier = Modifier.padding(top = 8.dp),
                     )
                 }
 
@@ -211,7 +210,7 @@ fun WaterTrackerContent(
                 items(state.entries, key = { it.id }) { entry ->
                     WaterEntryItem(
                         entry = entry,
-                        onDelete = { onIntent(WaterTrackerUiIntent.DeleteEntry(entry.id)) }
+                        onDelete = { onIntent(WaterTrackerUiIntent.DeleteEntry(entry.id)) },
                     )
                 }
 
@@ -226,7 +225,7 @@ fun WaterTrackerContent(
             if (currentDrinkAmount > 0) {
                 DrinkOverlay(
                     amountMl = currentDrinkAmount,
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier.fillMaxSize(),
                 )
             }
         }
@@ -239,32 +238,38 @@ fun WaterTrackerContent(
             onDismiss = { onIntent(WaterTrackerUiIntent.DismissGoalDialog) },
             onConfirm = { newGoal ->
                 onIntent(WaterTrackerUiIntent.UpdateGoal(newGoal))
-            }
+            },
         )
     }
 }
 
 @OptIn(ExperimentalTime::class)
-private val previewState = WaterTrackerUiState(
-    totalMl = 750,
-    goalMl = 2000,
-    progressPercentage = 0.375f,
-    remainingMl = 1250,
-    entries = listOf(
-        WaterIntake(
-            id = "1",
-            amountMl = 250,
-            timestamp = Clock.System.now()
-                .toLocalDateTime(TimeZone.currentSystemDefault())
-        ),
-        WaterIntake(
-            id = "2",
-            amountMl = 500,
-            timestamp = Clock.System.now()
-                .toLocalDateTime(TimeZone.currentSystemDefault())
-        )
+private val previewState =
+    WaterTrackerUiState(
+        totalMl = 750,
+        goalMl = 2000,
+        progressPercentage = 0.375f,
+        remainingMl = 1250,
+        entries =
+            listOf(
+                WaterIntake(
+                    id = "1",
+                    amountMl = 250,
+                    timestamp =
+                        Clock.System
+                            .now()
+                            .toLocalDateTime(TimeZone.currentSystemDefault()),
+                ),
+                WaterIntake(
+                    id = "2",
+                    amountMl = 500,
+                    timestamp =
+                        Clock.System
+                            .now()
+                            .toLocalDateTime(TimeZone.currentSystemDefault()),
+                ),
+            ),
     )
-)
 
 @OptIn(ExperimentalTime::class)
 @Preview
@@ -277,7 +282,7 @@ fun WaterTrackerPreview() {
                 showGoalDialog = false,
                 snackbarHostState = remember { SnackbarHostState() },
                 onIntent = {},
-                onNavigateToInsights = {}
+                onNavigateToInsights = {},
             )
         }
     }
@@ -293,7 +298,7 @@ fun WaterTrackerDarkModePreview() {
                 showGoalDialog = false,
                 snackbarHostState = remember { SnackbarHostState() },
                 onIntent = {},
-                onNavigateToInsights = {}
+                onNavigateToInsights = {},
             )
         }
     }
@@ -309,7 +314,7 @@ fun WaterTrackerEmptyPreview() {
                 showGoalDialog = false,
                 snackbarHostState = remember { SnackbarHostState() },
                 onIntent = {},
-                onNavigateToInsights = {}
+                onNavigateToInsights = {},
             )
         }
     }

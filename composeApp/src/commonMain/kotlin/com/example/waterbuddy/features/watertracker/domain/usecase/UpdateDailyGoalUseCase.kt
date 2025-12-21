@@ -5,9 +5,7 @@ import dev.zacsweers.metro.Inject
 
 @Inject
 class UpdateDailyGoalUseCase(
-    private val waterRepository: WaterRepository
+    private val waterRepository: WaterRepository,
 ) {
-    suspend operator fun invoke(goalMl: Int): Result<Unit> {
-        return waterRepository.updateDailyGoal(goalMl)
-    }
+    suspend operator fun invoke(goalMl: Int): Result<Unit> = waterRepository.updateDailyGoal(goalMl)
 }

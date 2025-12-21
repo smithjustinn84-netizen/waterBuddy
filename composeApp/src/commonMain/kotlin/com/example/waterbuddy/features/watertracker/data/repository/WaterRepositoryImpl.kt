@@ -28,13 +28,12 @@ import kotlin.time.ExperimentalTime
 @Inject
 class WaterRepositoryImpl(
     private val waterIntakeDao: WaterIntakeDao,
-    private val dailyGoalDao: DailyGoalDao
+    private val dailyGoalDao: DailyGoalDao,
 ) : WaterRepository {
-
-    override fun observeDailyStats(date: LocalDate): Flow<DailyWaterStats> {
-        return combine(
+    override fun observeDailyStats(date: LocalDate): Flow<DailyWaterStats> =
+        combine(
             waterIntakeDao.getAllWaterIntakes(),
-            dailyGoalDao.getDailyGoal()
+            dailyGoalDao.getDailyGoal(),
         ) { intakes, goalEntity ->
             val todayIntakes = intakes.filter { it.timestamp.date == date }
             val goal = goalEntity?.goalMl ?: 2000
@@ -43,15 +42,17 @@ class WaterRepositoryImpl(
                 date = date,
                 totalMl = todayIntakes.sumOf { it.amountMl },
                 goalMl = goal,
-                entries = todayIntakes.map { it.toDomain() }
+                entries = todayIntakes.map { it.toDomain() },
             )
         }
-    }
 
-    override fun observeStatsRange(startDate: LocalDate, endDate: LocalDate): Flow<List<DailyWaterStats>> {
-        return combine(
+    override fun observeStatsRange(
+        startDate: LocalDate,
+        endDate: LocalDate,
+    ): Flow<List<DailyWaterStats>> =
+        combine(
             waterIntakeDao.getAllWaterIntakes(),
-            dailyGoalDao.getDailyGoal()
+            dailyGoalDao.getDailyGoal(),
         ) { intakes, goalEntity ->
             val goal = goalEntity?.goalMl ?: 2000
             val days = startDate.daysUntil(endDate) + 1
@@ -64,57 +65,54 @@ class WaterRepositoryImpl(
                     date = currentDate,
                     totalMl = dayIntakes.sumOf { it.amountMl },
                     goalMl = goal,
-                    entries = dayIntakes.map { it.toDomain() }
+                    entries = dayIntakes.map { it.toDomain() },
                 )
             }
         }
-    }
 
-    override suspend fun addWaterIntake(amountMl: Int, note: String?): Result<Unit> {
-        return try {
+    override suspend fun addWaterIntake(
+        amountMl: Int,
+        note: String?,
+    ): Result<Unit> =
+        try {
             val now = Clock.System.now()
             val timestamp = now.toLocalDateTime(TimeZone.currentSystemDefault())
-            val entity = WaterIntakeEntity(
-                id = now.toEpochMilliseconds().toString(),
-                amountMl = amountMl,
-                timestamp = timestamp,
-                note = note
-            )
+            val entity =
+                WaterIntakeEntity(
+                    id = now.toEpochMilliseconds().toString(),
+                    amountMl = amountMl,
+                    timestamp = timestamp,
+                    note = note,
+                )
             waterIntakeDao.insertWaterIntake(entity)
             Result.success(Unit)
         } catch (e: Exception) {
             Result.failure(e)
         }
-    }
 
-    override suspend fun deleteWaterIntake(id: String): Result<Unit> {
-        return try {
+    override suspend fun deleteWaterIntake(id: String): Result<Unit> =
+        try {
             waterIntakeDao.deleteWaterIntakeById(id)
             Result.success(Unit)
         } catch (e: Exception) {
             Result.failure(e)
         }
-    }
 
-    override suspend fun updateDailyGoal(goalMl: Int): Result<Unit> {
-        return try {
+    override suspend fun updateDailyGoal(goalMl: Int): Result<Unit> =
+        try {
             dailyGoalDao.insertDailyGoal(DailyGoalEntity(goalMl = goalMl))
             Result.success(Unit)
         } catch (e: Exception) {
             Result.failure(e)
         }
-    }
 
-    override suspend fun getDailyGoal(): Int {
-        return dailyGoalDao.getGoalValue() ?: 2000
-    }
+    override suspend fun getDailyGoal(): Int = dailyGoalDao.getGoalValue() ?: 2000
 
-    private fun WaterIntakeEntity.toDomain(): WaterIntake {
-        return WaterIntake(
+    private fun WaterIntakeEntity.toDomain(): WaterIntake =
+        WaterIntake(
             id = id,
             amountMl = amountMl,
             timestamp = timestamp,
-            note = note
+            note = note,
         )
-    }
 }

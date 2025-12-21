@@ -5,9 +5,10 @@ import dev.zacsweers.metro.Inject
 
 @Inject
 class AddWaterIntakeUseCase(
-    private val waterRepository: WaterRepository
+    private val waterRepository: WaterRepository,
 ) {
-    suspend operator fun invoke(amountMl: Int, note: String? = null): Result<Unit> {
-        return waterRepository.addWaterIntake(amountMl, note)
-    }
+    suspend operator fun invoke(
+        amountMl: Int,
+        note: String? = null,
+    ): Result<Unit> = waterRepository.addWaterIntake(amountMl, note)
 }

@@ -27,7 +27,6 @@ import kotlin.test.assertNull
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class HydrationInsightsViewModelTest {
-
     private val testDispatcher = UnconfinedTestDispatcher()
     private val statsFlow = MutableSharedFlow<List<DailyWaterStats>>(replay = 1)
 
@@ -51,136 +50,147 @@ class HydrationInsightsViewModelTest {
     }
 
     @Test
-    fun `initial state is loading`() = runTest {
-        viewModel.state.test {
-            val state = awaitItem()
-            assertEquals(true, state.isLoading)
+    fun `initial state is loading`() =
+        runTest {
+            viewModel.state.test {
+                val state = awaitItem()
+                assertEquals(true, state.isLoading)
+            }
         }
-    }
 
     @Test
-    fun `state updates when insights are loaded`() = runTest {
-        viewModel.state.test {
-            // Initial loading state
-            assertEquals(true, awaitItem().isLoading)
+    fun `state updates when insights are loaded`() =
+        runTest {
+            viewModel.state.test {
+                // Initial loading state
+                assertEquals(true, awaitItem().isLoading)
 
-            val stats = listOf(
-                DailyWaterStats(LocalDate(2023, 10, 27), 2000, 2000, emptyList())
-            )
-            statsFlow.emit(stats)
+                val stats =
+                    listOf(
+                        DailyWaterStats(LocalDate(2023, 10, 27), 2000, 2000, emptyList()),
+                    )
+                statsFlow.emit(stats)
 
-            val state = awaitItem()
-            assertEquals(false, state.isLoading)
-            assertNotNull(state.insights)
-            assertEquals(2000, state.insights?.averageIntake)
+                val state = awaitItem()
+                assertEquals(false, state.isLoading)
+                assertNotNull(state.insights)
+                assertEquals(2000, state.insights?.averageIntake)
+            }
         }
-    }
 
     @Test
-    fun `error handling when use case fails with flow exception`() = runTest {
-        val errorFlow = flow<List<DailyWaterStats>> {
-            throw Exception("Test error")
-        }
-        every { repository.observeStatsRange(any(), any()) } returns errorFlow
+    fun `error handling when use case fails with flow exception`() =
+        runTest {
+            val errorFlow =
+                flow<List<DailyWaterStats>> {
+                    throw Exception("Test error")
+                }
+            every { repository.observeStatsRange(any(), any()) } returns errorFlow
 
-        val viewModel = HydrationInsightsViewModel(GetHydrationInsightsUseCase(repository))
+            val viewModel = HydrationInsightsViewModel(GetHydrationInsightsUseCase(repository))
 
-        viewModel.state.test {
-            // With UnconfinedTestDispatcher, the flow error transitions the state immediately in init
-            val state = awaitItem()
-            assertEquals(false, state.isLoading)
-            assertEquals("Test error", state.errorMessage)
+            viewModel.state.test {
+                // With UnconfinedTestDispatcher, the flow error transitions the state immediately in init
+                val state = awaitItem()
+                assertEquals(false, state.isLoading)
+                assertEquals("Test error", state.errorMessage)
+            }
         }
-    }
 
     @Test
-    fun `ShowError event is emitted on failure`() = runTest {
-        val errorFlow = flow<List<DailyWaterStats>> {
-            throw Exception("Test error")
-        }
-        every { repository.observeStatsRange(any(), any()) } returns errorFlow
+    fun `ShowError event is emitted on failure`() =
+        runTest {
+            val errorFlow =
+                flow<List<DailyWaterStats>> {
+                    throw Exception("Test error")
+                }
+            every { repository.observeStatsRange(any(), any()) } returns errorFlow
 
-        val viewModel = HydrationInsightsViewModel(GetHydrationInsightsUseCase(repository))
+            val viewModel = HydrationInsightsViewModel(GetHydrationInsightsUseCase(repository))
 
-        viewModel.events.test {
-            assertEquals(HydrationInsightsUiEvent.ShowError("Test error"), awaitItem())
+            viewModel.events.test {
+                assertEquals(HydrationInsightsUiEvent.ShowError("Test error"), awaitItem())
+            }
         }
-    }
 
     @Test
-    fun `intent SelectTimeRange updates state`() = runTest {
-        viewModel.state.test {
-            // Initial state
-            assertEquals(TimeRange.WEEK, awaitItem().selectedTimeRange)
+    fun `intent SelectTimeRange updates state`() =
+        runTest {
+            viewModel.state.test {
+                // Initial state
+                assertEquals(TimeRange.WEEK, awaitItem().selectedTimeRange)
 
-            viewModel.handleIntent(HydrationInsightsUiIntent.SelectTimeRange(TimeRange.MONTH))
+                viewModel.handleIntent(HydrationInsightsUiIntent.SelectTimeRange(TimeRange.MONTH))
 
-            assertEquals(TimeRange.MONTH, awaitItem().selectedTimeRange)
+                assertEquals(TimeRange.MONTH, awaitItem().selectedTimeRange)
+            }
         }
-    }
 
     @Test
-    fun `intent Refresh reloads insights and clears error`() = runTest {
-        // 1. Induce an error
-        val errorFlow = flow<List<DailyWaterStats>> { throw Exception("Initial Error") }
-        every { repository.observeStatsRange(any(), any()) } returns errorFlow
+    fun `intent Refresh reloads insights and clears error`() =
+        runTest {
+            // 1. Induce an error
+            val errorFlow = flow<List<DailyWaterStats>> { throw Exception("Initial Error") }
+            every { repository.observeStatsRange(any(), any()) } returns errorFlow
 
-        val viewModel = HydrationInsightsViewModel(GetHydrationInsightsUseCase(repository))
-        
-        viewModel.state.test {
-            // Get current state (which is error state)
-            val errorState = awaitItem()
-            assertEquals("Initial Error", errorState.errorMessage)
+            val viewModel = HydrationInsightsViewModel(GetHydrationInsightsUseCase(repository))
 
-            // 2. Setup successful reload
-            every { repository.observeStatsRange(any(), any()) } returns statsFlow
-            
-            viewModel.handleIntent(HydrationInsightsUiIntent.Refresh)
+            viewModel.state.test {
+                // Get current state (which is error state)
+                val errorState = awaitItem()
+                assertEquals("Initial Error", errorState.errorMessage)
 
-            // 3. Verify error is cleared and loading is true
-            val loadingState = awaitItem()
-            assertEquals(true, loadingState.isLoading)
-            assertNull(loadingState.errorMessage)
+                // 2. Setup successful reload
+                every { repository.observeStatsRange(any(), any()) } returns statsFlow
 
-            // 4. Complete loading
-            statsFlow.emit(emptyList())
-            val finalState = awaitItem()
-            assertEquals(false, finalState.isLoading)
+                viewModel.handleIntent(HydrationInsightsUiIntent.Refresh)
+
+                // 3. Verify error is cleared and loading is true
+                val loadingState = awaitItem()
+                assertEquals(true, loadingState.isLoading)
+                assertNull(loadingState.errorMessage)
+
+                // 4. Complete loading
+                statsFlow.emit(emptyList())
+                val finalState = awaitItem()
+                assertEquals(false, finalState.isLoading)
+            }
         }
-    }
 
     @Test
-    fun `error handling when use case throws synchronously`() = runTest {
-        every {
-            repository.observeStatsRange(
-                any(),
-                any()
-            )
-        } throws RuntimeException("Synchronous error")
+    fun `error handling when use case throws synchronously`() =
+        runTest {
+            every {
+                repository.observeStatsRange(
+                    any(),
+                    any(),
+                )
+            } throws RuntimeException("Synchronous error")
 
-        val viewModel = HydrationInsightsViewModel(GetHydrationInsightsUseCase(repository))
+            val viewModel = HydrationInsightsViewModel(GetHydrationInsightsUseCase(repository))
 
-        viewModel.state.test {
-            // Synchronous error in init transitions state immediately
-            val state = awaitItem()
-            assertEquals(false, state.isLoading)
-            assertEquals("Synchronous error", state.errorMessage)
+            viewModel.state.test {
+                // Synchronous error in init transitions state immediately
+                val state = awaitItem()
+                assertEquals(false, state.isLoading)
+                assertEquals("Synchronous error", state.errorMessage)
+            }
         }
-    }
 
     @Test
-    fun `ShowError event is emitted on synchronous failure`() = runTest {
-        every {
-            repository.observeStatsRange(
-                any(),
-                any()
-            )
-        } throws RuntimeException("Synchronous error")
+    fun `ShowError event is emitted on synchronous failure`() =
+        runTest {
+            every {
+                repository.observeStatsRange(
+                    any(),
+                    any(),
+                )
+            } throws RuntimeException("Synchronous error")
 
-        val viewModel = HydrationInsightsViewModel(GetHydrationInsightsUseCase(repository))
+            val viewModel = HydrationInsightsViewModel(GetHydrationInsightsUseCase(repository))
 
-        viewModel.events.test {
-            assertEquals(HydrationInsightsUiEvent.ShowError("Synchronous error"), awaitItem())
+            viewModel.events.test {
+                assertEquals(HydrationInsightsUiEvent.ShowError("Synchronous error"), awaitItem())
+            }
         }
-    }
 }

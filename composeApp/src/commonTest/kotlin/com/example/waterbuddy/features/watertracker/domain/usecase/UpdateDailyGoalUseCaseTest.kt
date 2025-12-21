@@ -10,20 +10,20 @@ import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 
 class UpdateDailyGoalUseCaseTest {
-
     private val repository = mock<WaterRepository>()
     private val useCase = UpdateDailyGoalUseCase(repository)
 
     @Test
-    fun `invoke calls repository and returns result`() = runTest {
-        val goalMl = 2500
-        val expectedResult = Result.success(Unit)
+    fun `invoke calls repository and returns result`() =
+        runTest {
+            val goalMl = 2500
+            val expectedResult = Result.success(Unit)
 
-        everySuspend { repository.updateDailyGoal(goalMl) } returns expectedResult
+            everySuspend { repository.updateDailyGoal(goalMl) } returns expectedResult
 
-        val result = useCase(goalMl)
+            val result = useCase(goalMl)
 
-        result shouldBe expectedResult
-        verifySuspend { repository.updateDailyGoal(goalMl) }
-    }
+            result shouldBe expectedResult
+            verifySuspend { repository.updateDailyGoal(goalMl) }
+        }
 }

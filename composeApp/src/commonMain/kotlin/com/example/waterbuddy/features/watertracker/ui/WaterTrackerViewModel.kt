@@ -30,18 +30,18 @@ class WaterTrackerViewModel(
     private val addWaterIntakeUseCase: AddWaterIntakeUseCase,
     private val deleteWaterIntakeUseCase: DeleteWaterIntakeUseCase,
     private val updateDailyGoalUseCase: UpdateDailyGoalUseCase,
-    val navigator: Navigator
+    val navigator: Navigator,
 ) : ViewModel() {
-
     private val _state = MutableStateFlow(WaterTrackerUiState(isLoading = true))
     val state = _state.asStateFlow()
 
     private val _events = MutableSharedFlow<WaterTrackerUiEvent>()
 
     @OptIn(FlowPreview::class)
-    val events = _events
-        .asSharedFlow()
-        .debounce(500)
+    val events =
+        _events
+            .asSharedFlow()
+            .debounce(500)
 
     var showGoalDialog = MutableStateFlow(false)
         private set
@@ -53,9 +53,11 @@ class WaterTrackerViewModel(
     private fun observeWaterStats() {
         viewModelScope.launch {
             val now = Clock.System.now()
-            val today = Instant.fromEpochMilliseconds(now.toEpochMilliseconds())
-                .toLocalDateTime(TimeZone.currentSystemDefault())
-                .date
+            val today =
+                Instant
+                    .fromEpochMilliseconds(now.toEpochMilliseconds())
+                    .toLocalDateTime(TimeZone.currentSystemDefault())
+                    .date
             observeDailyWaterStatsUseCase(today).collect { stats ->
                 val wasGoalReached = _state.value.isGoalReached
 
@@ -67,7 +69,7 @@ class WaterTrackerViewModel(
                         remainingMl = stats.remainingMl,
                         isGoalReached = stats.isGoalReached,
                         entries = stats.entries,
-                        isLoading = false
+                        isLoading = false,
                     )
                 }
 
@@ -100,10 +102,10 @@ class WaterTrackerViewModel(
                 onFailure = { error ->
                     _events.emit(
                         WaterTrackerUiEvent.ShowError(
-                            error.message ?: "Failed to add water"
-                        )
+                            error.message ?: "Failed to add water",
+                        ),
                     )
-                }
+                },
             )
 
             _state.update { it.copy(isLoading = false) }
@@ -119,10 +121,10 @@ class WaterTrackerViewModel(
                 onFailure = { error ->
                     _events.emit(
                         WaterTrackerUiEvent.ShowError(
-                            error.message ?: "Failed to delete entry"
-                        )
+                            error.message ?: "Failed to delete entry",
+                        ),
                     )
-                }
+                },
             )
         }
     }
@@ -137,10 +139,10 @@ class WaterTrackerViewModel(
                 onFailure = { error ->
                     _events.emit(
                         WaterTrackerUiEvent.ShowError(
-                            error.message ?: "Failed to update goal"
-                        )
+                            error.message ?: "Failed to update goal",
+                        ),
                     )
-                }
+                },
             )
         }
     }

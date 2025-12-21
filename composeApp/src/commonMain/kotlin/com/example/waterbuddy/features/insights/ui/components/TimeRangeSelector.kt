@@ -25,16 +25,16 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Composable
 fun TimeRangeSelector(
     selectedRange: TimeRange,
-    onRangeSelected: (TimeRange) -> Unit
+    onRangeSelected: (TimeRange) -> Unit,
 ) {
     Surface(
         shape = RoundedCornerShape(50),
         color = MaterialTheme.colorScheme.surfaceVariant,
-        modifier = Modifier.fillMaxWidth().height(48.dp)
+        modifier = Modifier.fillMaxWidth().height(48.dp),
     ) {
         Row(
             modifier = Modifier.fillMaxSize().padding(4.dp),
-            horizontalArrangement = Arrangement.spacedBy(4.dp)
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
         ) {
             TimeRange.entries.forEach { range ->
                 val isSelected = range == selectedRange
@@ -50,13 +50,13 @@ fun TimeRangeSelector(
                     color = containerColor,
                     contentColor = contentColor,
                     shadowElevation = shadowElevation,
-                    modifier = Modifier.weight(1f).fillMaxHeight()
+                    modifier = Modifier.weight(1f).fillMaxHeight(),
                 ) {
                     Box(contentAlignment = Alignment.Center) {
                         Text(
                             text = range.name.lowercase().replaceFirstChar { it.uppercase() },
                             style = MaterialTheme.typography.labelLarge,
-                            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium
+                            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
                         )
                     }
                 }
@@ -73,7 +73,7 @@ private fun TimeRangeSelectorWeekPreview() {
             Box(Modifier.padding(16.dp)) {
                 TimeRangeSelector(
                     selectedRange = TimeRange.WEEK,
-                    onRangeSelected = {}
+                    onRangeSelected = {},
                 )
             }
         }
@@ -88,7 +88,7 @@ private fun TimeRangeSelectorMonthDarkModePreview() {
             Box(Modifier.padding(16.dp)) {
                 TimeRangeSelector(
                     selectedRange = TimeRange.MONTH,
-                    onRangeSelected = {}
+                    onRangeSelected = {},
                 )
             }
         }

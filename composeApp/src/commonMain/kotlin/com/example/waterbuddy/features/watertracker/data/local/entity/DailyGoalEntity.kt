@@ -7,5 +7,5 @@ import androidx.room.PrimaryKey
 data class DailyGoalEntity(
     @PrimaryKey
     val id: Int = 1,
-    val goalMl: Int
+    val goalMl: Int,
 )

@@ -12,11 +12,11 @@ import dev.zacsweers.metro.Provides
 @ContributesTo(AppScope::class)
 interface AndroidDatabaseModule {
     @Provides
-    fun provideDatabaseBuilder(context: Context): RoomDatabase.Builder<AppDatabase> {
-        return Room.databaseBuilder(
-            context = context,
-            klass = AppDatabase::class.java,
-            name = "app.db"
-        ).setDriver(BundledSQLiteDriver())
-    }
+    fun provideDatabaseBuilder(context: Context): RoomDatabase.Builder<AppDatabase> =
+        Room
+            .databaseBuilder(
+                context = context,
+                klass = AppDatabase::class.java,
+                name = "app.db",
+            ).setDriver(BundledSQLiteDriver())
 }

@@ -41,7 +41,7 @@ fun App(component: AppGraph) {
 
             NavHost(
                 navController = navController,
-                startDestination = WaterTracker
+                startDestination = WaterTracker,
             ) {
                 composable<WaterTracker> {
                     WaterTrackerScreen()

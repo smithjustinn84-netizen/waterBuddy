@@ -18,6 +18,7 @@ import com.example.waterbuddy.features.watertracker.data.local.entity.WaterIntak
 @TypeConverters(DateTimeConverter::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun waterIntakeDao(): WaterIntakeDao
+
     abstract fun dailyGoalDao(): DailyGoalDao
 }
 

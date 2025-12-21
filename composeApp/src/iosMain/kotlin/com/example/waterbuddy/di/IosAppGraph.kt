@@ -11,4 +11,3 @@ abstract class IosAppGraph : AppGraph {
         fun create(): IosAppGraph
     }
 }
-

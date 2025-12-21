@@ -31,24 +31,24 @@ fun KpiGrid(insights: HydrationInsights) {
             KpiCard(
                 title = "Avg Intake",
                 value = "${insights.averageIntake} ml",
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
             )
             KpiCard(
                 title = "Completion",
                 value = "${insights.completionPercentage}%",
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
             )
         }
         Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
             KpiCard(
                 title = "Longest Streak",
                 value = "${insights.longestStreak} days",
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
             )
             KpiCard(
                 title = "Peak Day",
                 value = insights.peakDay?.let { formatDate(it) } ?: "-",
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
             )
         }
     }
@@ -58,43 +58,44 @@ fun KpiGrid(insights: HydrationInsights) {
 fun KpiCard(
     title: String,
     value: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Card(
         modifier = modifier,
         shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
-        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
     ) {
         Column(
             modifier = Modifier.padding(16.dp),
-            horizontalAlignment = Alignment.Start
+            horizontalAlignment = Alignment.Start,
         ) {
             Text(
                 text = title,
                 style = MaterialTheme.typography.labelMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = value,
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onSurface
+                color = MaterialTheme.colorScheme.onSurface,
             )
         }
     }
 }
 
-private val sampleInsights = HydrationInsights(
-    averageIntake = 1950,
-    completionRate = 0.82f,
-    longestStreak = 5,
-    peakDay = LocalDate(2024, 1, 15),
-    peakDayIntake = 2800,
-    weeklyTrend = emptyList(),
-    monthlyTrend = emptyList()
-)
+private val sampleInsights =
+    HydrationInsights(
+        averageIntake = 1950,
+        completionRate = 0.82f,
+        longestStreak = 5,
+        peakDay = LocalDate(2024, 1, 15),
+        peakDayIntake = 2800,
+        weeklyTrend = emptyList(),
+        monthlyTrend = emptyList(),
+    )
 
 @Preview
 @Composable

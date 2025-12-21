@@ -33,32 +33,34 @@ import kotlin.time.ExperimentalTime
 fun WaterEntryItem(
     entry: WaterIntake,
     onDelete: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Card(
-        modifier = modifier.fillMaxWidth()
+        modifier = modifier.fillMaxWidth(),
     ) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             Row(
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 Box(
-                    modifier = Modifier
-                        .size(48.dp)
-                        .clip(CircleShape)
-                        .background(MaterialTheme.colorScheme.primaryContainer),
-                    contentAlignment = Alignment.Center
+                    modifier =
+                        Modifier
+                            .size(48.dp)
+                            .clip(CircleShape)
+                            .background(MaterialTheme.colorScheme.primaryContainer),
+                    contentAlignment = Alignment.Center,
                 ) {
                     Text(
                         text = "💧",
-                        style = MaterialTheme.typography.headlineSmall
+                        style = MaterialTheme.typography.headlineSmall,
                     )
                 }
 
@@ -66,12 +68,12 @@ fun WaterEntryItem(
                     Text(
                         text = "${entry.amountMl}ml",
                         style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.SemiBold
+                        fontWeight = FontWeight.SemiBold,
                     )
                     Text(
                         text = formatTime(entry.timestamp),
                         style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
             }
@@ -79,7 +81,7 @@ fun WaterEntryItem(
             TextButton(onClick = onDelete) {
                 Text(
                     text = "🗑️",
-                    style = MaterialTheme.typography.titleMedium
+                    style = MaterialTheme.typography.titleMedium,
                 )
             }
         }
@@ -93,13 +95,14 @@ fun WaterEntryItemPreview() {
     WaterBuddyTheme {
         Surface {
             WaterEntryItem(
-                entry = WaterIntake(
-                    id = "preview",
-                    amountMl = 250,
-                    timestamp = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
-                ),
+                entry =
+                    WaterIntake(
+                        id = "preview",
+                        amountMl = 250,
+                        timestamp = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()),
+                    ),
                 onDelete = {},
-                modifier = Modifier.padding(16.dp)
+                modifier = Modifier.padding(16.dp),
             )
         }
     }
@@ -112,13 +115,14 @@ fun WaterEntryItemDarkModePreview() {
     WaterBuddyTheme(darkTheme = true) {
         Surface {
             WaterEntryItem(
-                entry = WaterIntake(
-                    id = "preview",
-                    amountMl = 250,
-                    timestamp = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
-                ),
+                entry =
+                    WaterIntake(
+                        id = "preview",
+                        amountMl = 250,
+                        timestamp = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()),
+                    ),
                 onDelete = {},
-                modifier = Modifier.padding(16.dp)
+                modifier = Modifier.padding(16.dp),
             )
         }
     }

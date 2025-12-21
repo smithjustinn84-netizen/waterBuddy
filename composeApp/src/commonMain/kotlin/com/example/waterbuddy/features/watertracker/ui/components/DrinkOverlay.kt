@@ -29,7 +29,7 @@ import kotlin.math.PI
 fun DrinkOverlay(
     amountMl: Int,
     modifier: Modifier = Modifier,
-    maxAmountMl: Int = 1000
+    maxAmountMl: Int = 1000,
 ) {
     val fillPercentage = (amountMl.toFloat() / maxAmountMl.toFloat()).coerceIn(0f, 1f)
     val color = MaterialTheme.colorScheme.primary.copy(alpha = 0.8f)
@@ -38,10 +38,11 @@ fun DrinkOverlay(
     val waveOffset by transition.animateFloat(
         initialValue = 0f,
         targetValue = 1f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(1000, easing = LinearEasing),
-            repeatMode = RepeatMode.Restart
-        )
+        animationSpec =
+            infiniteRepeatable(
+                animation = tween(1000, easing = LinearEasing),
+                repeatMode = RepeatMode.Restart,
+            ),
     )
 
     Box(modifier = modifier, contentAlignment = Alignment.BottomCenter) {
@@ -51,23 +52,24 @@ fun DrinkOverlay(
             val waterHeight = height * fillPercentage
             val waveAmplitude = 20.dp.toPx()
 
-            val path = Path().apply {
-                moveTo(0f, height)
-                lineTo(0f, height - waterHeight)
+            val path =
+                Path().apply {
+                    moveTo(0f, height)
+                    lineTo(0f, height - waterHeight)
 
-                // Draw wave
-                val steps = 50
-                for (i in 0..steps) {
-                    val x = width * (i.toFloat() / steps)
-                    val progress = i.toFloat() / steps
-                    val waveY =
-                        kotlin.math.sin((progress * 2 * PI) + (waveOffset * 2 * PI)) * waveAmplitude
-                    lineTo(x, height - waterHeight + waveY.toFloat())
+                    // Draw wave
+                    val steps = 50
+                    for (i in 0..steps) {
+                        val x = width * (i.toFloat() / steps)
+                        val progress = i.toFloat() / steps
+                        val waveY =
+                            kotlin.math.sin((progress * 2 * PI) + (waveOffset * 2 * PI)) * waveAmplitude
+                        lineTo(x, height - waterHeight + waveY.toFloat())
+                    }
+
+                    lineTo(width, height)
+                    close()
                 }
-
-                lineTo(width, height)
-                close()
-            }
 
             drawPath(path, color)
         }
@@ -79,7 +81,7 @@ fun DrinkOverlay(
                     text = "$amountMl ml",
                     style = MaterialTheme.typography.displayMedium,
                     fontWeight = FontWeight.Bold,
-                    color = Color.White
+                    color = Color.White,
                 )
             }
         }
@@ -93,7 +95,7 @@ fun DrinkOverlayPreview() {
         Surface {
             DrinkOverlay(
                 amountMl = 500,
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.fillMaxSize(),
             )
         }
     }
@@ -106,7 +108,7 @@ fun DrinkOverlayDarkModePreview() {
         Surface {
             DrinkOverlay(
                 amountMl = 750,
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.fillMaxSize(),
             )
         }
     }

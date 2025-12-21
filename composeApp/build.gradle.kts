@@ -24,7 +24,7 @@ kotlin {
 
     listOf(
         iosArm64(),
-        iosSimulatorArm64()
+        iosSimulatorArm64(),
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
             baseName = "ComposeApp"
@@ -79,12 +79,21 @@ room {
 
 android {
     namespace = "com.example.waterbuddy"
-    compileSdk = libs.versions.android.compileSdk.get().toInt()
+    compileSdk =
+        libs.versions.android.compileSdk
+            .get()
+            .toInt()
 
     defaultConfig {
         applicationId = "com.example.waterbuddy"
-        minSdk = libs.versions.android.minSdk.get().toInt()
-        targetSdk = libs.versions.android.targetSdk.get().toInt()
+        minSdk =
+            libs.versions.android.minSdk
+                .get()
+                .toInt()
+        targetSdk =
+            libs.versions.android.targetSdk
+                .get()
+                .toInt()
         versionCode = 1
         versionName = "1.0"
     }
@@ -131,7 +140,7 @@ kover {
                     "androidx.compose.ui.tooling.preview.Preview",
                     "kotlinx.serialization.Serializable",
                     // If you use a custom multiplatform preview annotation
-                    "com.yourproject.ui.annotations.MultiPreview"
+                    "com.yourproject.ui.annotations.MultiPreview",
                 )
 
                 classes(
@@ -170,28 +179,26 @@ kover {
                     "*_MembersInjector",
                     // KMP / Platform specific
                     "*.PlatformKt",
-                    "*ThemeKt*",       // Excludes Theme.kt files
-                    "*TypographyKt*",  // Excludes Typography.kt files
-                    "*ColorsKt*",      // Excludes Colors.kt files
-                    "*ShapesKt*",      // Excludes Shapes.kt files
-                    "*ColorKt*",       // Excludes Color.kt files
-                    "*TypeKt*",        // Excludes Type.kt files
-                    "*ShapeKt*",       // Excludes Shape.kt files
+                    "*ThemeKt*", // Excludes Theme.kt files
+                    "*TypographyKt*", // Excludes Typography.kt files
+                    "*ColorsKt*", // Excludes Colors.kt files
+                    "*ShapesKt*", // Excludes Shapes.kt files
+                    "*ColorKt*", // Excludes Color.kt files
+                    "*TypeKt*", // Excludes Type.kt files
+                    "*ShapeKt*", // Excludes Shape.kt files
                     "*ComposableSingletons*", // Internal Compose artifacts
                     "*MetroFactory*",
                     "com.example.waterbuddy.App", // Excludes the Android Application class
-                    "*AppKt*",                    // Excludes the file containing the App composable
-
+                    "*AppKt*", // Excludes the file containing the App composable
                     // Exclude UI Components (hard to test with unit tests)
                     "*WeeklyBarChartKt*",
                     "*MonthlyHeatmapKt*",
                     "*KpiCardsKt*",
                     "*TimeRangeSelectorKt*",
-
                     // Synthetic/Compiler generated classes
                     "*$*inlined$*",
                     "*$*lambda$*",
-                    "*$*sam$*"
+                    "*$*sam$*",
                 )
             }
         }

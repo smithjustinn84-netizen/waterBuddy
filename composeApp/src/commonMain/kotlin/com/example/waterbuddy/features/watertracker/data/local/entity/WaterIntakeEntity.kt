@@ -10,5 +10,5 @@ data class WaterIntakeEntity(
     val id: String,
     val amountMl: Int,
     val timestamp: LocalDateTime,
-    val note: String? = null
+    val note: String? = null,
 )
