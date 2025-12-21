@@ -1,5 +1,6 @@
 package com.example.waterbuddy.core.util
 
+import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -39,5 +40,19 @@ class DateTimeFormattersTest {
         val dateTime = LocalDateTime(2023, 10, 27, 8, 5)
         val formatted = formatTime(dateTime)
         assertEquals("8:05 AM", formatted)
+    }
+
+    @Test
+    fun `formatDate returns correct string for given date`() {
+        val date = LocalDate(2024, 1, 15)
+        val formatted = formatDate(date)
+        assertEquals("Jan 15", formatted)
+    }
+
+    @Test
+    fun `formatDate returns correct string for date with single digit day`() {
+        val date = LocalDate(2024, 1, 5)
+        val formatted = formatDate(date)
+        assertEquals("Jan 05", formatted) // Padding.ZERO was used
     }
 }

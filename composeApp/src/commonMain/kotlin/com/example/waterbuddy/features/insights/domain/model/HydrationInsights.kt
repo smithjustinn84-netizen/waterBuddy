@@ -11,4 +11,7 @@ data class HydrationInsights(
     val peakDayIntake: Int,
     val weeklyTrend: List<DailyWaterStats>,
     val monthlyTrend: List<DailyWaterStats>
-)
+) {
+    val completionPercentage: Int
+        get() = (completionRate * 100).toInt()
+}

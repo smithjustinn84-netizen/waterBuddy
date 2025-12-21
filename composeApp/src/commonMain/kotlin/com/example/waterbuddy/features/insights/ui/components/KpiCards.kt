@@ -19,12 +19,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.waterbuddy.core.theme.WaterBuddyTheme
+import com.example.waterbuddy.core.util.formatDate
 import com.example.waterbuddy.features.insights.domain.model.HydrationInsights
 import kotlinx.datetime.LocalDate
-import kotlinx.datetime.format
-import kotlinx.datetime.format.MonthNames
-import kotlinx.datetime.format.Padding
-import kotlinx.datetime.format.char
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
@@ -38,7 +35,7 @@ fun KpiGrid(insights: HydrationInsights) {
             )
             KpiCard(
                 title = "Completion",
-                value = "${(insights.completionRate * 100).toInt()}%",
+                value = "${insights.completionPercentage}%",
                 modifier = Modifier.weight(1f)
             )
         }
@@ -87,14 +84,6 @@ fun KpiCard(
             )
         }
     }
-}
-
-private fun formatDate(date: LocalDate): String {
-    return date.format(LocalDate.Format {
-        monthName(MonthNames.ENGLISH_ABBREVIATED)
-        char(' ')
-        day(padding = Padding.ZERO)
-    })
 }
 
 private val sampleInsights = HydrationInsights(
