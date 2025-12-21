@@ -1,243 +1,96 @@
-# MetroX ViewModel Compose
+# Context Example: Metro DI & ViewModels
 
-Compose integration for MetroX ViewModel. This artifact provides Compose-specific utilities for
-injecting ViewModels.
+Use this as a reference for implementing Dependency Injection and ViewModels using Metro.
 
-> Should I use this?
+## 1. Core Graph Setup
 
-Well, that's up to you! This artifact is mostly for projects coming from heavy use of more vanilla
-Android architecture components or `hiltViewModel()` use. Modern Android apps should use higher
-level architectures like Circuit*, Voyager, etc. that abstract away `ViewModel` management.
-
-*Disclosure: I am one of the authors of Circuit, and I'm a big fan of it!
-
-## Usage
-
-[![Maven Central](https://img.shields.io/maven-central/v/dev.zacsweers.metro/metrox-viewmodel-compose.svg)](https://central.sonatype.com/artifact/dev.zacsweers.metro/metrox-viewmodel-compose)
-
-```kotlin
-dependencies {
-    implementation("dev.zacsweers.metro:metrox-viewmodel-compose:x.y.z")
-}
-```
-
-This artifact depends on `metrox-viewmodel` transitively.
-
-## Setup
-
-### 1. Set up your graph
-
-Set up your dependency graph and ViewModels for injection using [
-`metrox-viewmodel`](metrox-viewmodel.md#core-components).
-
-### 2. Provide LocalMetroViewModelFactory
-
-At the root of your Compose hierarchy, provide the factory via `CompositionLocalProvider`:
-
-```kotlin
-@Composable
-fun App(metroVmf: MetroViewModelFactory) {
-    CompositionLocalProvider(LocalMetroViewModelFactory provides metroVmf) {
-        // Your app content
-    }
-}
-```
-
-On Android, inject the factory into your Activity:
-
-```kotlin
-@Inject
-class MainActivity(private val metroVmf: MetroViewModelFactory) : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
-            CompositionLocalProvider(LocalMetroViewModelFactory provides metroVmf) {
-                App()
-            }
-        }
-    }
-}
-```
-
-## Using ViewModels
-
-### Standard ViewModels
-
-Use `metroViewModel()` to retrieve injected ViewModels:
-
-```kotlin
-@Composable
-fun HomeScreen(viewModel: HomeViewModel = metroViewModel()) {
-    // ...
-}
-```
-
-### Assisted ViewModels
-
-For ViewModels with `ViewModelAssistedFactory`:
-
-```kotlin
-@Composable
-fun DetailsScreen(
-    data: String,
-    viewModel: DetailsViewModel = assistedMetroViewModel()
-) {
-    // ...
-}
-```
-
-### Manual Assisted ViewModels
-
-For ViewModels with `ManualViewModelAssistedFactory`:
-
-```kotlin
-@Composable
-fun CustomScreen(
-    viewModel: CustomViewModel = assistedMetroViewModel<CustomViewModel, CustomViewModel.Factory> {
-        create("param1", 42)
-    }
-) {
-    // ...
-}
-```
-
-# MetroX ViewModel
-
-ViewModel integration for Metro. This artifact provides core utilities for injecting ViewModels
-using Metro's dependency injection.
-
-For Compose-specific APIs (`LocalMetroViewModelFactory`, `metroViewModel()`, etc.), see the [
-`metrox-viewmodel-compose`](metrox-viewmodel-compose.md) artifact.
-
-> Should I use this?
-
-Well, that's up to you! This artifact is mostly for projects coming from heavy use of more vanilla
-Android architecture components or `hiltViewModel()` use. Modern Android apps should use higher
-level architectures like Circuit*, Voyager, etc. that abstract away `ViewModel` management.
-
-*Disclosure: I am one of the authors of Circuit, and I'm a big fan of it!
-
-## Usage
-
-[![Maven Central](https://img.shields.io/maven-central/v/dev.zacsweers.metro/metrox-viewmodel.svg)](https://central.sonatype.com/artifact/dev.zacsweers.metro/metrox-viewmodel)
-
-```kotlin
-dependencies {
-    implementation("dev.zacsweers.metro:metrox-viewmodel:x.y.z")
-}
-```
-
-## Core Components
-
-### ViewModelGraph
-
-Create a graph interface that extends `ViewModelGraph` to get multibindings for ViewModel providers:
+The `AppGraph` serves as the central hub for all dependencies.
 
 ```kotlin
 @DependencyGraph(AppScope::class)
-interface AppGraph : ViewModelGraph
+interface AppGraph : ViewModelGraph {
+    val navigator: Navigator
+    // Add other top-level dependencies here
+}
 ```
 
-`ViewModelGraph` includes map multibindings for:
+## 2. ViewModel Implementation
 
-- `viewModelProviders` - Standard ViewModel providers
-- `assistedFactoryProviders` - Assisted ViewModel factory providers
-- `manualAssistedFactoryProviders` - Manual assisted factory providers
-
-It also provides a `metroViewModelFactory` property for creating ViewModels.
-
-### MetroViewModelFactory
-
-`MetroViewModelFactory` is a `ViewModelProvider.Factory` implementation that uses injected maps to
-create ViewModels.
-
-`ViewModelGraph` requires you to provide a `MetroViewModelFactory` subclass with your bindings:
+Every ViewModel must be injected and contributed to the `AppScope` map.
 
 ```kotlin
 @Inject
+@ViewModelKey(MyViewModel::class)
+// Note: specify binding<ViewModel>() if inheriting from a base class
+@ContributesIntoMap(AppScope::class, binding<ViewModel>())
+class MyViewModel(
+    private val navigator: Navigator,
+    private val repository: MyRepository
+) : ViewModel() {
+    // ... logic
+}
+```
+
+## 3. Repository & Service Binding
+
+Bind implementations to interfaces using `@ContributesBinding`.
+
+```kotlin
 @ContributesBinding(AppScope::class)
-@SingleIn(AppScope::class)
-class MyViewModelFactory(
-    override val viewModelProviders: Map<KClass<out ViewModel>, Provider<ViewModel>>,
-    override val assistedFactoryProviders: Map<KClass<out ViewModel>, Provider<ViewModelAssistedFactory>>,
-    override val manualAssistedFactoryProviders: Map<KClass<out ManualViewModelAssistedFactory>, Provider<ManualViewModelAssistedFactory>>,
-) : MetroViewModelFactory()
-```
-
-### Contributing ViewModels
-
-Use `@ViewModelKey` with `@ContributesIntoMap` to contribute ViewModels:
-
-```kotlin
 @Inject
-@ViewModelKey(HomeViewModel::class)
-@ContributesIntoMap(AppScope::class)
-class HomeViewModel : ViewModel() {
-    // ...
-}
+class MyRepositoryImpl(private val database: AppDatabase) : MyRepository
 ```
 
-!!! warning "Migrating from `@HiltViewModel`"
-If you are migrating from `@HiltViewModel` be aware that by default `@ContributesIntoMap` will bind
-your ViewModel to the immediate parent type. If you have an intermediate parent type such as
-`class MyViewModel : BaseViewModel()` you will want to specify the binding type with
-`@ContributesIntoMap(AppScope::class, binding<ViewModel>())`.
+## 4. Manual Assisted Injection
 
-### Assisted ViewModel Creation
-
-For ViewModels requiring runtime parameters and only using `CreationParams` can use
-`ViewModelAssistedFactory`:
+Use this pattern when a ViewModel requires runtime parameters (e.g., an ID from a route).
 
 ```kotlin
 @AssistedInject
-class DetailsViewModel(@Assisted val id: String) : ViewModel() {
-    // ...
-
-    @AssistedFactory
-    @ViewModelAssistedFactoryKey(Factory::class)
-    @ContributesIntoMap(AppScope::class)
-    fun interface Factory : ViewModelAssistedFactory {
-        override fun create(extras: CreationExtras): DetailsViewModel {
-            return create(extras.get<String>(KEY_ID))
-        }
-
-        fun create(@Assisted id: String): DetailsViewModel
-    }
-}
-```
-
-### Manual Assisted Injection
-
-For full control over ViewModel creation, use `ManualViewModelAssistedFactory`:
-
-```kotlin
-@AssistedInject
-class CustomViewModel(@Assisted val param1: String, @Assisted val param2: Int) : ViewModel() {
-    // ...
+class DetailViewModel(
+    @Assisted val itemId: String,
+    private val repository: MyRepository
+) : ViewModel() {
 
     @AssistedFactory
     @ManualViewModelAssistedFactoryKey(Factory::class)
     @ContributesIntoMap(AppScope::class)
     interface Factory : ManualViewModelAssistedFactory {
-        fun create(param1: String, param2: Int): CustomViewModel
+        fun create(itemId: String): DetailViewModel
     }
 }
 ```
 
-## Android Framework Integration
+## 5. Compose Usage
+
+Retrieve ViewModels in your Composables using the following helpers:
 
 ```kotlin
-// Activity
-@Inject
-class ExampleActivity(private val viewModelFactory: MyViewModelFactory) : ComponentActivity() {
-    override val defaultViewModelProviderFactory: ViewModelProvider.Factory
-        get() = viewModelFactory
+// Standard ViewModel
+@Composable
+fun MyScreen(viewModel: MyViewModel = metroViewModel()) {
+    ...
 }
 
-// Fragment
-@Inject
-class ExampleFragment(private val viewModelFactory: MyViewModelFactory) : Fragment() {
-    override val defaultViewModelProviderFactory: ViewModelProvider.Factory
-        get() = viewModelFactory
+// Assisted ViewModel
+@Composable
+fun DetailScreen(id: String) {
+    val viewModel = assistedMetroViewModel<DetailViewModel, DetailViewModel.Factory> {
+        create(id)
+    }
+}
+```
+
+## 6. Providing Platform Dependencies
+
+For dependencies like `AppDatabase` that require platform-specific builders:
+
+```kotlin
+@ContributesTo(AppScope::class)
+interface DataModule {
+    @Provides
+    @SingleIn(AppScope::class)
+    fun provideDatabase(builder: RoomDatabase.Builder<AppDatabase>): AppDatabase =
+        builder.setDriver(BundledSQLiteDriver()).build()
 }
 ```
