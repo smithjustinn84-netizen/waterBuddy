@@ -14,6 +14,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
@@ -28,6 +29,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.waterbuddy.core.navigation.HydrationInsights
+import com.example.waterbuddy.core.theme.WaterBuddyTheme
 import com.example.waterbuddy.features.watertracker.domain.model.WaterIntake
 import com.example.waterbuddy.features.watertracker.ui.components.DrinkOverlay
 import com.example.waterbuddy.features.watertracker.ui.components.EmptyStateMessage
@@ -107,10 +109,11 @@ fun WaterTrackerContent(
     showGoalDialog: Boolean,
     snackbarHostState: SnackbarHostState,
     onIntent: (WaterTrackerUiIntent) -> Unit,
-    onNavigateToInsights: () -> Unit
+    onNavigateToInsights: () -> Unit,
+    initialTargetAmount: Int = 0
 ) {
     // Drinking Interaction State
-    var targetDrinkAmount by remember { mutableStateOf(0) }
+    var targetDrinkAmount by remember { mutableStateOf(initialTargetAmount) }
     var currentDrinkAmount by remember { mutableStateOf(0) }
 
     LaunchedEffect(targetDrinkAmount) {
@@ -242,49 +245,72 @@ fun WaterTrackerContent(
 }
 
 @OptIn(ExperimentalTime::class)
+private val previewState = WaterTrackerUiState(
+    totalMl = 750,
+    goalMl = 2000,
+    progressPercentage = 0.375f,
+    remainingMl = 1250,
+    entries = listOf(
+        WaterIntake(
+            id = "1",
+            amountMl = 250,
+            timestamp = Clock.System.now()
+                .toLocalDateTime(TimeZone.currentSystemDefault())
+        ),
+        WaterIntake(
+            id = "2",
+            amountMl = 500,
+            timestamp = Clock.System.now()
+                .toLocalDateTime(TimeZone.currentSystemDefault())
+        )
+    )
+)
+
+@OptIn(ExperimentalTime::class)
 @Preview
 @Composable
 fun WaterTrackerPreview() {
-    MaterialTheme {
-        WaterTrackerContent(
-            state = WaterTrackerUiState(
-                totalMl = 750,
-                goalMl = 2000,
-                progressPercentage = 0.375f,
-                remainingMl = 1250,
-                entries = listOf(
-                    WaterIntake(
-                        id = "1",
-                        amountMl = 250,
-                        timestamp = Clock.System.now()
-                            .toLocalDateTime(TimeZone.currentSystemDefault())
-                    ),
-                    WaterIntake(
-                        id = "2",
-                        amountMl = 500,
-                        timestamp = Clock.System.now()
-                            .toLocalDateTime(TimeZone.currentSystemDefault())
-                    )
-                )
-            ),
-            showGoalDialog = false,
-            snackbarHostState = remember { SnackbarHostState() },
-            onIntent = {},
-            onNavigateToInsights = {}
-        )
+    WaterBuddyTheme {
+        Surface {
+            WaterTrackerContent(
+                state = previewState,
+                showGoalDialog = false,
+                snackbarHostState = remember { SnackbarHostState() },
+                onIntent = {},
+                onNavigateToInsights = {}
+            )
+        }
+    }
+}
+
+@Preview
+@Composable
+fun WaterTrackerDarkModePreview() {
+    WaterBuddyTheme(darkTheme = true) {
+        Surface {
+            WaterTrackerContent(
+                state = previewState,
+                showGoalDialog = false,
+                snackbarHostState = remember { SnackbarHostState() },
+                onIntent = {},
+                onNavigateToInsights = {}
+            )
+        }
     }
 }
 
 @Preview
 @Composable
 fun WaterTrackerEmptyPreview() {
-    MaterialTheme {
-        WaterTrackerContent(
-            state = WaterTrackerUiState(),
-            showGoalDialog = false,
-            snackbarHostState = remember { SnackbarHostState() },
-            onIntent = {},
-            onNavigateToInsights = {}
-        )
+    WaterBuddyTheme {
+        Surface {
+            WaterTrackerContent(
+                state = WaterTrackerUiState(),
+                showGoalDialog = false,
+                snackbarHostState = remember { SnackbarHostState() },
+                onIntent = {},
+                onNavigateToInsights = {}
+            )
+        }
     }
 }

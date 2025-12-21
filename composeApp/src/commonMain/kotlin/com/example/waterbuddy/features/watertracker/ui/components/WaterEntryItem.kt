@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -19,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.example.waterbuddy.core.theme.WaterBuddyTheme
 import com.example.waterbuddy.features.watertracker.domain.model.WaterIntake
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
@@ -100,15 +102,36 @@ private fun formatTime(dateTime: LocalDateTime): String {
 @Preview
 @Composable
 fun WaterEntryItemPreview() {
-    MaterialTheme {
-        WaterEntryItem(
-            entry = WaterIntake(
-                id = "preview",
-                amountMl = 250,
-                timestamp = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
-            ),
-            onDelete = {},
-            modifier = Modifier.padding(16.dp)
-        )
+    WaterBuddyTheme {
+        Surface {
+            WaterEntryItem(
+                entry = WaterIntake(
+                    id = "preview",
+                    amountMl = 250,
+                    timestamp = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
+                ),
+                onDelete = {},
+                modifier = Modifier.padding(16.dp)
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalTime::class)
+@Preview
+@Composable
+fun WaterEntryItemDarkModePreview() {
+    WaterBuddyTheme(darkTheme = true) {
+        Surface {
+            WaterEntryItem(
+                entry = WaterIntake(
+                    id = "preview",
+                    amountMl = 250,
+                    timestamp = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
+                ),
+                onDelete = {},
+                modifier = Modifier.padding(16.dp)
+            )
+        }
     }
 }

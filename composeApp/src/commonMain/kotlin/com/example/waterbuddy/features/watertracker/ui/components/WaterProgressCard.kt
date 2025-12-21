@@ -16,6 +16,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -23,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.example.waterbuddy.core.theme.WaterBuddyTheme
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import waterbuddy.composeapp.generated.resources.Res
@@ -122,29 +124,50 @@ private fun StatItem(label: String, value: String) {
 @Preview
 @Composable
 fun WaterProgressCardPreview() {
-    MaterialTheme {
-        WaterProgressCard(
-            totalMl = 1200,
-            goalMl = 2000,
-            progressPercentage = 0.6f,
-            remainingMl = 800,
-            isGoalReached = false,
-            modifier = Modifier.padding(16.dp)
-        )
+    WaterBuddyTheme {
+        Surface {
+            WaterProgressCard(
+                totalMl = 1200,
+                goalMl = 2000,
+                progressPercentage = 0.6f,
+                remainingMl = 800,
+                isGoalReached = false,
+                modifier = Modifier.padding(16.dp)
+            )
+        }
+    }
+}
+
+@Preview
+@Composable
+fun WaterProgressCardDarkModePreview() {
+    WaterBuddyTheme(darkTheme = true) {
+        Surface {
+            WaterProgressCard(
+                totalMl = 1200,
+                goalMl = 2000,
+                progressPercentage = 0.6f,
+                remainingMl = 800,
+                isGoalReached = false,
+                modifier = Modifier.padding(16.dp)
+            )
+        }
     }
 }
 
 @Preview
 @Composable
 fun WaterProgressCardGoalReachedPreview() {
-    MaterialTheme {
-        WaterProgressCard(
-            totalMl = 2500,
-            goalMl = 2000,
-            progressPercentage = 1.0f,
-            remainingMl = 0,
-            isGoalReached = true,
-            modifier = Modifier.padding(16.dp)
-        )
+    WaterBuddyTheme {
+        Surface {
+            WaterProgressCard(
+                totalMl = 2500,
+                goalMl = 2000,
+                progressPercentage = 1.0f,
+                remainingMl = 0,
+                isGoalReached = true,
+                modifier = Modifier.padding(16.dp)
+            )
+        }
     }
 }
