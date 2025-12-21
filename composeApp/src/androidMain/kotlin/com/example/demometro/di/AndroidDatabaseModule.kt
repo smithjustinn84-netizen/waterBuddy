@@ -3,6 +3,7 @@ package com.example.demometro.di
 import android.content.Context
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import com.example.demometro.core.database.AppDatabase
 import com.example.demometro.core.di.AppScope
 import dev.zacsweers.metro.ContributesTo
@@ -16,7 +17,6 @@ interface AndroidDatabaseModule {
             context = context,
             klass = AppDatabase::class.java,
             name = "app.db"
-        )
+        ).setDriver(BundledSQLiteDriver())
     }
 }
-
