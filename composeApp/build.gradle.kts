@@ -130,8 +130,14 @@ kover {
     reports {
         filters {
             excludes {
+                // 1. Exclude by Annotation (Best for Compose/Generated code)
+                annotatedBy(
+                    "androidx.compose.runtime.Composable",
+                    "androidx.compose.ui.tooling.preview.Preview",
+                    "kotlinx.serialization.Serializable"
+                )
+
                 classes(
-                    "*.BuildConfig",
                     "*_Factory",
                     "*_MembersInjector",
                     "*_Provide*Factory",
@@ -139,7 +145,29 @@ kover {
                     "*_Module",
                     "*.ComposableSingletons*",
                     "*ComposableInvoker*",
-                    "*ScreenKt*"
+                    "*ScreenKt*",
+                    "*.generated.resources.*",
+                    "*Res",
+                    "*Res$*",
+
+                    // Android standard exclusions
+                    "*.BuildConfig",
+                    "*Activity",
+                    "*Fragment",
+                    "*FragmentArgs",
+                    "*FragmentDirections",
+
+                    // Room & Data exclusions
+                    "*_Impl*", // Room generated implementations
+                    "*.AppDatabase",
+
+                    // DI & Architecture boilerplate
+                    "*.di.*",
+                    "*ModuleKt*",
+                    "*_Factory*", // Metro/Dagger generated
+
+                    // KMP / Platform specific
+                    "*.PlatformKt"
                 )
             }
         }
