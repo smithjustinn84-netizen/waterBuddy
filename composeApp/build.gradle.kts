@@ -18,6 +18,8 @@ kotlin {
         }
     }
 
+    jvm()
+
     listOf(
         iosArm64(),
         iosSimulatorArm64()
@@ -59,9 +61,16 @@ kotlin {
             implementation(libs.kotlin.test)
             implementation(libs.kotest.assertions.core)
             implementation(libs.kotest.framework.engine)
+            implementation(libs.kotlinx.coroutines.test)
         }
         androidUnitTest.dependencies {
             implementation(libs.kotest.runner.junit5)
+            implementation(libs.androidx.testExt.junit)
+        }
+        val jvmTest by getting {
+            dependencies {
+                implementation(libs.kotest.runner.junit5)
+            }
         }
     }
 }
@@ -96,8 +105,11 @@ android {
         targetCompatibility = JavaVersion.VERSION_11
     }
     testOptions {
-        unitTests.all {
-            it.useJUnitPlatform()
+        unitTests {
+            isIncludeAndroidResources = true
+            all {
+                it.useJUnitPlatform()
+            }
         }
     }
 }
@@ -108,4 +120,5 @@ dependencies {
     add("kspAndroid", libs.androidx.room.compiler)
     add("kspIosArm64", libs.androidx.room.compiler)
     add("kspIosSimulatorArm64", libs.androidx.room.compiler)
+    add("kspJvm", libs.androidx.room.compiler)
 }
