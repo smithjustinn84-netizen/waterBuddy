@@ -3,6 +3,7 @@ package com.example.waterbuddy.features.watertracker.ui
 import app.cash.turbine.test
 import com.example.waterbuddy.core.navigation.NavigationCommand
 import com.example.waterbuddy.core.navigation.Navigator
+import com.example.waterbuddy.core.navigation.Route
 import com.example.waterbuddy.features.watertracker.domain.model.DailyWaterStats
 import com.example.waterbuddy.features.watertracker.domain.repository.WaterRepository
 import com.example.waterbuddy.features.watertracker.domain.usecase.AddWaterIntakeUseCase
@@ -51,7 +52,7 @@ class WaterTrackerViewModelTest {
 
     private val fakeNavigator = object : Navigator {
         override val commands = MutableSharedFlow<NavigationCommand>()
-        override fun navigate(destination: Any, clearBackStack: Boolean) {}
+        override fun navigate(destination: Route, clearBackStack: Boolean) {}
         override fun goBack() {}
     }
 
