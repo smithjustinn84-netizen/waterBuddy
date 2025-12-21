@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.example.waterbuddy.core.theme.WaterBuddyTheme
 import com.example.waterbuddy.features.insights.ui.TimeRange
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -67,25 +68,29 @@ fun TimeRangeSelector(
 @Preview
 @Composable
 private fun TimeRangeSelectorWeekPreview() {
-    MaterialTheme {
-        Box(Modifier.padding(16.dp)) {
-            TimeRangeSelector(
-                selectedRange = TimeRange.WEEK,
-                onRangeSelected = {}
-            )
+    WaterBuddyTheme {
+        Surface {
+            Box(Modifier.padding(16.dp)) {
+                TimeRangeSelector(
+                    selectedRange = TimeRange.WEEK,
+                    onRangeSelected = {}
+                )
+            }
         }
     }
 }
 
 @Preview
 @Composable
-private fun TimeRangeSelectorMonthPreview() {
-    MaterialTheme {
-        Box(Modifier.padding(16.dp)) {
-            TimeRangeSelector(
-                selectedRange = TimeRange.MONTH,
-                onRangeSelected = {}
-            )
+private fun TimeRangeSelectorMonthDarkModePreview() {
+    WaterBuddyTheme(darkTheme = true) {
+        Surface {
+            Box(Modifier.padding(16.dp)) {
+                TimeRangeSelector(
+                    selectedRange = TimeRange.MONTH,
+                    onRangeSelected = {}
+                )
+            }
         }
     }
 }

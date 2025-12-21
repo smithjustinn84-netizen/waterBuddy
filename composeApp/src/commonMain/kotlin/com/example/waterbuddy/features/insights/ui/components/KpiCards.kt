@@ -1,6 +1,7 @@
 package com.example.waterbuddy.features.insights.ui.components
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -10,12 +11,14 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.example.waterbuddy.core.theme.WaterBuddyTheme
 import com.example.waterbuddy.features.insights.domain.model.HydrationInsights
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.format
@@ -94,20 +97,36 @@ private fun formatDate(date: LocalDate): String {
     })
 }
 
+private val sampleInsights = HydrationInsights(
+    averageIntake = 1950,
+    completionRate = 0.82f,
+    longestStreak = 5,
+    peakDay = LocalDate(2024, 1, 15),
+    peakDayIntake = 2800,
+    weeklyTrend = emptyList(),
+    monthlyTrend = emptyList()
+)
+
 @Preview
 @Composable
 private fun KpiGridPreview() {
-    val insights = HydrationInsights(
-        averageIntake = 1950,
-        completionRate = 0.82f,
-        longestStreak = 5,
-        peakDay = LocalDate(2024, 1, 15),
-        peakDayIntake = 2800,
-        weeklyTrend = emptyList(),
-        monthlyTrend = emptyList()
-    )
+    WaterBuddyTheme {
+        Surface {
+            Box(Modifier.padding(16.dp)) {
+                KpiGrid(insights = sampleInsights)
+            }
+        }
+    }
+}
 
-    MaterialTheme {
-        KpiGrid(insights = insights)
+@Preview
+@Composable
+private fun KpiGridDarkModePreview() {
+    WaterBuddyTheme(darkTheme = true) {
+        Surface {
+            Box(Modifier.padding(16.dp)) {
+                KpiGrid(insights = sampleInsights)
+            }
+        }
     }
 }

@@ -15,6 +15,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -23,6 +24,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.example.waterbuddy.core.theme.WaterBuddyTheme
 import com.example.waterbuddy.features.watertracker.domain.model.DailyWaterStats
 import kotlinx.datetime.DayOfWeek
 import kotlinx.datetime.LocalDate
@@ -122,22 +124,37 @@ fun MonthlyHeatmap(
     }
 }
 
+private val sampleMonthlyData = (1..28).map { i ->
+    DailyWaterStats(
+        date = LocalDate(2024, 1, i),
+        totalMl = (1000..2500).random(),
+        goalMl = 2000,
+        entries = emptyList()
+    )
+}
+
 @Preview
 @Composable
 private fun MonthlyHeatmapPreview() {
-    val sampleData = (1..28).map { i ->
-        DailyWaterStats(
-            date = LocalDate(2024, 1, i),
-            totalMl = (1000..2500).random(),
-            goalMl = 2000,
-            entries = emptyList()
-        )
+    WaterBuddyTheme {
+        Surface {
+            MonthlyHeatmap(
+                data = sampleMonthlyData,
+                modifier = Modifier.fillMaxWidth().padding(16.dp)
+            )
+        }
     }
+}
 
-    MaterialTheme {
-        MonthlyHeatmap(
-            data = sampleData,
-            modifier = Modifier.fillMaxWidth().padding(16.dp)
-        )
+@Preview
+@Composable
+private fun MonthlyHeatmapDarkModePreview() {
+    WaterBuddyTheme(darkTheme = true) {
+        Surface {
+            MonthlyHeatmap(
+                data = sampleMonthlyData,
+                modifier = Modifier.fillMaxWidth().padding(16.dp)
+            )
+        }
     }
 }

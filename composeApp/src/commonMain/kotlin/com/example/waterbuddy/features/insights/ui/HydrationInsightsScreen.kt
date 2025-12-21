@@ -16,6 +16,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -27,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.waterbuddy.core.theme.WaterBuddyTheme
 import com.example.waterbuddy.features.insights.domain.model.HydrationInsights
 import com.example.waterbuddy.features.insights.ui.components.KpiGrid
 import com.example.waterbuddy.features.insights.ui.components.MonthlyHeatmap
@@ -132,49 +134,110 @@ fun HydrationInsightsContent(
     }
 }
 
+private val previewWeeklyData = listOf(
+    DailyWaterStats(LocalDate(2024, 1, 1), 1500, 2000, emptyList()),
+    DailyWaterStats(LocalDate(2024, 1, 2), 2200, 2000, emptyList()),
+    DailyWaterStats(LocalDate(2024, 1, 3), 1800, 2000, emptyList()),
+    DailyWaterStats(LocalDate(2024, 1, 4), 2500, 2000, emptyList()),
+    DailyWaterStats(LocalDate(2024, 1, 5), 2000, 2000, emptyList()),
+    DailyWaterStats(LocalDate(2024, 1, 6), 1200, 2000, emptyList()),
+    DailyWaterStats(LocalDate(2024, 1, 7), 2100, 2000, emptyList())
+)
+
+private val previewMonthlyData = (1..28).map { i ->
+    DailyWaterStats(
+        date = LocalDate(2024, 1, i),
+        totalMl = (1000..2500).random(),
+        goalMl = 2000,
+        entries = emptyList()
+    )
+}
+
+private val previewInsights = HydrationInsights(
+    averageIntake = 1900,
+    completionRate = 0.75f,
+    longestStreak = 5,
+    peakDay = LocalDate(2024, 1, 4),
+    peakDayIntake = 2500,
+    weeklyTrend = previewWeeklyData,
+    monthlyTrend = previewMonthlyData
+)
+
 @Preview
 @Composable
-private fun HydrationInsightsScreenPreview() {
-    val sampleData = listOf(
-        DailyWaterStats(LocalDate(2024, 1, 1), 1500, 2000, emptyList()),
-        DailyWaterStats(LocalDate(2024, 1, 2), 2200, 2000, emptyList()),
-        DailyWaterStats(LocalDate(2024, 1, 3), 1800, 2000, emptyList()),
-        DailyWaterStats(LocalDate(2024, 1, 4), 2500, 2000, emptyList()),
-        DailyWaterStats(LocalDate(2024, 1, 5), 2000, 2000, emptyList()),
-        DailyWaterStats(LocalDate(2024, 1, 6), 1200, 2000, emptyList()),
-        DailyWaterStats(LocalDate(2024, 1, 7), 2100, 2000, emptyList())
-    )
+private fun HydrationInsightsScreenWeeklyPreview() {
+    WaterBuddyTheme(darkTheme = false) {
+        Surface {
+            HydrationInsightsContent(
+                state = HydrationInsightsUiState(
+                    insights = previewInsights,
+                    selectedTimeRange = TimeRange.WEEK
+                ),
+                onIntent = {}
+            )
+        }
+    }
+}
 
-    val insights = HydrationInsights(
-        averageIntake = 1900,
-        completionRate = 0.75f,
-        longestStreak = 3,
-        peakDay = LocalDate(2024, 1, 4),
-        peakDayIntake = 2500,
-        weeklyTrend = sampleData,
-        monthlyTrend = sampleData
-    )
+@Preview
+@Composable
+private fun HydrationInsightsScreenMonthlyPreview() {
+    WaterBuddyTheme(darkTheme = false) {
+        Surface {
+            HydrationInsightsContent(
+                state = HydrationInsightsUiState(
+                    insights = previewInsights,
+                    selectedTimeRange = TimeRange.MONTH
+                ),
+                onIntent = {}
+            )
+        }
+    }
+}
 
-    MaterialTheme {
-        HydrationInsightsContent(
-            state = HydrationInsightsUiState(
-                insights = insights,
-                selectedTimeRange = TimeRange.WEEK
-            ),
-            onIntent = {}
-        )
+@Preview
+@Composable
+private fun HydrationInsightsScreenDarkModePreview() {
+    WaterBuddyTheme(darkTheme = true) {
+        Surface {
+            HydrationInsightsContent(
+                state = HydrationInsightsUiState(
+                    insights = previewInsights,
+                    selectedTimeRange = TimeRange.WEEK
+                ),
+                onIntent = {}
+            )
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun HydrationInsightsScreenMonthlyDarkModePreview() {
+    WaterBuddyTheme(darkTheme = true) {
+        Surface {
+            HydrationInsightsContent(
+                state = HydrationInsightsUiState(
+                    insights = previewInsights,
+                    selectedTimeRange = TimeRange.MONTH
+                ),
+                onIntent = {}
+            )
+        }
     }
 }
 
 @Preview
 @Composable
 private fun HydrationInsightsScreenLoadingPreview() {
-    MaterialTheme {
-        HydrationInsightsContent(
-            state = HydrationInsightsUiState(
-                isLoading = true
-            ),
-            onIntent = {}
-        )
+    WaterBuddyTheme {
+        Surface {
+            HydrationInsightsContent(
+                state = HydrationInsightsUiState(
+                    isLoading = true
+                ),
+                onIntent = {}
+            )
+        }
     }
 }
