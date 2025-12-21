@@ -128,6 +128,33 @@ class WaterTrackerViewModelTest {
     }
 
     @Test
+    fun `goal reached event is only emitted when crossing threshold`() = runTest {
+        viewModel.events.test {
+            // 1. Emit reached stats
+            statsFlow.emit(
+                DailyWaterStats(
+                    date = testDate, totalMl = 2000, goalMl = 2000, entries = emptyList()
+                )
+            )
+
+            advanceTimeBy(1000)
+            assertEquals(WaterTrackerUiEvent.GoalReached, awaitItem())
+
+            // 2. Emit another reached stats (e.g. added more water)
+            statsFlow.emit(
+                DailyWaterStats(
+                    date = testDate, totalMl = 2250, goalMl = 2000, entries = emptyList()
+                )
+            )
+
+            advanceTimeBy(1000)
+
+            // Should not emit another GoalReached event
+            expectNoEvents()
+        }
+    }
+
+    @Test
     fun `add water intent calls repository and shows success`() = runTest {
         everySuspend { repository.addWaterIntake(250, any()) } returns Result.success(Unit)
 
@@ -144,12 +171,9 @@ class WaterTrackerViewModelTest {
     }
 
     @Test
-    fun `add water intent shows error on failure`() = runTest {
+    fun `add water intent shows error on failure and resets loading`() = runTest {
         everySuspend {
-            repository.addWaterIntake(
-                250,
-                any()
-            )
+            repository.addWaterIntake(250, any())
         } returns Result.failure(Exception("DB Error"))
 
         viewModel.events.test {
@@ -158,6 +182,9 @@ class WaterTrackerViewModelTest {
             val event = awaitItem()
             assertTrue(event is WaterTrackerUiEvent.ShowError)
             assertEquals("DB Error", event.message)
+
+            // Verify loading is reset
+            assertFalse(viewModel.state.value.isLoading)
         }
     }
 
@@ -177,6 +204,19 @@ class WaterTrackerViewModelTest {
     }
 
     @Test
+    fun `delete entry intent shows error on failure`() = runTest {
+        everySuspend { repository.deleteWaterIntake("123") } returns Result.failure(Exception("Delete failed"))
+
+        viewModel.events.test {
+            viewModel.handleIntent(WaterTrackerUiIntent.DeleteEntry("123"))
+
+            val event = awaitItem()
+            assertTrue(event is WaterTrackerUiEvent.ShowError)
+            assertEquals("Delete failed", event.message)
+        }
+    }
+
+    @Test
     fun `update goal intent calls repository and shows success`() = runTest {
         everySuspend { repository.updateDailyGoal(3000) } returns Result.success(Unit)
 
@@ -191,6 +231,26 @@ class WaterTrackerViewModelTest {
             assertFalse(viewModel.showGoalDialog.value)
 
             verifySuspend { repository.updateDailyGoal(3000) }
+        }
+    }
+
+    @Test
+    fun `update goal intent shows error on failure`() = runTest {
+        everySuspend { repository.updateDailyGoal(3000) } returns Result.failure(Exception("Update failed"))
+
+        viewModel.events.test {
+            // Pre-condition: dialog is shown
+            viewModel.handleIntent(WaterTrackerUiIntent.ShowGoalDialog)
+            assertTrue(viewModel.showGoalDialog.value)
+
+            viewModel.handleIntent(WaterTrackerUiIntent.UpdateGoal(3000))
+
+            val event = awaitItem()
+            assertTrue(event is WaterTrackerUiEvent.ShowError)
+            assertEquals("Update failed", event.message)
+
+            // Dialog should stay open on failure
+            assertTrue(viewModel.showGoalDialog.value)
         }
     }
 
