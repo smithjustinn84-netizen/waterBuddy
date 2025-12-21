@@ -21,6 +21,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.waterbuddy.features.watertracker.domain.model.WaterIntake
 import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
+import org.jetbrains.compose.ui.tooling.preview.Preview
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
 @Composable
 fun WaterEntryItem(
@@ -89,4 +94,21 @@ private fun formatTime(dateTime: LocalDateTime): String {
         else -> hour
     }
     return "$displayHour:$minute $amPm"
+}
+
+@OptIn(ExperimentalTime::class)
+@Preview
+@Composable
+fun WaterEntryItemPreview() {
+    MaterialTheme {
+        WaterEntryItem(
+            entry = WaterIntake(
+                id = "preview",
+                amountMl = 250,
+                timestamp = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
+            ),
+            onDelete = {},
+            modifier = Modifier.padding(16.dp)
+        )
+    }
 }

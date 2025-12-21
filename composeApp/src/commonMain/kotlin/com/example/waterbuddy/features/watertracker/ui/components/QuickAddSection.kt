@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
 import waterbuddy.composeapp.generated.resources.Res
 import waterbuddy.composeapp.generated.resources.bottle_label
 import waterbuddy.composeapp.generated.resources.glass_label
@@ -97,5 +98,13 @@ private fun QuickAddButton(
             Text(text = "${amount}ml", style = MaterialTheme.typography.bodySmall)
             Text(text = label, style = MaterialTheme.typography.labelSmall)
         }
+    }
+}
+
+@Preview
+@Composable
+fun QuickAddSectionPreview() {
+    MaterialTheme {
+        QuickAddSection(onAddWater = {}, modifier = Modifier.padding(16.dp))
     }
 }

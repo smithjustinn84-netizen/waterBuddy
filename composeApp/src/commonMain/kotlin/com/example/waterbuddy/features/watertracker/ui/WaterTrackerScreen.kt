@@ -28,6 +28,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.waterbuddy.core.navigation.HydrationInsights
+import com.example.waterbuddy.features.watertracker.domain.model.WaterIntake
 import com.example.waterbuddy.features.watertracker.ui.components.DrinkOverlay
 import com.example.waterbuddy.features.watertracker.ui.components.EmptyStateMessage
 import com.example.waterbuddy.features.watertracker.ui.components.GoalDialog
@@ -36,12 +37,17 @@ import com.example.waterbuddy.features.watertracker.ui.components.WaterEntryItem
 import com.example.waterbuddy.features.watertracker.ui.components.WaterProgressCard
 import dev.zacsweers.metrox.viewmodel.metroViewModel
 import kotlinx.coroutines.delay
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
 import waterbuddy.composeapp.generated.resources.Res
 import waterbuddy.composeapp.generated.resources.goal_button
 import waterbuddy.composeapp.generated.resources.goal_reached_message
 import waterbuddy.composeapp.generated.resources.todays_entries
 import waterbuddy.composeapp.generated.resources.water_tracker_title
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 import kotlin.time.TimeSource
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -231,6 +237,54 @@ fun WaterTrackerContent(
             onConfirm = { newGoal ->
                 onIntent(WaterTrackerUiIntent.UpdateGoal(newGoal))
             }
+        )
+    }
+}
+
+@OptIn(ExperimentalTime::class)
+@Preview
+@Composable
+fun WaterTrackerPreview() {
+    MaterialTheme {
+        WaterTrackerContent(
+            state = WaterTrackerUiState(
+                totalMl = 750,
+                goalMl = 2000,
+                progressPercentage = 0.375f,
+                remainingMl = 1250,
+                entries = listOf(
+                    WaterIntake(
+                        id = "1",
+                        amountMl = 250,
+                        timestamp = Clock.System.now()
+                            .toLocalDateTime(TimeZone.currentSystemDefault())
+                    ),
+                    WaterIntake(
+                        id = "2",
+                        amountMl = 500,
+                        timestamp = Clock.System.now()
+                            .toLocalDateTime(TimeZone.currentSystemDefault())
+                    )
+                )
+            ),
+            showGoalDialog = false,
+            snackbarHostState = remember { SnackbarHostState() },
+            onIntent = {},
+            onNavigateToInsights = {}
+        )
+    }
+}
+
+@Preview
+@Composable
+fun WaterTrackerEmptyPreview() {
+    MaterialTheme {
+        WaterTrackerContent(
+            state = WaterTrackerUiState(),
+            showGoalDialog = false,
+            snackbarHostState = remember { SnackbarHostState() },
+            onIntent = {},
+            onNavigateToInsights = {}
         )
     }
 }

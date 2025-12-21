@@ -24,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
 import waterbuddy.composeapp.generated.resources.Res
 import waterbuddy.composeapp.generated.resources.consumed_label
 import waterbuddy.composeapp.generated.resources.exceeded_label
@@ -114,6 +115,36 @@ private fun StatItem(label: String, value: String) {
             text = label,
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+    }
+}
+
+@Preview
+@Composable
+fun WaterProgressCardPreview() {
+    MaterialTheme {
+        WaterProgressCard(
+            totalMl = 1200,
+            goalMl = 2000,
+            progressPercentage = 0.6f,
+            remainingMl = 800,
+            isGoalReached = false,
+            modifier = Modifier.padding(16.dp)
+        )
+    }
+}
+
+@Preview
+@Composable
+fun WaterProgressCardGoalReachedPreview() {
+    MaterialTheme {
+        WaterProgressCard(
+            totalMl = 2500,
+            goalMl = 2000,
+            progressPercentage = 1.0f,
+            remainingMl = 0,
+            isGoalReached = true,
+            modifier = Modifier.padding(16.dp)
         )
     }
 }

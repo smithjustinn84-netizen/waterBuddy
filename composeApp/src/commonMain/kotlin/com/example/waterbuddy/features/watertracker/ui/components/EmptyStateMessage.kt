@@ -12,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
 import waterbuddy.composeapp.generated.resources.Res
 import waterbuddy.composeapp.generated.resources.empty_state_subtitle
 import waterbuddy.composeapp.generated.resources.empty_state_title
@@ -42,5 +43,13 @@ fun EmptyStateMessage(
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
         )
+    }
+}
+
+@Preview
+@Composable
+fun EmptyStateMessagePreview() {
+    MaterialTheme {
+        EmptyStateMessage()
     }
 }
