@@ -38,7 +38,7 @@ kotlin {
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
-            implementation("com.google.android.material:material:1.12.0")
+            implementation("com.google.android.material:material:1.13.0")
             implementation(libs.androidx.core.splashscreen)
             implementation(libs.androidx.sqlite.bundled)
         }
@@ -69,11 +69,6 @@ kotlin {
         androidUnitTest.dependencies {
             implementation(libs.kotest.runner.junit5)
             implementation(libs.androidx.testExt.junit)
-        }
-        val jvmTest by getting {
-            dependencies {
-                implementation(libs.kotest.runner.junit5)
-            }
         }
     }
 }
@@ -134,13 +129,12 @@ kover {
                 annotatedBy(
                     "androidx.compose.runtime.Composable",
                     "androidx.compose.ui.tooling.preview.Preview",
-                    "kotlinx.serialization.Serializable"
+                    "kotlinx.serialization.Serializable",
+                    // If you use a custom multiplatform preview annotation
+                    "com.yourproject.ui.annotations.MultiPreview"
                 )
 
                 classes(
-                    "*_Factory",
-                    "*_MembersInjector",
-                    "*_Provide*Factory",
                     "*_Component",
                     "*_Module",
                     "*.ComposableSingletons*",
@@ -149,25 +143,39 @@ kover {
                     "*.generated.resources.*",
                     "*Res",
                     "*Res$*",
-
                     // Android standard exclusions
                     "*.BuildConfig",
                     "*Activity",
                     "*Fragment",
                     "*FragmentArgs",
                     "*FragmentDirections",
-
                     // Room & Data exclusions
                     "*_Impl*", // Room generated implementations
                     "*.AppDatabase",
-
                     // DI & Architecture boilerplate
                     "*.di.*",
                     "*ModuleKt*",
                     "*_Factory*", // Metro/Dagger generated
-
+                    // Metro generates Factory classes for every @Inject constructor
+                    "*_Factory",
+                    "*_Factory$*", // Inner classes like InstanceHolder
+                    // Metro generates Provider classes for @Provides methods
+                    "*_Provider",
+                    // Exclude the generated Dependency Graph implementations
+                    "*MetroAppGraph",
+                    "*Metro*Graph",
+                    // Members injectors (if using field injection in Activities)
+                    "*_MembersInjector",
                     // KMP / Platform specific
-                    "*.PlatformKt"
+                    "*.PlatformKt",
+                    "*ThemeKt*",       // Excludes Theme.kt files
+                    "*TypographyKt*",  // Excludes Typography.kt files
+                    "*ColorsKt*",      // Excludes Colors.kt files
+                    "*ShapesKt*",      // Excludes Shapes.kt files
+                    "*ColorKt*",       // Excludes Color.kt files
+                    "*TypeKt*",        // Excludes Type.kt files
+                    "*ShapeKt*",       // Excludes Shape.kt files
+                    "*ComposableSingletons*" // Internal Compose artifacts
                 )
             }
         }

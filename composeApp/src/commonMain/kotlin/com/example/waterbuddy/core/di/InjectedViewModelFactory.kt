@@ -10,7 +10,7 @@ import dev.zacsweers.metrox.viewmodel.ViewModelAssistedFactory
 import kotlin.reflect.KClass
 
 /**
- * A [ViewModelProvider.Factory] that uses an injected map of [KClass] to [Provider] of [ViewModel]
+ * A [androidx.lifecycle.ViewModelProvider.Factory] that uses an injected map of [KClass] to [Provider] of [ViewModel]
  * to create ViewModels.
  */
 @ContributesBinding(AppScope::class)
