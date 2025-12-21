@@ -36,7 +36,7 @@ class HydrationInsightsViewModelTest {
     @BeforeTest
     fun setup() {
         Dispatchers.setMain(testDispatcher)
-        repository = mock<WaterRepository>()
+        repository = mock()
 
         every { repository.observeStatsRange(any(), any()) } returns statsFlow
 
@@ -74,7 +74,7 @@ class HydrationInsightsViewModelTest {
                 val state = awaitItem()
                 assertEquals(false, state.isLoading)
                 assertNotNull(state.insights)
-                assertEquals(2000, state.insights?.averageIntake)
+                assertEquals(2000, state.insights.averageIntake)
             }
         }
 

@@ -17,6 +17,7 @@ kotlin = "2.3.0"
 kotlinx-serialization = "1.9.0"
 kotlinx-datetime = "0.7.1"
 kotlinx-coroutines = "1.10.2"
+material = "1.13.0"
 metro = "0.9.2"
 metro-compose = "0.9.2"
 ksp = "2.3.3"
@@ -46,6 +47,7 @@ kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-t
 androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
 androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
 androidx-sqlite-bundled = { group = "androidx.sqlite", name = "sqlite-bundled", version.ref = "sqlite" }
+material = { module = "com.google.android.material:material", version.ref = "material" }
 metro-viewmodel-compose = { module = "dev.zacsweers.metro:metrox-viewmodel-compose", version.ref = "metro-compose" }
 kotest-assertions-core = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest" }
 kotest-framework-engine = { module = "io.kotest:kotest-framework-engine", version.ref = "kotest" }

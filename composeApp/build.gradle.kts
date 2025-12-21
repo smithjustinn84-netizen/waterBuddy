@@ -38,7 +38,7 @@ kotlin {
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
-            implementation("com.google.android.material:material:1.13.0")
+            implementation(libs.material)
             implementation(libs.androidx.core.splashscreen)
             implementation(libs.androidx.sqlite.bundled)
         }
@@ -195,6 +195,9 @@ kover {
                     "*MonthlyHeatmapKt*",
                     "*KpiCardsKt*",
                     "*TimeRangeSelectorKt*",
+                    // Compose Preview Data
+                    "*PreviewParameterProvider*",
+                    "*PreviewData*",
                     // Synthetic/Compiler generated classes
                     "*$*inlined$*",
                     "*$*lambda$*",
