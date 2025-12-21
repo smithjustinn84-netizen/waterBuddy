@@ -6,7 +6,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.waterbuddy.core.di.AppComponent
+import com.example.waterbuddy.core.di.AppGraph
 import com.example.waterbuddy.core.navigation.HydrationInsights
 import com.example.waterbuddy.core.navigation.NavigationCommand
 import com.example.waterbuddy.core.navigation.WaterTracker
@@ -17,7 +17,7 @@ import dev.zacsweers.metrox.viewmodel.LocalMetroViewModelFactory
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
-fun App(component: AppComponent) {
+fun App(component: AppGraph) {
     CompositionLocalProvider(LocalMetroViewModelFactory provides component.metroViewModelFactory) {
         WaterBuddyTheme {
             val navController = rememberNavController()

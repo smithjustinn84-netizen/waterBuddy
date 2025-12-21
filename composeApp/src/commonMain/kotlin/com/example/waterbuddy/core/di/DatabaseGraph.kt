@@ -12,7 +12,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 
 @ContributesTo(AppScope::class)
-interface DatabaseModule {
+interface DatabaseGraph {
     @Provides
     @SingleIn(AppScope::class)
     fun provideDatabase(builder: RoomDatabase.Builder<AppDatabase>): AppDatabase {
