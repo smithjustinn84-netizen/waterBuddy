@@ -19,6 +19,11 @@ interface WaterRepository {
 
     suspend fun deleteWaterIntake(id: String): Result<Unit>
 
+    suspend fun updateWaterIntake(
+        id: String,
+        amountMl: Int,
+    ): Result<Unit>
+
     suspend fun updateDailyGoal(goalMl: Int): Result<Unit>
 
     suspend fun getDailyGoal(): Int

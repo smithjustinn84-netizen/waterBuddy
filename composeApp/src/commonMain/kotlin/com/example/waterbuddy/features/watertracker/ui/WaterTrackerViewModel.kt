@@ -8,6 +8,7 @@ import com.example.waterbuddy.features.watertracker.domain.usecase.AddWaterIntak
 import com.example.waterbuddy.features.watertracker.domain.usecase.DeleteWaterIntakeUseCase
 import com.example.waterbuddy.features.watertracker.domain.usecase.ObserveDailyWaterStatsUseCase
 import com.example.waterbuddy.features.watertracker.domain.usecase.UpdateDailyGoalUseCase
+import com.example.waterbuddy.features.watertracker.domain.usecase.UpdateWaterIntakeUseCase
 import dev.zacsweers.metro.ContributesIntoMap
 import dev.zacsweers.metro.Inject
 import dev.zacsweers.metrox.viewmodel.ViewModelKey
@@ -29,6 +30,7 @@ class WaterTrackerViewModel(
     private val observeDailyWaterStatsUseCase: ObserveDailyWaterStatsUseCase,
     private val addWaterIntakeUseCase: AddWaterIntakeUseCase,
     private val deleteWaterIntakeUseCase: DeleteWaterIntakeUseCase,
+    private val updateWaterIntakeUseCase: UpdateWaterIntakeUseCase,
     private val updateDailyGoalUseCase: UpdateDailyGoalUseCase,
     val navigator: Navigator,
 ) : ViewModel() {
@@ -85,6 +87,9 @@ class WaterTrackerViewModel(
         when (intent) {
             is WaterTrackerUiIntent.AddWater -> addWater(intent.amountMl)
             is WaterTrackerUiIntent.DeleteEntry -> deleteEntry(intent.id)
+            is WaterTrackerUiIntent.UpdateEntry -> updateEntry(intent.id, intent.amountMl)
+            is WaterTrackerUiIntent.ShowEditDialog -> _state.update { it.copy(editingEntry = intent.entry) }
+            WaterTrackerUiIntent.DismissEditDialog -> _state.update { it.copy(editingEntry = null) }
             is WaterTrackerUiIntent.UpdateGoal -> updateGoal(intent.goalMl)
             WaterTrackerUiIntent.ShowGoalDialog -> showGoalDialog.value = true
             WaterTrackerUiIntent.DismissGoalDialog -> showGoalDialog.value = false
@@ -122,6 +127,27 @@ class WaterTrackerViewModel(
                     _events.emit(
                         WaterTrackerUiEvent.ShowError(
                             error.message ?: "Failed to delete entry",
+                        ),
+                    )
+                },
+            )
+        }
+    }
+
+    private fun updateEntry(
+        id: String,
+        amountMl: Int,
+    ) {
+        viewModelScope.launch {
+            updateWaterIntakeUseCase(id, amountMl).fold(
+                onSuccess = {
+                    _state.update { it.copy(editingEntry = null) }
+                    _events.emit(WaterTrackerUiEvent.ShowSuccess("Entry updated"))
+                },
+                onFailure = { error ->
+                    _events.emit(
+                        WaterTrackerUiEvent.ShowError(
+                            error.message ?: "Failed to update entry",
                         ),
                     )
                 },

@@ -3,11 +3,13 @@ package com.example.waterbuddy.features.watertracker.ui
 import app.cash.turbine.test
 import com.example.waterbuddy.core.navigation.Navigator
 import com.example.waterbuddy.features.watertracker.domain.model.DailyWaterStats
+import com.example.waterbuddy.features.watertracker.domain.model.WaterIntake
 import com.example.waterbuddy.features.watertracker.domain.repository.WaterRepository
 import com.example.waterbuddy.features.watertracker.domain.usecase.AddWaterIntakeUseCase
 import com.example.waterbuddy.features.watertracker.domain.usecase.DeleteWaterIntakeUseCase
 import com.example.waterbuddy.features.watertracker.domain.usecase.ObserveDailyWaterStatsUseCase
 import com.example.waterbuddy.features.watertracker.domain.usecase.UpdateDailyGoalUseCase
+import com.example.waterbuddy.features.watertracker.domain.usecase.UpdateWaterIntakeUseCase
 import dev.mokkery.answering.returns
 import dev.mokkery.every
 import dev.mokkery.everySuspend
@@ -24,11 +26,13 @@ import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalDateTime
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
+import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -56,14 +60,16 @@ class WaterTrackerViewModelTest {
         val observeUseCase = ObserveDailyWaterStatsUseCase(repository)
         val addUseCase = AddWaterIntakeUseCase(repository)
         val deleteUseCase = DeleteWaterIntakeUseCase(repository)
-        val updateUseCase = UpdateDailyGoalUseCase(repository)
+        val updateEntryUseCase = UpdateWaterIntakeUseCase(repository)
+        val updateGoalUseCase = UpdateDailyGoalUseCase(repository)
 
         viewModel =
             WaterTrackerViewModel(
                 observeUseCase,
                 addUseCase,
                 deleteUseCase,
-                updateUseCase,
+                updateEntryUseCase,
+                updateGoalUseCase,
                 navigator,
             )
     }
@@ -238,6 +244,45 @@ class WaterTrackerViewModelTest {
         }
 
     @Test
+    fun `update entry intent calls repository and shows success`() =
+        runTest {
+            everySuspend { repository.updateWaterIntake("123", 400) } returns Result.success(Unit)
+
+            viewModel.events.test {
+                viewModel.handleIntent(WaterTrackerUiIntent.UpdateEntry("123", 400))
+
+                val event = awaitItem()
+                assertTrue(event is WaterTrackerUiEvent.ShowSuccess)
+                assertEquals("Entry updated", event.message)
+
+                // Should also clear editing state
+                assertNull(viewModel.state.value.editingEntry)
+
+                verifySuspend { repository.updateWaterIntake("123", 400) }
+            }
+        }
+
+    @Test
+    fun `update entry intent shows error on failure`() =
+        runTest {
+            everySuspend { repository.updateWaterIntake("123", 400) } returns Result.failure(Exception("Update failed"))
+
+            viewModel.events.test {
+                val entry = WaterIntake("123", 250, LocalDateTime(2023, 10, 27, 10, 0))
+                viewModel.handleIntent(WaterTrackerUiIntent.ShowEditDialog(entry))
+
+                viewModel.handleIntent(WaterTrackerUiIntent.UpdateEntry("123", 400))
+
+                val event = awaitItem()
+                assertTrue(event is WaterTrackerUiEvent.ShowError)
+                assertEquals("Update failed", event.message)
+
+                // Editing state should remain on failure
+                assertEquals(entry, viewModel.state.value.editingEntry)
+            }
+        }
+
+    @Test
     fun `update goal intent calls repository and shows success`() =
         runTest {
             everySuspend { repository.updateDailyGoal(3000) } returns Result.success(Unit)
@@ -285,5 +330,16 @@ class WaterTrackerViewModelTest {
 
             viewModel.handleIntent(WaterTrackerUiIntent.DismissGoalDialog)
             assertFalse(viewModel.showGoalDialog.value)
+        }
+
+    @Test
+    fun `show and dismiss edit dialog intents update state`() =
+        runTest {
+            val entry = WaterIntake("123", 250, LocalDateTime(2023, 10, 27, 10, 0))
+            viewModel.handleIntent(WaterTrackerUiIntent.ShowEditDialog(entry))
+            assertEquals(entry, viewModel.state.value.editingEntry)
+
+            viewModel.handleIntent(WaterTrackerUiIntent.DismissEditDialog)
+            assertNull(viewModel.state.value.editingEntry)
         }
 }

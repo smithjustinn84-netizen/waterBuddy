@@ -25,6 +25,12 @@ interface WaterIntakeDao {
     @Query("DELETE FROM water_intake WHERE id = :id")
     suspend fun deleteWaterIntakeById(id: String)
 
+    @Query("UPDATE water_intake SET amountMl = :amountMl WHERE id = :id")
+    suspend fun updateWaterIntakeAmount(
+        id: String,
+        amountMl: Int,
+    )
+
     @Query("SELECT SUM(amountMl) FROM water_intake WHERE date(timestamp) = date('now')")
     fun getTodayTotalWaterIntake(): Flow<Int?>
 }

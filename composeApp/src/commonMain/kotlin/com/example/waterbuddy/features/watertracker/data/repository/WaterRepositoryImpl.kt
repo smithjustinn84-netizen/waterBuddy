@@ -98,6 +98,17 @@ class WaterRepositoryImpl(
             Result.failure(e)
         }
 
+    override suspend fun updateWaterIntake(
+        id: String,
+        amountMl: Int,
+    ): Result<Unit> =
+        try {
+            waterIntakeDao.updateWaterIntakeAmount(id, amountMl)
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+
     override suspend fun updateDailyGoal(goalMl: Int): Result<Unit> =
         try {
             dailyGoalDao.insertDailyGoal(DailyGoalEntity(goalMl = goalMl))

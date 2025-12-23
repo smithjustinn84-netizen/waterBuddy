@@ -33,6 +33,7 @@ import kotlin.time.ExperimentalTime
 fun WaterEntryItem(
     entry: WaterIntake,
     onDelete: () -> Unit,
+    onEdit: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Card(
@@ -78,11 +79,19 @@ fun WaterEntryItem(
                 }
             }
 
-            TextButton(onClick = onDelete) {
-                Text(
-                    text = "🗑️",
-                    style = MaterialTheme.typography.titleMedium,
-                )
+            Row {
+                TextButton(onClick = onEdit) {
+                    Text(
+                        text = "✏️",
+                        style = MaterialTheme.typography.titleMedium,
+                    )
+                }
+                TextButton(onClick = onDelete) {
+                    Text(
+                        text = "🗑️",
+                        style = MaterialTheme.typography.titleMedium,
+                    )
+                }
             }
         }
     }
@@ -102,6 +111,7 @@ fun WaterEntryItemPreview() {
                         timestamp = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()),
                     ),
                 onDelete = {},
+                onEdit = {},
                 modifier = Modifier.padding(16.dp),
             )
         }
@@ -122,6 +132,7 @@ fun WaterEntryItemDarkModePreview() {
                         timestamp = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()),
                     ),
                 onDelete = {},
+                onEdit = {},
                 modifier = Modifier.padding(16.dp),
             )
         }

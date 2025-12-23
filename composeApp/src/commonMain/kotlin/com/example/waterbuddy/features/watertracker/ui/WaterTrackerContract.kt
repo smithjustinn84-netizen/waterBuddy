@@ -11,6 +11,7 @@ data class WaterTrackerUiState(
     val entries: List<WaterIntake> = emptyList(),
     val isLoading: Boolean = false,
     val errorMessage: String? = null,
+    val editingEntry: WaterIntake? = null,
 )
 
 sealed interface WaterTrackerUiIntent {
@@ -21,6 +22,17 @@ sealed interface WaterTrackerUiIntent {
     data class DeleteEntry(
         val id: String,
     ) : WaterTrackerUiIntent
+
+    data class UpdateEntry(
+        val id: String,
+        val amountMl: Int,
+    ) : WaterTrackerUiIntent
+
+    data class ShowEditDialog(
+        val entry: WaterIntake,
+    ) : WaterTrackerUiIntent
+
+    data object DismissEditDialog : WaterTrackerUiIntent
 
     data class UpdateGoal(
         val goalMl: Int,

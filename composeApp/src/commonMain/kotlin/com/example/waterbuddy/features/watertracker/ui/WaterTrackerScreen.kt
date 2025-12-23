@@ -33,6 +33,7 @@ import com.example.waterbuddy.core.theme.WaterBuddyTheme
 import com.example.waterbuddy.features.watertracker.domain.model.WaterIntake
 import com.example.waterbuddy.features.watertracker.ui.components.CelebrationAnimation
 import com.example.waterbuddy.features.watertracker.ui.components.DrinkOverlay
+import com.example.waterbuddy.features.watertracker.ui.components.EditEntryDialog
 import com.example.waterbuddy.features.watertracker.ui.components.EmptyStateMessage
 import com.example.waterbuddy.features.watertracker.ui.components.GoalDialog
 import com.example.waterbuddy.features.watertracker.ui.components.QuickAddSection
@@ -218,6 +219,7 @@ fun WaterTrackerContent(
                     WaterEntryItem(
                         entry = entry,
                         onDelete = { onIntent(WaterTrackerUiIntent.DeleteEntry(entry.id)) },
+                        onEdit = { onIntent(WaterTrackerUiIntent.ShowEditDialog(entry)) },
                     )
                 }
 
@@ -253,6 +255,17 @@ fun WaterTrackerContent(
             onDismiss = { onIntent(WaterTrackerUiIntent.DismissGoalDialog) },
             onConfirm = { newGoal ->
                 onIntent(WaterTrackerUiIntent.UpdateGoal(newGoal))
+            },
+        )
+    }
+
+    // Edit Entry Dialog
+    state.editingEntry?.let { entry ->
+        EditEntryDialog(
+            entry = entry,
+            onDismiss = { onIntent(WaterTrackerUiIntent.DismissEditDialog) },
+            onConfirm = { newAmount ->
+                onIntent(WaterTrackerUiIntent.UpdateEntry(entry.id, newAmount))
             },
         )
     }

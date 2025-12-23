@@ -20,5 +20,7 @@
     <string name="ml_suffix">ml</string>
     <string name="save_button">Save</string>
     <string name="cancel_button">Cancel</string>
+    <string name="edit_entry_title">Edit Water Intake</string>
+    <string name="edit_entry_description">Adjust the amount of water consumed</string>
+    <string name="amount_input_label">Amount (ml)</string>
 </resources>
-
