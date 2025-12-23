@@ -48,7 +48,17 @@ class WaterTrackerViewModel(
     var showGoalDialog = MutableStateFlow(false)
         private set
 
+    private val quotes =
+        listOf(
+            "Thou art God. Drink deep.",
+            "Waiting is. Grokking is. Drinking is.",
+            "I am a brother to all who share this water.",
+            "To share water is to share life.",
+            "Drink, and let the truth be grokked.",
+        )
+
     init {
+        _state.update { it.copy(quote = quotes.random()) }
         observeWaterStats()
     }
 
@@ -93,12 +103,14 @@ class WaterTrackerViewModel(
             is WaterTrackerUiIntent.UpdateGoal -> updateGoal(intent.goalMl)
             WaterTrackerUiIntent.ShowGoalDialog -> showGoalDialog.value = true
             WaterTrackerUiIntent.DismissGoalDialog -> showGoalDialog.value = false
+            WaterTrackerUiIntent.ShowCustomAddDialog -> _state.update { it.copy(showCustomAddDialog = true) }
+            WaterTrackerUiIntent.DismissCustomAddDialog -> _state.update { it.copy(showCustomAddDialog = false) }
         }
     }
 
     private fun addWater(amountMl: Int) {
         viewModelScope.launch {
-            _state.update { it.copy(isLoading = true) }
+            _state.update { it.copy(isLoading = true, showCustomAddDialog = false) }
 
             addWaterIntakeUseCase(amountMl).fold(
                 onSuccess = {

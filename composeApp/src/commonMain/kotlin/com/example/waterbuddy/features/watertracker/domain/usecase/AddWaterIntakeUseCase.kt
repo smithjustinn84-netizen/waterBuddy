@@ -10,5 +10,13 @@ class AddWaterIntakeUseCase(
     suspend operator fun invoke(
         amountMl: Int,
         note: String? = null,
-    ): Result<Unit> = waterRepository.addWaterIntake(amountMl, note)
+    ): Result<Unit> {
+        if (amountMl <= 0) {
+            return Result.failure(IllegalArgumentException("Amount must be greater than 0"))
+        }
+        if (amountMl > 4000) {
+            return Result.failure(IllegalArgumentException("Amount cannot exceed 4000ml"))
+        }
+        return waterRepository.addWaterIntake(amountMl, note)
+    }
 }

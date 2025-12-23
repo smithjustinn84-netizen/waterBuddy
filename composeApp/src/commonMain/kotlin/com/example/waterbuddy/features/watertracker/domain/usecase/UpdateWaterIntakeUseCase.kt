@@ -17,6 +17,9 @@ class UpdateWaterIntakeUseCase(
         if (amountMl <= 0) {
             return Result.failure(IllegalArgumentException("Amount must be greater than 0"))
         }
+        if (amountMl > 4000) {
+            return Result.failure(IllegalArgumentException("Amount cannot exceed 4000ml"))
+        }
         return repository.updateWaterIntake(id, amountMl)
     }
 }

@@ -12,6 +12,8 @@ data class WaterTrackerUiState(
     val isLoading: Boolean = false,
     val errorMessage: String? = null,
     val editingEntry: WaterIntake? = null,
+    val showCustomAddDialog: Boolean = false,
+    val quote: String? = null,
 )
 
 sealed interface WaterTrackerUiIntent {
@@ -41,6 +43,10 @@ sealed interface WaterTrackerUiIntent {
     data object ShowGoalDialog : WaterTrackerUiIntent
 
     data object DismissGoalDialog : WaterTrackerUiIntent
+
+    data object ShowCustomAddDialog : WaterTrackerUiIntent
+
+    data object DismissCustomAddDialog : WaterTrackerUiIntent
 }
 
 sealed interface WaterTrackerUiEvent {

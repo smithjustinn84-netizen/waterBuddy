@@ -32,6 +32,7 @@ import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
+import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
@@ -78,6 +79,12 @@ class WaterTrackerViewModelTest {
     fun tearDown() {
         Dispatchers.resetMain()
     }
+
+    @Test
+    fun `initial state contains a random quote`() =
+        runTest {
+            assertNotNull(viewModel.state.value.quote)
+        }
 
     @Test
     fun `initial state is loading`() =
@@ -214,6 +221,18 @@ class WaterTrackerViewModelTest {
         }
 
     @Test
+    fun `add water intent with amount over limit shows error`() =
+        runTest {
+            viewModel.events.test {
+                viewModel.handleIntent(WaterTrackerUiIntent.AddWater(5000))
+
+                val event = awaitItem()
+                assertTrue(event is WaterTrackerUiEvent.ShowError)
+                assertEquals("Amount cannot exceed 4000ml", event.message)
+            }
+        }
+
+    @Test
     fun `delete entry intent calls repository and shows success`() =
         runTest {
             everySuspend { repository.deleteWaterIntake("123") } returns Result.success(Unit)
@@ -283,6 +302,18 @@ class WaterTrackerViewModelTest {
         }
 
     @Test
+    fun `update entry intent with amount over limit shows error`() =
+        runTest {
+            viewModel.events.test {
+                viewModel.handleIntent(WaterTrackerUiIntent.UpdateEntry("123", 5000))
+
+                val event = awaitItem()
+                assertTrue(event is WaterTrackerUiEvent.ShowError)
+                assertEquals("Amount cannot exceed 4000ml", event.message)
+            }
+        }
+
+    @Test
     fun `update goal intent calls repository and shows success`() =
         runTest {
             everySuspend { repository.updateDailyGoal(3000) } returns Result.success(Unit)
@@ -341,5 +372,15 @@ class WaterTrackerViewModelTest {
 
             viewModel.handleIntent(WaterTrackerUiIntent.DismissEditDialog)
             assertNull(viewModel.state.value.editingEntry)
+        }
+
+    @Test
+    fun `show and dismiss custom add dialog intents update state`() =
+        runTest {
+            viewModel.handleIntent(WaterTrackerUiIntent.ShowCustomAddDialog)
+            assertTrue(viewModel.state.value.showCustomAddDialog)
+
+            viewModel.handleIntent(WaterTrackerUiIntent.DismissCustomAddDialog)
+            assertFalse(viewModel.state.value.showCustomAddDialog)
         }
 }

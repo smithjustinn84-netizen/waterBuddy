@@ -16,32 +16,30 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.waterbuddy.features.watertracker.domain.model.WaterIntake
 import org.jetbrains.compose.resources.stringResource
 import waterbuddy.composeapp.generated.resources.Res
+import waterbuddy.composeapp.generated.resources.add_button
 import waterbuddy.composeapp.generated.resources.amount_input_label
 import waterbuddy.composeapp.generated.resources.cancel_button
-import waterbuddy.composeapp.generated.resources.edit_entry_description
-import waterbuddy.composeapp.generated.resources.edit_entry_title
+import waterbuddy.composeapp.generated.resources.custom_add_description
+import waterbuddy.composeapp.generated.resources.custom_add_title
 import waterbuddy.composeapp.generated.resources.ml_suffix
-import waterbuddy.composeapp.generated.resources.save_button
 
 @Composable
-fun EditEntryDialog(
-    entry: WaterIntake,
+fun CustomAddDialog(
     onDismiss: () -> Unit,
     onConfirm: (Int) -> Unit,
 ) {
-    var amountText by remember { mutableStateOf(entry.amountMl.toString()) }
+    var amountText by remember { mutableStateOf("") }
     val amount = amountText.toIntOrNull() ?: 0
     val isError = amount > 4000
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(stringResource(Res.string.edit_entry_title)) },
+        title = { Text(stringResource(Res.string.custom_add_title)) },
         text = {
             Column {
-                Text(stringResource(Res.string.edit_entry_description))
+                Text(stringResource(Res.string.custom_add_description))
                 Spacer(modifier = Modifier.height(16.dp))
                 OutlinedTextField(
                     value = amountText,
@@ -70,7 +68,7 @@ fun EditEntryDialog(
                 },
                 enabled = amount in 1..4000,
             ) {
-                Text(stringResource(Res.string.save_button))
+                Text(stringResource(Res.string.add_button))
             }
         },
         dismissButton = {

@@ -24,6 +24,7 @@ import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import waterbuddy.composeapp.generated.resources.Res
 import waterbuddy.composeapp.generated.resources.bottle_label
+import waterbuddy.composeapp.generated.resources.custom_label
 import waterbuddy.composeapp.generated.resources.glass_label
 import waterbuddy.composeapp.generated.resources.large_label
 import waterbuddy.composeapp.generated.resources.quick_add_title
@@ -31,6 +32,7 @@ import waterbuddy.composeapp.generated.resources.quick_add_title
 @Composable
 fun QuickAddSection(
     onAddWater: (Int) -> Unit,
+    onShowCustomAdd: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Card(modifier = modifier.fillMaxWidth()) {
@@ -69,6 +71,12 @@ fun QuickAddSection(
                     onClick = { onAddWater(750) },
                     modifier = Modifier.weight(1f),
                 )
+                QuickAddButton(
+                    label = stringResource(Res.string.custom_label),
+                    emoji = "➕",
+                    onClick = onShowCustomAdd,
+                    modifier = Modifier.weight(1f),
+                )
             }
         }
     }
@@ -76,7 +84,7 @@ fun QuickAddSection(
 
 @Composable
 private fun QuickAddButton(
-    amount: Int,
+    amount: Int? = null,
     label: String,
     emoji: String,
     onClick: () -> Unit,
@@ -97,7 +105,11 @@ private fun QuickAddButton(
                 style = MaterialTheme.typography.headlineMedium,
             )
             Spacer(modifier = Modifier.height(4.dp))
-            Text(text = "${amount}ml", style = MaterialTheme.typography.bodySmall)
+            if (amount != null) {
+                Text(text = "${amount}ml", style = MaterialTheme.typography.bodySmall)
+            } else {
+                Text(text = "???ml", style = MaterialTheme.typography.bodySmall)
+            }
             Text(text = label, style = MaterialTheme.typography.labelSmall)
         }
     }
@@ -108,7 +120,7 @@ private fun QuickAddButton(
 fun QuickAddSectionPreview() {
     WaterBuddyTheme {
         Surface {
-            QuickAddSection(onAddWater = {}, modifier = Modifier.padding(16.dp))
+            QuickAddSection(onAddWater = {}, onShowCustomAdd = {}, modifier = Modifier.padding(16.dp))
         }
     }
 }
@@ -118,7 +130,7 @@ fun QuickAddSectionPreview() {
 fun QuickAddSectionDarkModePreview() {
     WaterBuddyTheme(darkTheme = true) {
         Surface {
-            QuickAddSection(onAddWater = {}, modifier = Modifier.padding(16.dp))
+            QuickAddSection(onAddWater = {}, onShowCustomAdd = {}, modifier = Modifier.padding(16.dp))
         }
     }
 }
