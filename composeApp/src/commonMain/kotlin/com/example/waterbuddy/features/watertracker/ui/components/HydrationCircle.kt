@@ -87,8 +87,8 @@ fun HydrationCircle(
             progress = { progress },
             modifier = Modifier.fillMaxSize(),
             strokeWidth = 12.dp,
-            color = color,
-            trackColor = MaterialTheme.colorScheme.surfaceVariant,
+            color = color.copy(alpha = 0.8f),
+            trackColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f),
         )
 
         Column(horizontalAlignment = Alignment.CenterHorizontally) {

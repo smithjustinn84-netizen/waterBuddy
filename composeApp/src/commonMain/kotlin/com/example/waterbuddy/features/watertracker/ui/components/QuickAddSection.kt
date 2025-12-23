@@ -65,7 +65,7 @@ fun QuickAddSection(
                 QuickAddButton(
                     amount = 750,
                     label = stringResource(Res.string.large_label),
-                    emoji = "☕",
+                    emoji = "🧊",
                     onClick = { onAddWater(750) },
                     modifier = Modifier.weight(1f),
                 )
