@@ -7,14 +7,11 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -45,6 +42,7 @@ fun WaterProgressCard(
     val animatedProgress by animateFloatAsState(
         targetValue = progressPercentage,
         animationSpec = tween(durationMillis = 1000),
+        label = "progressAnimation",
     )
 
     Card(
@@ -59,55 +57,43 @@ fun WaterProgressCard(
                     },
             ),
     ) {
-        Column(
-            modifier = Modifier.padding(24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            // Water Drop Icon with progress
-            Box(
-                modifier = Modifier.size(120.dp),
-                contentAlignment = Alignment.Center,
+        Box {
+            FluidBackground(
+                progress = animatedProgress,
+                isGoalReached = isGoalReached,
+                modifier = Modifier.matchParentSize(),
+            )
+
+            Column(
+                modifier = Modifier.padding(24.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                CircularProgressIndicator(
-                    progress = { animatedProgress },
-                    modifier = Modifier.fillMaxSize(),
-                    strokeWidth = 12.dp,
-                    trackColor = MaterialTheme.colorScheme.surfaceVariant,
+                HydrationCircle(
+                    progress = animatedProgress,
+                    isGoalReached = isGoalReached,
                 )
 
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text(
-                        text = "${(animatedProgress * 100).toInt()}%",
-                        style = MaterialTheme.typography.headlineMedium,
-                        fontWeight = FontWeight.Bold,
-                    )
-                    Text(
-                        text = "💧",
-                        style = MaterialTheme.typography.displaySmall,
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // Stats
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceEvenly,
+                ) {
+                    StatItem(label = stringResource(Res.string.consumed_label), value = "${totalMl}ml")
+                    StatItem(label = stringResource(Res.string.goal_label), value = "${goalMl}ml")
+                    StatItem(
+                        label =
+                            if (isGoalReached) {
+                                stringResource(Res.string.exceeded_label)
+                            } else {
+                                stringResource(
+                                    Res.string.remaining_label,
+                                )
+                            },
+                        value = if (isGoalReached) "+${totalMl - goalMl}ml" else "${remainingMl}ml",
                     )
                 }
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Stats
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly,
-            ) {
-                StatItem(label = stringResource(Res.string.consumed_label), value = "${totalMl}ml")
-                StatItem(label = stringResource(Res.string.goal_label), value = "${goalMl}ml")
-                StatItem(
-                    label =
-                        if (isGoalReached) {
-                            stringResource(Res.string.exceeded_label)
-                        } else {
-                            stringResource(
-                                Res.string.remaining_label,
-                            )
-                        },
-                    value = if (isGoalReached) "+${totalMl - goalMl}ml" else "${remainingMl}ml",
-                )
             }
         }
     }
