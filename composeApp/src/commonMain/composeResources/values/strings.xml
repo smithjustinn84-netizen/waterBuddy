@@ -60,4 +60,26 @@
     <string name="blessing_8">Water shared is life sustained.</string>
     <string name="blessing_9">Drinking together is the bond of the Nest.</string>
     <string name="blessing_10">The Old Ones bless your communion.</string>
+
+    <!-- Water Tracker Feedback -->
+    <string name="success_entry_deleted">Entry deleted</string>
+    <string name="success_entry_updated">Entry updated</string>
+    <string name="success_goal_updated">Goal updated to %1$d %2$s</string>
+    <string name="error_failed_to_add">Failed to add water</string>
+    <string name="error_failed_to_delete">Failed to delete entry</string>
+    <string name="error_failed_to_update">Failed to update entry</string>
+    <string name="error_failed_to_update_goal">Failed to update goal</string>
+
+    <!-- Grokking Quotes -->
+    <string name="quote_1">Thou art God. Drink deep.</string>
+    <string name="quote_2">Waiting is. Grokking is. Drinking is.</string>
+    <string name="quote_3">I am a brother to all who share this water.</string>
+    <string name="quote_4">To share water is to share life.</string>
+    <string name="quote_5">Drink, and let the truth be grokked.</string>
+
+    <!-- Labels and Misc -->
+    <string name="zenith_achieved_label">ZENITH ACHIEVED</string>
+    <string name="unknown_amount_label">???%s</string>
+    <string name="goal_range_label">Range: %1$d - %2$d %3$s</string>
+    <string name="error_max_amount">Max amount is %1$d %2$s</string>
 </resources>

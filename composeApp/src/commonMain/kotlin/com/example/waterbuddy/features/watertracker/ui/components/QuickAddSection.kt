@@ -27,7 +27,9 @@ import waterbuddy.composeapp.generated.resources.bottle_label
 import waterbuddy.composeapp.generated.resources.custom_label
 import waterbuddy.composeapp.generated.resources.glass_label
 import waterbuddy.composeapp.generated.resources.large_label
+import waterbuddy.composeapp.generated.resources.ml_suffix
 import waterbuddy.composeapp.generated.resources.quick_add_title
+import waterbuddy.composeapp.generated.resources.unknown_amount_label
 
 @Composable
 fun QuickAddSection(
@@ -106,9 +108,15 @@ private fun QuickAddButton(
             )
             Spacer(modifier = Modifier.height(4.dp))
             if (amount != null) {
-                Text(text = "${amount}ml", style = MaterialTheme.typography.bodySmall)
+                Text(
+                    text = "${amount}${stringResource(Res.string.ml_suffix)}",
+                    style = MaterialTheme.typography.bodySmall,
+                )
             } else {
-                Text(text = "???ml", style = MaterialTheme.typography.bodySmall)
+                Text(
+                    text = stringResource(Res.string.unknown_amount_label, stringResource(Res.string.ml_suffix)),
+                    style = MaterialTheme.typography.bodySmall,
+                )
             }
             Text(text = label, style = MaterialTheme.typography.labelSmall)
         }

@@ -41,6 +41,9 @@ import com.example.waterbuddy.core.theme.GrokkingTeal
 import com.example.waterbuddy.core.theme.LifeWaterBlue
 import com.example.waterbuddy.core.theme.MartianRed
 import kotlinx.coroutines.delay
+import org.jetbrains.compose.resources.stringResource
+import waterbuddy.composeapp.generated.resources.Res
+import waterbuddy.composeapp.generated.resources.zenith_achieved_label
 
 @Composable
 fun GoalReachedOverlay(
@@ -125,7 +128,7 @@ fun GoalReachedOverlay(
                 ) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text(
-                            text = "ZENITH ACHIEVED",
+                            text = stringResource(Res.string.zenith_achieved_label),
                             style = MaterialTheme.typography.labelLarge.copy(
                                 letterSpacing = 4.sp,
                                 fontWeight = FontWeight.Black,

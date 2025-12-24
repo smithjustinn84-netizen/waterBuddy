@@ -23,6 +23,7 @@ import waterbuddy.composeapp.generated.resources.amount_input_label
 import waterbuddy.composeapp.generated.resources.cancel_button
 import waterbuddy.composeapp.generated.resources.edit_entry_description
 import waterbuddy.composeapp.generated.resources.edit_entry_title
+import waterbuddy.composeapp.generated.resources.error_max_amount
 import waterbuddy.composeapp.generated.resources.ml_suffix
 import waterbuddy.composeapp.generated.resources.save_button
 
@@ -34,7 +35,8 @@ fun EditEntryDialog(
 ) {
     var amountText by remember { mutableStateOf(entry.amountMl.toString()) }
     val amount = amountText.toIntOrNull() ?: 0
-    val isError = amount > 4000
+    val maxAmount = 4000
+    val isError = amount > maxAmount
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -53,7 +55,11 @@ fun EditEntryDialog(
                     supportingText = {
                         if (isError) {
                             Text(
-                                text = "Max amount is 4000ml",
+                                text = stringResource(
+                                    Res.string.error_max_amount,
+                                    maxAmount,
+                                    stringResource(Res.string.ml_suffix),
+                                ),
                                 color = MaterialTheme.colorScheme.error,
                             )
                         }
@@ -64,11 +70,11 @@ fun EditEntryDialog(
         confirmButton = {
             Button(
                 onClick = {
-                    if (amount in 1..4000) {
+                    if (amount in 1..maxAmount) {
                         onConfirm(amount)
                     }
                 },
-                enabled = amount in 1..4000,
+                enabled = amount in 1..maxAmount,
             ) {
                 Text(stringResource(Res.string.save_button))
             }

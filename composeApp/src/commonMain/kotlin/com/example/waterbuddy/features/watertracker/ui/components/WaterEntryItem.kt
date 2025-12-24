@@ -25,7 +25,10 @@ import com.example.waterbuddy.core.util.formatTime
 import com.example.waterbuddy.features.watertracker.domain.model.WaterIntake
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
+import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import waterbuddy.composeapp.generated.resources.Res
+import waterbuddy.composeapp.generated.resources.ml_suffix
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
@@ -67,7 +70,7 @@ fun WaterEntryItem(
 
                 Column {
                     Text(
-                        text = "${entry.amountMl}ml",
+                        text = "${entry.amountMl}${stringResource(Res.string.ml_suffix)}",
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.SemiBold,
                     )

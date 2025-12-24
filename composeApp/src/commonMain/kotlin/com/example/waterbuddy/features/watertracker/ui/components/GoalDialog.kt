@@ -22,6 +22,7 @@ import org.jetbrains.compose.resources.stringResource
 import waterbuddy.composeapp.generated.resources.Res
 import waterbuddy.composeapp.generated.resources.cancel_button
 import waterbuddy.composeapp.generated.resources.goal_input_label
+import waterbuddy.composeapp.generated.resources.goal_range_label
 import waterbuddy.composeapp.generated.resources.ml_suffix
 import waterbuddy.composeapp.generated.resources.save_button
 import waterbuddy.composeapp.generated.resources.set_goal_description
@@ -58,7 +59,12 @@ fun GoalDialog(
                     supportingText = {
                         if (isError) {
                             Text(
-                                text = "Range: ${UpdateDailyGoalUseCase.MIN_GOAL} - ${UpdateDailyGoalUseCase.MAX_GOAL} ml",
+                                text = stringResource(
+                                    Res.string.goal_range_label,
+                                    UpdateDailyGoalUseCase.MIN_GOAL,
+                                    UpdateDailyGoalUseCase.MAX_GOAL,
+                                    stringResource(Res.string.ml_suffix),
+                                ),
                                 color = MaterialTheme.colorScheme.error,
                             )
                         }

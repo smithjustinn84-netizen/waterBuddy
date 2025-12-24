@@ -18,6 +18,21 @@ import kotlinx.coroutines.launch
 import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
+import org.jetbrains.compose.resources.getString
+import waterbuddy.composeapp.generated.resources.Res
+import waterbuddy.composeapp.generated.resources.error_failed_to_add
+import waterbuddy.composeapp.generated.resources.error_failed_to_delete
+import waterbuddy.composeapp.generated.resources.error_failed_to_update
+import waterbuddy.composeapp.generated.resources.error_failed_to_update_goal
+import waterbuddy.composeapp.generated.resources.ml_suffix
+import waterbuddy.composeapp.generated.resources.quote_1
+import waterbuddy.composeapp.generated.resources.quote_2
+import waterbuddy.composeapp.generated.resources.quote_3
+import waterbuddy.composeapp.generated.resources.quote_4
+import waterbuddy.composeapp.generated.resources.quote_5
+import waterbuddy.composeapp.generated.resources.success_entry_deleted
+import waterbuddy.composeapp.generated.resources.success_entry_updated
+import waterbuddy.composeapp.generated.resources.success_goal_updated
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
@@ -50,11 +65,11 @@ class WaterTrackerViewModel(
 
     private val quotes =
         listOf(
-            "Thou art God. Drink deep.",
-            "Waiting is. Grokking is. Drinking is.",
-            "I am a brother to all who share this water.",
-            "To share water is to share life.",
-            "Drink, and let the truth be grokked.",
+            Res.string.quote_1,
+            Res.string.quote_2,
+            Res.string.quote_3,
+            Res.string.quote_4,
+            Res.string.quote_5,
         )
 
     init {
@@ -110,12 +125,16 @@ class WaterTrackerViewModel(
     }
 
     private fun refreshQuote() {
-        val currentQuote = _state.value.quote
-        var nextQuote = quotes.random()
-        while (nextQuote == currentQuote && quotes.size > 1) {
-            nextQuote = quotes.random()
+        viewModelScope.launch {
+            val currentQuote = _state.value.quote
+            var nextQuoteRes = quotes.random()
+            var nextQuote = getString(nextQuoteRes)
+            while (nextQuote == currentQuote && quotes.size > 1) {
+                nextQuoteRes = quotes.random()
+                nextQuote = getString(nextQuoteRes)
+            }
+            _state.update { it.copy(quote = nextQuote) }
         }
-        _state.update { it.copy(quote = nextQuote) }
     }
 
     private fun addWater(amountMl: Int) {
@@ -129,7 +148,7 @@ class WaterTrackerViewModel(
                 onFailure = { error ->
                     _events.emit(
                         WaterTrackerUiEvent.ShowError(
-                            error.message ?: "Failed to add water",
+                            error.message ?: getString(Res.string.error_failed_to_add),
                         ),
                     )
                 },
@@ -143,12 +162,12 @@ class WaterTrackerViewModel(
         viewModelScope.launch {
             deleteWaterIntakeUseCase(id).fold(
                 onSuccess = {
-                    _events.emit(WaterTrackerUiEvent.ShowSuccess("Entry deleted"))
+                    _events.emit(WaterTrackerUiEvent.ShowSuccess(getString(Res.string.success_entry_deleted)))
                 },
                 onFailure = { error ->
                     _events.emit(
                         WaterTrackerUiEvent.ShowError(
-                            error.message ?: "Failed to delete entry",
+                            error.message ?: getString(Res.string.error_failed_to_delete),
                         ),
                     )
                 },
@@ -164,12 +183,12 @@ class WaterTrackerViewModel(
             updateWaterIntakeUseCase(id, amountMl).fold(
                 onSuccess = {
                     _state.update { it.copy(editingEntry = null) }
-                    _events.emit(WaterTrackerUiEvent.ShowSuccess("Entry updated"))
+                    _events.emit(WaterTrackerUiEvent.ShowSuccess(getString(Res.string.success_entry_updated)))
                 },
                 onFailure = { error ->
                     _events.emit(
                         WaterTrackerUiEvent.ShowError(
-                            error.message ?: "Failed to update entry",
+                            error.message ?: getString(Res.string.error_failed_to_update),
                         ),
                     )
                 },
@@ -182,12 +201,17 @@ class WaterTrackerViewModel(
             updateDailyGoalUseCase(goalMl).fold(
                 onSuccess = {
                     showGoalDialog.value = false
-                    _events.emit(WaterTrackerUiEvent.ShowSuccess("Goal updated to ${goalMl}ml"))
+                    val mlSuffix = getString(Res.string.ml_suffix)
+                    _events.emit(
+                        WaterTrackerUiEvent.ShowSuccess(
+                            getString(Res.string.success_goal_updated, goalMl, mlSuffix),
+                        ),
+                    )
                 },
                 onFailure = { error ->
                     _events.emit(
                         WaterTrackerUiEvent.ShowError(
-                            error.message ?: "Failed to update goal",
+                            error.message ?: getString(Res.string.error_failed_to_update_goal),
                         ),
                     )
                 },

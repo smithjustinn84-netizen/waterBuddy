@@ -30,6 +30,7 @@ import waterbuddy.composeapp.generated.resources.Res
 import waterbuddy.composeapp.generated.resources.consumed_label
 import waterbuddy.composeapp.generated.resources.exceeded_label
 import waterbuddy.composeapp.generated.resources.goal_label
+import waterbuddy.composeapp.generated.resources.ml_suffix
 import waterbuddy.composeapp.generated.resources.remaining_label
 
 @Composable
@@ -87,12 +88,12 @@ fun WaterProgressCard(
                 ) {
                     StatItem(
                         label = stringResource(Res.string.consumed_label),
-                        value = "${totalMl}ml",
+                        value = "${totalMl}${stringResource(Res.string.ml_suffix)}",
                         color = MaterialTheme.colorScheme.onSurface,
                     )
                     StatItem(
                         label = stringResource(Res.string.goal_label),
-                        value = "${goalMl}ml",
+                        value = "${goalMl}${stringResource(Res.string.ml_suffix)}",
                         color = MaterialTheme.colorScheme.onSurface,
                     )
                     StatItem(
@@ -104,7 +105,11 @@ fun WaterProgressCard(
                                     Res.string.remaining_label,
                                 )
                             },
-                        value = if (isGoalReached) "+${totalMl - goalMl}ml" else "${remainingMl}ml",
+                        value = if (isGoalReached) "+${totalMl - goalMl}${stringResource(Res.string.ml_suffix)}" else "${remainingMl}${
+                            stringResource(
+                                Res.string.ml_suffix,
+                            )
+                        }",
                         color = if (isGoalReached) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondary,
                     )
                 }
