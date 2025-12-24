@@ -12,6 +12,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
+import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
@@ -126,6 +127,16 @@ fun PreferencesContent(
                     valueRange = UpdateDailyGoalUseCase.MIN_GOAL.toFloat()..UpdateDailyGoalUseCase.MAX_GOAL.toFloat(),
                     steps = (UpdateDailyGoalUseCase.MAX_GOAL - UpdateDailyGoalUseCase.MIN_GOAL) / 50 - 1,
                     modifier = Modifier.fillMaxWidth(),
+                    colors = SliderDefaults.colors(
+                        activeTrackColor = MaterialTheme.colorScheme.secondary,
+                        inactiveTrackColor = MaterialTheme.colorScheme.surfaceVariant,
+                    ),
+                    thumb = {
+                        Text(
+                            text = "🛸",
+                            style = MaterialTheme.typography.headlineSmall,
+                        )
+                    },
                 )
             }
 
