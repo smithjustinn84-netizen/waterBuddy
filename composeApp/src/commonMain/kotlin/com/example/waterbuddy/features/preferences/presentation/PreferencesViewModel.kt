@@ -3,6 +3,8 @@ package com.example.waterbuddy.features.preferences.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.waterbuddy.core.di.AppScope
+import com.example.waterbuddy.features.preferences.domain.usecase.GetReminderSettingsUseCase
+import com.example.waterbuddy.features.preferences.domain.usecase.UpdateReminderSettingsUseCase
 import com.example.waterbuddy.features.watertracker.domain.usecase.GetDailyGoalUseCase
 import com.example.waterbuddy.features.watertracker.domain.usecase.UpdateDailyGoalUseCase
 import dev.zacsweers.metro.ContributesIntoMap
@@ -21,6 +23,8 @@ import kotlinx.coroutines.launch
 class PreferencesViewModel(
     private val getDailyGoalUseCase: GetDailyGoalUseCase,
     private val updateDailyGoalUseCase: UpdateDailyGoalUseCase,
+    private val getReminderSettingsUseCase: GetReminderSettingsUseCase,
+    private val updateReminderSettingsUseCase: UpdateReminderSettingsUseCase,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(PreferencesUiState())
@@ -37,11 +41,15 @@ class PreferencesViewModel(
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
             val goal = getDailyGoalUseCase()
-            _uiState.update {
-                it.copy(
-                    dailyGoalMl = goal,
-                    isLoading = false,
-                )
+            _uiState.update { it.copy(dailyGoalMl = goal) }
+
+            getReminderSettingsUseCase().collect { settings ->
+                _uiState.update {
+                    it.copy(
+                        reminderSettings = settings,
+                        isLoading = false,
+                    )
+                }
             }
         }
     }
@@ -49,6 +57,11 @@ class PreferencesViewModel(
     fun onEvent(event: PreferencesUiEvent) {
         when (event) {
             is PreferencesUiEvent.UpdateDailyGoal -> updateDailyGoal(event.goalMl)
+            is PreferencesUiEvent.ToggleReminders -> updateReminders { it.copy(isEnabled = event.isEnabled) }
+            is PreferencesUiEvent.UpdateFrequency -> updateReminders { it.copy(frequencyMinutes = event.minutes) }
+            is PreferencesUiEvent.UpdateStartTime -> updateReminders { it.copy(startTime = event.time) }
+            is PreferencesUiEvent.UpdateEndTime -> updateReminders { it.copy(endTime = event.time) }
+            is PreferencesUiEvent.UpdateSound -> updateReminders { it.copy(sound = event.sound) }
         }
     }
 
@@ -62,6 +75,16 @@ class PreferencesViewModel(
                     _uiEffect.emit(PreferencesUiEffect.ShowError(error.message ?: "Failed to update goal"))
                 },
             )
+        }
+    }
+
+    private fun updateReminders(update: (com.example.waterbuddy.features.preferences.domain.model.ReminderSettings) -> com.example.waterbuddy.features.preferences.domain.model.ReminderSettings) {
+        viewModelScope.launch {
+            val currentSettings = _uiState.value.reminderSettings
+            val newSettings = update(currentSettings)
+            updateReminderSettingsUseCase(newSettings).onFailure { error ->
+                _uiEffect.emit(PreferencesUiEffect.ShowError(error.message ?: "Failed to update reminder settings"))
+            }
         }
     }
 }

@@ -3,6 +3,7 @@ package com.example.waterbuddy.core.di
 import androidx.room.RoomDatabase
 import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import com.example.waterbuddy.core.database.AppDatabase
+import com.example.waterbuddy.features.preferences.data.local.dao.ReminderSettingsDao
 import com.example.waterbuddy.features.watertracker.data.local.dao.DailyGoalDao
 import com.example.waterbuddy.features.watertracker.data.local.dao.WaterIntakeDao
 import dev.zacsweers.metro.ContributesTo
@@ -19,6 +20,7 @@ interface DatabaseGraph {
         builder
             .setDriver(BundledSQLiteDriver())
             .setQueryCoroutineContext(Dispatchers.IO)
+            .fallbackToDestructiveMigration(true) // Added for development ease
             .build()
 
     @Provides
@@ -26,4 +28,7 @@ interface DatabaseGraph {
 
     @Provides
     fun provideDailyGoalDao(db: AppDatabase): DailyGoalDao = db.dailyGoalDao()
+
+    @Provides
+    fun provideReminderSettingsDao(db: AppDatabase): ReminderSettingsDao = db.reminderSettingsDao()
 }

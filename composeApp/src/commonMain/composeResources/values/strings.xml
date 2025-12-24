@@ -82,4 +82,17 @@
     <string name="unknown_amount_label">???%s</string>
     <string name="goal_range_label">Range: %1$d - %2$d %3$s</string>
     <string name="error_max_amount">Max amount is %1$d %2$s</string>
+
+    <!-- Reminders -->
+    <string name="reminders_section_title">Water Sharing Reminders</string>
+    <string name="reminders_enabled_label">Enable Reminders</string>
+    <string name="frequency_label">Frequency</string>
+    <string name="frequency_minutes_format">%1$d minutes</string>
+    <string name="start_time_label">Start Time</string>
+    <string name="end_time_label">End Time</string>
+    <string name="sound_label">Communion Sound</string>
+    <string name="sound_default">Earthly Drip</string>
+    <string name="sound_martian_drip">Martian Drip</string>
+    <string name="sound_life_stream">Life Stream</string>
+    <string name="sound_zenith_bell">Zenith Bell</string>
 </resources>
