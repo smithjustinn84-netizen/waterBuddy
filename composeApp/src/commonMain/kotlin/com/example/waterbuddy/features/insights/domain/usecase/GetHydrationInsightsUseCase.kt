@@ -33,7 +33,20 @@ class GetHydrationInsightsUseCase(
         today: LocalDate,
     ): HydrationInsights {
         if (statsList.isEmpty()) {
-            return HydrationInsights(0, 0f, 0, null, 0, emptyList(), emptyList())
+            return HydrationInsights(
+                averageIntake = 0,
+                totalIntake = 0,
+                completionRate = 0f,
+                longestStreak = 0,
+                solsActive = 0,
+                totalRituals = 0,
+                averageRitualsPerSol = 0f,
+                maxRitualAmount = 0,
+                peakDay = null,
+                peakDayIntake = 0,
+                weeklyTrend = emptyList(),
+                monthlyTrend = emptyList(),
+            )
         }
 
         val totalIntake = statsList.sumOf { it.totalMl }
@@ -44,11 +57,15 @@ class GetHydrationInsightsUseCase(
 
         val longestStreak = calculateLongestStreak(statsList)
 
-        // Using maxBy instead of maxByOrNull because statsList is guaranteed non-empty here.
-        // This avoids "impossible" null branches that lower code coverage.
-        val peakDayStat = statsList.maxBy { it.totalMl }
-        val peakDay = peakDayStat.date
-        val peakDayIntake = peakDayStat.totalMl
+        val solsActive = statsList.count { it.entries.isNotEmpty() }
+        val totalRituals = statsList.sumOf { it.entries.size }
+        val averageRitualsPerSol = if (solsActive > 0) totalRituals.toFloat() / solsActive else 0f
+
+        val maxRitualAmount = statsList.flatMap { it.entries }.maxOfOrNull { it.amountMl } ?: 0
+
+        val peakDayStat = statsList.maxByOrNull { it.totalMl }
+        val peakDay = peakDayStat?.date
+        val peakDayIntake = peakDayStat?.totalMl ?: 0
 
         val oneWeekAgo = today.minus(1, DateTimeUnit.WEEK)
         val weeklyTrend = statsList.filter { it.date >= oneWeekAgo }.sortedBy { it.date }
@@ -56,8 +73,13 @@ class GetHydrationInsightsUseCase(
 
         return HydrationInsights(
             averageIntake = averageIntake,
+            totalIntake = totalIntake,
             completionRate = completionRate,
             longestStreak = longestStreak,
+            solsActive = solsActive,
+            totalRituals = totalRituals,
+            averageRitualsPerSol = averageRitualsPerSol,
+            maxRitualAmount = maxRitualAmount,
             peakDay = peakDay,
             peakDayIntake = peakDayIntake,
             weeklyTrend = weeklyTrend,

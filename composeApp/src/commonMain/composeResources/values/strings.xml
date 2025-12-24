@@ -31,4 +31,15 @@
     <string name="custom_add_description">Enter the amount of water you drank</string>
     <string name="add_button">Add</string>
     <string name="martian_insight_label">Martian Insight</string>
+    <string name="arid_sols_label">ARID SOLS</string>
+    <string name="grokked_label">GROKKED</string>
+    <string name="recent_streaks_title">Recent Martian Sols</string>
+    <string name="kpi_total_grokked">Total Grokked</string>
+    <string name="kpi_sols_active">Sols Active</string>
+    <string name="kpi_rituals">Rituals</string>
+    <string name="kpi_brotherhood_bond">Brotherhood Bond</string>
+    <string name="kpi_communion_avg">Communion Avg</string>
+    <string name="kpi_zenith_sol">Zenith Sol</string>
+    <string name="kpi_communion_rate">Communion Rate</string>
+    <string name="kpi_max_communion">Max Communion</string>
 </resources>

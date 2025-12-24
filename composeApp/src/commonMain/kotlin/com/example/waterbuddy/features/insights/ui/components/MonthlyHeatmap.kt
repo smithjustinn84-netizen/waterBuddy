@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -24,11 +26,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.waterbuddy.core.theme.WaterBuddyTheme
 import com.example.waterbuddy.features.watertracker.domain.model.DailyWaterStats
 import kotlinx.datetime.DayOfWeek
 import kotlinx.datetime.LocalDate
+import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import waterbuddy.composeapp.generated.resources.Res
+import waterbuddy.composeapp.generated.resources.arid_sols_label
+import waterbuddy.composeapp.generated.resources.grokked_label
+import waterbuddy.composeapp.generated.resources.recent_streaks_title
 
 @Composable
 fun MonthlyHeatmap(
@@ -43,7 +51,7 @@ fun MonthlyHeatmap(
     ) {
         Column(modifier = Modifier.padding(20.dp)) {
             Text(
-                text = "Recent Streaks",
+                text = stringResource(Res.string.recent_streaks_title),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onSurface,
@@ -124,6 +132,39 @@ fun MonthlyHeatmap(
                     }
                 }
             }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Heatmap Key
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.End,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    text = stringResource(Res.string.arid_sols_label),
+                    style = MaterialTheme.typography.labelSmall.copy(fontSize = 10.sp),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                Spacer(modifier = Modifier.width(4.dp))
+                repeat(5) { i ->
+                    val alpha = 0.2f + (i * 0.2f)
+                    Box(
+                        modifier = Modifier
+                            .size(12.dp)
+                            .background(
+                                color = MaterialTheme.colorScheme.primary.copy(alpha = alpha),
+                                shape = RoundedCornerShape(2.dp),
+                            ),
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                }
+                Text(
+                    text = stringResource(Res.string.grokked_label),
+                    style = MaterialTheme.typography.labelSmall.copy(fontSize = 10.sp),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
         }
     }
 }
@@ -142,19 +183,6 @@ private val sampleMonthlyData =
 @Composable
 private fun MonthlyHeatmapPreview() {
     WaterBuddyTheme {
-        Surface {
-            MonthlyHeatmap(
-                data = sampleMonthlyData,
-                modifier = Modifier.fillMaxWidth().padding(16.dp),
-            )
-        }
-    }
-}
-
-@Preview
-@Composable
-private fun MonthlyHeatmapDarkModePreview() {
-    WaterBuddyTheme(darkTheme = true) {
         Surface {
             MonthlyHeatmap(
                 data = sampleMonthlyData,

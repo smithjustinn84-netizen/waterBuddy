@@ -172,8 +172,13 @@ private val previewMonthlyData =
 private val previewInsights =
     HydrationInsights(
         averageIntake = 1900,
+        totalIntake = 53200,
         completionRate = 0.75f,
         longestStreak = 5,
+        solsActive = 28,
+        totalRituals = 112,
+        averageRitualsPerSol = 4.0f,
+        maxRitualAmount = 500,
         peakDay = LocalDate(2024, 1, 4),
         peakDayIntake = 2500,
         weeklyTrend = previewWeeklyData,
