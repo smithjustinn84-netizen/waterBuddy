@@ -48,4 +48,16 @@
     <string name="nav_insights">GROKKING</string>
     <string name="nav_preferences">PROTOCOLS</string>
     <string name="preferences_footer">Inspired by Stranger in a Strange Land. Thou Art God.</string>
+
+    <!-- Martian Blessings -->
+    <string name="blessing_1">Thou art God.</string>
+    <string name="blessing_2">I grok that you are God.</string>
+    <string name="blessing_3">Waiting is.</string>
+    <string name="blessing_4">May you never thirst.</string>
+    <string name="blessing_5">The fullness of the water sharing is yours.</string>
+    <string name="blessing_6">We are one in the water sharing.</string>
+    <string name="blessing_7">Grokking is the fullness.</string>
+    <string name="blessing_8">Water shared is life sustained.</string>
+    <string name="blessing_9">Drinking together is the bond of the Nest.</string>
+    <string name="blessing_10">The Old Ones bless your communion.</string>
 </resources>

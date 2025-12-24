@@ -61,4 +61,6 @@ sealed interface WaterTrackerUiEvent {
     ) : WaterTrackerUiEvent
 
     data object GoalReached : WaterTrackerUiEvent
+
+    data object MartianBlessing : WaterTrackerUiEvent
 }

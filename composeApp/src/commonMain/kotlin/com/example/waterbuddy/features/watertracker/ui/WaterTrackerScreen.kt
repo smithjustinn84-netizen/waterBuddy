@@ -31,12 +31,14 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.waterbuddy.core.theme.WaterBuddyTheme
 import com.example.waterbuddy.features.watertracker.domain.model.WaterIntake
+import com.example.waterbuddy.features.watertracker.ui.components.BlessingOverlay
 import com.example.waterbuddy.features.watertracker.ui.components.CelebrationAnimation
 import com.example.waterbuddy.features.watertracker.ui.components.CustomAddDialog
 import com.example.waterbuddy.features.watertracker.ui.components.DrinkOverlay
 import com.example.waterbuddy.features.watertracker.ui.components.EditEntryDialog
 import com.example.waterbuddy.features.watertracker.ui.components.EmptyStateMessage
 import com.example.waterbuddy.features.watertracker.ui.components.GoalDialog
+import com.example.waterbuddy.features.watertracker.ui.components.GoalReachedOverlay
 import com.example.waterbuddy.features.watertracker.ui.components.GrokkingQuoteCard
 import com.example.waterbuddy.features.watertracker.ui.components.QuickAddSection
 import com.example.waterbuddy.features.watertracker.ui.components.WaterEntryItem
@@ -45,9 +47,20 @@ import dev.zacsweers.metrox.viewmodel.metroViewModel
 import kotlinx.coroutines.delay
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
+import org.jetbrains.compose.resources.getString
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import waterbuddy.composeapp.generated.resources.Res
+import waterbuddy.composeapp.generated.resources.blessing_1
+import waterbuddy.composeapp.generated.resources.blessing_10
+import waterbuddy.composeapp.generated.resources.blessing_2
+import waterbuddy.composeapp.generated.resources.blessing_3
+import waterbuddy.composeapp.generated.resources.blessing_4
+import waterbuddy.composeapp.generated.resources.blessing_5
+import waterbuddy.composeapp.generated.resources.blessing_6
+import waterbuddy.composeapp.generated.resources.blessing_7
+import waterbuddy.composeapp.generated.resources.blessing_8
+import waterbuddy.composeapp.generated.resources.blessing_9
 import waterbuddy.composeapp.generated.resources.goal_button
 import waterbuddy.composeapp.generated.resources.goal_reached_message
 import waterbuddy.composeapp.generated.resources.todays_rituals
@@ -64,8 +77,23 @@ fun WaterTrackerScreen(viewModel: WaterTrackerViewModel = metroViewModel()) {
     val showGoalDialog by viewModel.showGoalDialog.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
     var showCelebration by remember { mutableStateOf(false) }
+    var currentBlessing by remember { mutableStateOf<String?>(null) }
+    var showGoalReachedOverlay by remember { mutableStateOf(false) }
 
     val successMessage = stringResource(Res.string.goal_reached_message)
+    val blessings =
+        listOf(
+            Res.string.blessing_1,
+            Res.string.blessing_2,
+            Res.string.blessing_3,
+            Res.string.blessing_4,
+            Res.string.blessing_5,
+            Res.string.blessing_6,
+            Res.string.blessing_7,
+            Res.string.blessing_8,
+            Res.string.blessing_9,
+            Res.string.blessing_10,
+        )
 
     // Handle UI events
     LaunchedEffect(Unit) {
@@ -88,11 +116,12 @@ fun WaterTrackerScreen(viewModel: WaterTrackerViewModel = metroViewModel()) {
 
                 WaterTrackerUiEvent.GoalReached -> {
                     showCelebration = true
-                    snackbarHostState.currentSnackbarData?.dismiss()
-                    snackbarHostState.showSnackbar(
-                        message = successMessage,
-                        duration = SnackbarDuration.Long,
-                    )
+                    showGoalReachedOverlay = true
+                }
+
+                WaterTrackerUiEvent.MartianBlessing -> {
+                    val blessingRes = blessings.random()
+                    currentBlessing = getString(blessingRes)
                 }
             }
         }
@@ -103,6 +132,11 @@ fun WaterTrackerScreen(viewModel: WaterTrackerViewModel = metroViewModel()) {
         showGoalDialog = showGoalDialog,
         showCelebration = showCelebration,
         onCelebrationEnd = { showCelebration = false },
+        currentBlessing = currentBlessing,
+        onDismissBlessing = { currentBlessing = null },
+        showGoalReachedOverlay = showGoalReachedOverlay,
+        goalReachedMessage = successMessage,
+        onDismissGoalReached = { showGoalReachedOverlay = false },
         snackbarHostState = snackbarHostState,
         onIntent = viewModel::handleIntent,
     )
@@ -115,6 +149,11 @@ fun WaterTrackerContent(
     showGoalDialog: Boolean,
     showCelebration: Boolean,
     onCelebrationEnd: () -> Unit,
+    currentBlessing: String?,
+    onDismissBlessing: () -> Unit,
+    showGoalReachedOverlay: Boolean,
+    goalReachedMessage: String,
+    onDismissGoalReached: () -> Unit,
     snackbarHostState: SnackbarHostState,
     onIntent: (WaterTrackerUiIntent) -> Unit,
     initialTargetAmount: Int = 0,
@@ -261,6 +300,21 @@ fun WaterTrackerContent(
                 )
             }
 
+            // Blessing Overlay
+            BlessingOverlay(
+                blessing = currentBlessing,
+                onDismiss = onDismissBlessing,
+                modifier = Modifier.fillMaxSize(),
+            )
+
+            // Goal Reached Overlay
+            GoalReachedOverlay(
+                isVisible = showGoalReachedOverlay,
+                message = goalReachedMessage,
+                onDismiss = onDismissGoalReached,
+                modifier = Modifier.fillMaxSize(),
+            )
+
             // Celebration Overlay
             if (showCelebration) {
                 CelebrationAnimation(
@@ -344,40 +398,11 @@ fun WaterTrackerPreview() {
                 showGoalDialog = false,
                 showCelebration = false,
                 onCelebrationEnd = {},
-                snackbarHostState = remember { SnackbarHostState() },
-                onIntent = {},
-            )
-        }
-    }
-}
-
-@Preview
-@Composable
-fun WaterTrackerDarkModePreview() {
-    WaterBuddyTheme(darkTheme = true) {
-        Surface {
-            WaterTrackerContent(
-                state = previewState,
-                showGoalDialog = false,
-                showCelebration = false,
-                onCelebrationEnd = {},
-                snackbarHostState = remember { SnackbarHostState() },
-                onIntent = {},
-            )
-        }
-    }
-}
-
-@Preview
-@Composable
-fun WaterTrackerEmptyPreview() {
-    WaterBuddyTheme {
-        Surface {
-            WaterTrackerContent(
-                state = WaterTrackerUiState(),
-                showGoalDialog = false,
-                showCelebration = false,
-                onCelebrationEnd = {},
+                currentBlessing = "Thou art God.",
+                onDismissBlessing = {},
+                showGoalReachedOverlay = false,
+                goalReachedMessage = "Goal Reached!",
+                onDismissGoalReached = {},
                 snackbarHostState = remember { SnackbarHostState() },
                 onIntent = {},
             )

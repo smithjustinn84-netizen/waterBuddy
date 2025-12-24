@@ -124,7 +124,7 @@ class WaterTrackerViewModel(
 
             addWaterIntakeUseCase(amountMl).fold(
                 onSuccess = {
-                    _events.emit(WaterTrackerUiEvent.ShowSuccess("Added ${amountMl}ml"))
+                    _events.emit(WaterTrackerUiEvent.MartianBlessing)
                 },
                 onFailure = { error ->
                     _events.emit(
