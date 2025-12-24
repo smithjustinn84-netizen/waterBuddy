@@ -4,6 +4,8 @@
     <string name="water_tracker_title_sub">The Nest</string>
     <string name="insights_title_main">DEEP UNDERSTANDING</string>
     <string name="insights_title_sub">Insights</string>
+    <string name="preferences_title_main">HUMAN CUSTOMS</string>
+    <string name="preferences_title_sub">Preferences</string>
     <string name="goal_button">Goal</string>
     <string name="goal_reached_message">🎉 Congratulations! Daily goal reached!</string>
     <string name="consumed_label">Consumed</string>
@@ -42,4 +44,8 @@
     <string name="kpi_zenith_sol">Zenith Sol</string>
     <string name="kpi_communion_rate">Communion Rate</string>
     <string name="kpi_max_communion">Max Communion</string>
+    <string name="nav_tracker">The Nest</string>
+    <string name="nav_insights">GROKKING</string>
+    <string name="nav_preferences">PROTOCOLS</string>
+    <string name="preferences_footer">Inspired by Stranger in a Strange Land. Thou Art God.</string>
 </resources>

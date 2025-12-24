@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -14,7 +15,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
@@ -37,7 +37,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.waterbuddy.core.navigation.HydrationInsights
 import com.example.waterbuddy.core.theme.WaterBuddyTheme
 import com.example.waterbuddy.features.watertracker.domain.model.WaterIntake
 import com.example.waterbuddy.features.watertracker.ui.components.CelebrationAnimation
@@ -114,7 +113,6 @@ fun WaterTrackerScreen(viewModel: WaterTrackerViewModel = metroViewModel()) {
         onCelebrationEnd = { showCelebration = false },
         snackbarHostState = snackbarHostState,
         onIntent = viewModel::handleIntent,
-        onNavigateToInsights = { viewModel.navigator.navigate(HydrationInsights) },
     )
 }
 
@@ -127,7 +125,6 @@ fun WaterTrackerContent(
     onCelebrationEnd: () -> Unit,
     snackbarHostState: SnackbarHostState,
     onIntent: (WaterTrackerUiIntent) -> Unit,
-    onNavigateToInsights: () -> Unit,
     initialTargetAmount: Int = 0,
 ) {
     // Drinking Interaction State
@@ -186,15 +183,13 @@ fun WaterTrackerContent(
                     }
                 },
                 actions = {
-                    IconButton(onClick = onNavigateToInsights) {
-                        Text("📊")
-                    }
                     TextButton(onClick = { onIntent(WaterTrackerUiIntent.ShowGoalDialog) }) {
                         Text("⚙️ ${stringResource(Res.string.goal_button)}")
                     }
                 },
             )
         },
+        contentWindowInsets = WindowInsets(0.dp),
     ) { paddingValues ->
         Box(
             modifier =
@@ -397,7 +392,6 @@ fun WaterTrackerPreview() {
                 onCelebrationEnd = {},
                 snackbarHostState = remember { SnackbarHostState() },
                 onIntent = {},
-                onNavigateToInsights = {},
             )
         }
     }
@@ -415,7 +409,6 @@ fun WaterTrackerDarkModePreview() {
                 onCelebrationEnd = {},
                 snackbarHostState = remember { SnackbarHostState() },
                 onIntent = {},
-                onNavigateToInsights = {},
             )
         }
     }
@@ -433,7 +426,6 @@ fun WaterTrackerEmptyPreview() {
                 onCelebrationEnd = {},
                 snackbarHostState = remember { SnackbarHostState() },
                 onIntent = {},
-                onNavigateToInsights = {},
             )
         }
     }
