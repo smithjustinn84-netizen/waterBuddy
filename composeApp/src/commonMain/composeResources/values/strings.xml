@@ -2,6 +2,8 @@
     <string name="app_name">Demo Metro</string>
     <string name="water_tracker_title_main">MARTIAN CYCLE</string>
     <string name="water_tracker_title_sub">The Nest</string>
+    <string name="insights_title_main">DEEP UNDERSTANDING</string>
+    <string name="insights_title_sub">Insights</string>
     <string name="goal_button">Goal</string>
     <string name="goal_reached_message">🎉 Congratulations! Daily goal reached!</string>
     <string name="consumed_label">Consumed</string>

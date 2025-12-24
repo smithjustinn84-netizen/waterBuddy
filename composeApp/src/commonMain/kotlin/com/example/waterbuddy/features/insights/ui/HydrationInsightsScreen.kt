@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -18,6 +17,7 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -26,6 +26,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.waterbuddy.core.theme.WaterBuddyTheme
@@ -37,7 +38,11 @@ import com.example.waterbuddy.features.insights.ui.components.WeeklyBarChart
 import com.example.waterbuddy.features.watertracker.domain.model.DailyWaterStats
 import dev.zacsweers.metrox.viewmodel.metroViewModel
 import kotlinx.datetime.LocalDate
+import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import waterbuddy.composeapp.generated.resources.Res
+import waterbuddy.composeapp.generated.resources.insights_title_main
+import waterbuddy.composeapp.generated.resources.insights_title_sub
 
 @Composable
 fun HydrationInsightsScreen(viewModel: HydrationInsightsViewModel = metroViewModel()) {
@@ -71,13 +76,22 @@ fun HydrationInsightsContent(
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
-            CenterAlignedTopAppBar(
+            TopAppBar(
                 title = {
-                    Text(
-                        "Hydration Insights",
-                        style = MaterialTheme.typography.headlineSmall,
-                        fontWeight = FontWeight.SemiBold,
-                    )
+                    Column(horizontalAlignment = Alignment.Start) {
+                        Text(
+                            text = stringResource(Res.string.insights_title_main),
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.Bold,
+                            textAlign = TextAlign.Start,
+                        )
+                        Text(
+                            text = stringResource(Res.string.insights_title_sub),
+                            style = MaterialTheme.typography.titleSmall,
+                            color = MaterialTheme.colorScheme.secondary,
+                            textAlign = TextAlign.Start,
+                        )
+                    }
                 },
                 colors =
                     TopAppBarDefaults.topAppBarColors(
