@@ -58,7 +58,7 @@ class WaterTrackerViewModel(
         )
 
     init {
-        _state.update { it.copy(quote = quotes.random()) }
+        refreshQuote()
         observeWaterStats()
     }
 
@@ -105,7 +105,17 @@ class WaterTrackerViewModel(
             WaterTrackerUiIntent.DismissGoalDialog -> showGoalDialog.value = false
             WaterTrackerUiIntent.ShowCustomAddDialog -> _state.update { it.copy(showCustomAddDialog = true) }
             WaterTrackerUiIntent.DismissCustomAddDialog -> _state.update { it.copy(showCustomAddDialog = false) }
+            WaterTrackerUiIntent.RefreshQuote -> refreshQuote()
         }
+    }
+
+    private fun refreshQuote() {
+        val currentQuote = _state.value.quote
+        var nextQuote = quotes.random()
+        while (nextQuote == currentQuote && quotes.size > 1) {
+            nextQuote = quotes.random()
+        }
+        _state.update { it.copy(quote = nextQuote) }
     }
 
     private fun addWater(amountMl: Int) {

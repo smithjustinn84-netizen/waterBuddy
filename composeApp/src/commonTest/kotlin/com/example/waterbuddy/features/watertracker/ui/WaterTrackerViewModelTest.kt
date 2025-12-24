@@ -33,6 +33,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
+import kotlin.test.assertNotSame
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
@@ -84,6 +85,25 @@ class WaterTrackerViewModelTest {
     fun `initial state contains a random quote`() =
         runTest {
             assertNotNull(viewModel.state.value.quote)
+        }
+
+    @Test
+    fun `refresh quote intent updates quote in state`() =
+        runTest {
+            val initialQuote = viewModel.state.value.quote
+            assertNotNull(initialQuote)
+
+            // Since it's random, we might need to refresh a few times to ensure it changes
+            // but for this test we'll just trigger it once.
+            // In a real scenario, we might mock the random generator if possible.
+            viewModel.handleIntent(WaterTrackerUiIntent.RefreshQuote)
+
+            // We can't strictly guarantee a change if the list is small,
+            // but our refreshQuote logic tries to pick a different one.
+            val newQuote = viewModel.state.value.quote
+            assertNotNull(newQuote)
+            // If the list size > 1, it should be different.
+            assertNotSame(initialQuote, newQuote)
         }
 
     @Test

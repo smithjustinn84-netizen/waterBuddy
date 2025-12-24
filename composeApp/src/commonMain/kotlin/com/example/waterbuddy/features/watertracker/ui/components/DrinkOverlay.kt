@@ -32,7 +32,7 @@ fun DrinkOverlay(
     maxAmountMl: Int = 1000,
 ) {
     val fillPercentage = (amountMl.toFloat() / maxAmountMl.toFloat()).coerceIn(0f, 1f)
-    val color = MaterialTheme.colorScheme.primary.copy(alpha = 0.8f)
+    val color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.8f)
 
     val transition = rememberInfiniteTransition()
     val waveOffset by transition.animateFloat(
@@ -95,19 +95,6 @@ fun DrinkOverlayPreview() {
         Surface {
             DrinkOverlay(
                 amountMl = 500,
-                modifier = Modifier.fillMaxSize(),
-            )
-        }
-    }
-}
-
-@Preview
-@Composable
-fun DrinkOverlayDarkModePreview() {
-    WaterBuddyTheme(darkTheme = true) {
-        Surface {
-            DrinkOverlay(
-                amountMl = 750,
                 modifier = Modifier.fillMaxSize(),
             )
         }

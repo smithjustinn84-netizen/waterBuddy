@@ -39,9 +39,9 @@ fun FluidBackground(
 
     val fluidColor by animateColorAsState(
         targetValue = if (isGoalReached) {
-            Color(0xFF4CAF50).copy(alpha = 0.2f)
+            Color(0xFF00CED1).copy(alpha = 0.25f) // Brighter teal when goal reached
         } else {
-            MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)
+            MaterialTheme.colorScheme.secondary.copy(alpha = 0.2f)
         },
         animationSpec = tween(1000),
         label = "fluidColor",
@@ -50,7 +50,7 @@ fun FluidBackground(
     Canvas(modifier = modifier.fillMaxSize()) {
         val width = size.width
         val height = size.height
-        val waterHeight = height * progress.coerceIn(0f, 1.1f) // Allow it to fill slightly over for effect
+        val waterHeight = height * progress.coerceIn(0f, 1.1f)
         val waveAmplitude = 12.dp.toPx()
 
         val path = Path().apply {

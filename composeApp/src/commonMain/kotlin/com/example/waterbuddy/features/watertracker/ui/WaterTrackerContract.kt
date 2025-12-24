@@ -47,6 +47,8 @@ sealed interface WaterTrackerUiIntent {
     data object ShowCustomAddDialog : WaterTrackerUiIntent
 
     data object DismissCustomAddDialog : WaterTrackerUiIntent
+
+    data object RefreshQuote : WaterTrackerUiIntent
 }
 
 sealed interface WaterTrackerUiEvent {

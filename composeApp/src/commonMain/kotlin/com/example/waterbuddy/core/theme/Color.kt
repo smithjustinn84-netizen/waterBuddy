@@ -2,9 +2,21 @@ package com.example.waterbuddy.core.theme
 
 import androidx.compose.ui.graphics.Color
 
-val Pink80 = Color(0xFFEFB8C8)
+// Martian Palette
+val MartianRed = Color(0xFFB22222)
+val MartianRust = Color(0xFF8B4513)
+val MartianSand = Color(0xFFD2B48C)
+val MartianDust = Color(0xFFBC8F8F)
 
-val Pink40 = Color(0xFF7D5260)
+// Water Palette (The Sharing of Water)
+val GrokkingTeal = Color(0xFF008080)
+val DeepWaterBlue = Color(0xFF1B4F72)
+val LifeWaterBlue = Color(0xFF4682B4)
+val ClearWater = Color(0xFF87CEEB)
 
-val HydrationBlue = Color(0xFF2196F3)
-val HydrationLightBlue = Color(0xFF90CAF9)
+// Backgrounds
+val MartianDarkSurface = Color(0xFF1A120B)
+val MartianLightSurface = Color(0xFFFDF5E6)
+
+val HydrationBlue = LifeWaterBlue
+val HydrationLightBlue = ClearWater

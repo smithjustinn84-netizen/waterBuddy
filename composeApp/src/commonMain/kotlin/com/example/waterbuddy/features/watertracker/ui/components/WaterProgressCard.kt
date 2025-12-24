@@ -1,5 +1,6 @@
 package com.example.waterbuddy.features.watertracker.ui.components
 
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Arrangement
@@ -19,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.waterbuddy.core.theme.WaterBuddyTheme
@@ -45,17 +47,20 @@ fun WaterProgressCard(
         label = "progressAnimation",
     )
 
+    val cardColor by animateColorAsState(
+        targetValue = if (isGoalReached) {
+            MaterialTheme.colorScheme.primaryContainer
+        } else {
+            MaterialTheme.colorScheme.surfaceVariant
+        },
+        animationSpec = tween(1000),
+        label = "cardColor",
+    )
+
     Card(
         modifier = modifier.fillMaxWidth(),
-        colors =
-            CardDefaults.cardColors(
-                containerColor =
-                    if (isGoalReached) {
-                        MaterialTheme.colorScheme.primaryContainer
-                    } else {
-                        MaterialTheme.colorScheme.surfaceVariant
-                    },
-            ),
+        colors = CardDefaults.cardColors(containerColor = cardColor),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
     ) {
         Box {
             FluidBackground(
@@ -73,15 +78,23 @@ fun WaterProgressCard(
                     isGoalReached = isGoalReached,
                 )
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(24.dp))
 
                 // Stats
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceEvenly,
                 ) {
-                    StatItem(label = stringResource(Res.string.consumed_label), value = "${totalMl}ml")
-                    StatItem(label = stringResource(Res.string.goal_label), value = "${goalMl}ml")
+                    StatItem(
+                        label = stringResource(Res.string.consumed_label),
+                        value = "${totalMl}ml",
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
+                    StatItem(
+                        label = stringResource(Res.string.goal_label),
+                        value = "${goalMl}ml",
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
                     StatItem(
                         label =
                             if (isGoalReached) {
@@ -92,6 +105,7 @@ fun WaterProgressCard(
                                 )
                             },
                         value = if (isGoalReached) "+${totalMl - goalMl}ml" else "${remainingMl}ml",
+                        color = if (isGoalReached) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondary,
                     )
                 }
             }
@@ -103,12 +117,14 @@ fun WaterProgressCard(
 private fun StatItem(
     label: String,
     value: String,
+    color: Color = Color.Unspecified,
 ) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Text(
             text = value,
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.Bold,
+            color = color,
         )
         Text(
             text = label,
@@ -129,40 +145,6 @@ fun WaterProgressCardPreview() {
                 progressPercentage = 0.6f,
                 remainingMl = 800,
                 isGoalReached = false,
-                modifier = Modifier.padding(16.dp),
-            )
-        }
-    }
-}
-
-@Preview
-@Composable
-fun WaterProgressCardDarkModePreview() {
-    WaterBuddyTheme(darkTheme = true) {
-        Surface {
-            WaterProgressCard(
-                totalMl = 1200,
-                goalMl = 2000,
-                progressPercentage = 0.6f,
-                remainingMl = 800,
-                isGoalReached = false,
-                modifier = Modifier.padding(16.dp),
-            )
-        }
-    }
-}
-
-@Preview
-@Composable
-fun WaterProgressCardGoalReachedPreview() {
-    WaterBuddyTheme {
-        Surface {
-            WaterProgressCard(
-                totalMl = 2500,
-                goalMl = 2000,
-                progressPercentage = 1.0f,
-                remainingMl = 0,
-                isGoalReached = true,
                 modifier = Modifier.padding(16.dp),
             )
         }

@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Demo Metro</string>
-    <string name="water_tracker_title">Water Tracker</string>
+    <string name="water_tracker_title_main">MARTIAN CYCLE</string>
+    <string name="water_tracker_title_sub">The Nest</string>
     <string name="goal_button">Goal</string>
     <string name="goal_reached_message">🎉 Congratulations! Daily goal reached!</string>
     <string name="consumed_label">Consumed</string>
@@ -12,7 +13,7 @@
     <string name="bottle_label">Bottle</string>
     <string name="large_label">Large</string>
     <string name="custom_label">Custom</string>
-    <string name="todays_entries">Today\'s Entries</string>
+    <string name="todays_rituals">Today\'s Rituals</string>
     <string name="empty_state_title">No water logged yet today</string>
     <string name="empty_state_subtitle">Tap a quick add button to start tracking</string>
     <string name="set_goal_title">Set Daily Goal</string>
@@ -27,4 +28,5 @@
     <string name="custom_add_title">Custom Amount</string>
     <string name="custom_add_description">Enter the amount of water you drank</string>
     <string name="add_button">Add</string>
+    <string name="martian_insight_label">Martian Insight</string>
 </resources>

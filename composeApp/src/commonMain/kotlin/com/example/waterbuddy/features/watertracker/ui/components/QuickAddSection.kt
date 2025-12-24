@@ -53,27 +53,27 @@ fun QuickAddSection(
                 QuickAddButton(
                     amount = 250,
                     label = stringResource(Res.string.glass_label),
-                    emoji = "🥤",
+                    emoji = "🏺",
                     onClick = { onAddWater(250) },
                     modifier = Modifier.weight(1f),
                 )
                 QuickAddButton(
                     amount = 500,
                     label = stringResource(Res.string.bottle_label),
-                    emoji = "💧",
+                    emoji = "🍶",
                     onClick = { onAddWater(500) },
                     modifier = Modifier.weight(1f),
                 )
                 QuickAddButton(
                     amount = 750,
                     label = stringResource(Res.string.large_label),
-                    emoji = "🧊",
+                    emoji = "🌊",
                     onClick = { onAddWater(750) },
                     modifier = Modifier.weight(1f),
                 )
                 QuickAddButton(
                     label = stringResource(Res.string.custom_label),
-                    emoji = "➕",
+                    emoji = "👽",
                     onClick = onShowCustomAdd,
                     modifier = Modifier.weight(1f),
                 )
@@ -119,16 +119,6 @@ private fun QuickAddButton(
 @Composable
 fun QuickAddSectionPreview() {
     WaterBuddyTheme {
-        Surface {
-            QuickAddSection(onAddWater = {}, onShowCustomAdd = {}, modifier = Modifier.padding(16.dp))
-        }
-    }
-}
-
-@Preview
-@Composable
-fun QuickAddSectionDarkModePreview() {
-    WaterBuddyTheme(darkTheme = true) {
         Surface {
             QuickAddSection(onAddWater = {}, onShowCustomAdd = {}, modifier = Modifier.padding(16.dp))
         }

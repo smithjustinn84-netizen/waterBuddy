@@ -29,7 +29,7 @@ fun EmptyStateMessage(modifier: Modifier = Modifier) {
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Text(
-            text = "💧",
+            text = "🏜️",
             style = MaterialTheme.typography.displayLarge,
             color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
         )
@@ -51,16 +51,6 @@ fun EmptyStateMessage(modifier: Modifier = Modifier) {
 @Composable
 fun EmptyStateMessagePreview() {
     WaterBuddyTheme {
-        Surface {
-            EmptyStateMessage()
-        }
-    }
-}
-
-@Preview
-@Composable
-fun EmptyStateMessageDarkModePreview() {
-    WaterBuddyTheme(darkTheme = true) {
         Surface {
             EmptyStateMessage()
         }

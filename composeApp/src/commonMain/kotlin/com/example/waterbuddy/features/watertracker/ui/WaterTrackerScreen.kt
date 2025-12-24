@@ -1,8 +1,11 @@
 package com.example.waterbuddy.features.watertracker.ui
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -27,6 +30,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -54,8 +58,10 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 import waterbuddy.composeapp.generated.resources.Res
 import waterbuddy.composeapp.generated.resources.goal_button
 import waterbuddy.composeapp.generated.resources.goal_reached_message
-import waterbuddy.composeapp.generated.resources.todays_entries
-import waterbuddy.composeapp.generated.resources.water_tracker_title
+import waterbuddy.composeapp.generated.resources.martian_insight_label
+import waterbuddy.composeapp.generated.resources.todays_rituals
+import waterbuddy.composeapp.generated.resources.water_tracker_title_main
+import waterbuddy.composeapp.generated.resources.water_tracker_title_sub
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 import kotlin.time.TimeSource
@@ -165,7 +171,20 @@ fun WaterTrackerContent(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             TopAppBar(
-                title = { Text(stringResource(Res.string.water_tracker_title)) },
+                title = {
+                    Column {
+                        Text(
+                            text = stringResource(Res.string.water_tracker_title_main),
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.Bold,
+                        )
+                        Text(
+                            text = stringResource(Res.string.water_tracker_title_sub),
+                            style = MaterialTheme.typography.titleSmall,
+                            color = MaterialTheme.colorScheme.secondary,
+                        )
+                    }
+                },
                 actions = {
                     IconButton(onClick = onNavigateToInsights) {
                         Text("📊")
@@ -203,20 +222,46 @@ fun WaterTrackerContent(
                 state.quote?.let { quote ->
                     item {
                         Card(
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable { onIntent(WaterTrackerUiIntent.RefreshQuote) },
                             colors = CardDefaults.cardColors(
                                 containerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f),
                             ),
                         ) {
-                            Text(
-                                text = quote,
-                                style = MaterialTheme.typography.bodyMedium,
-                                fontStyle = FontStyle.Italic,
-                                textAlign = TextAlign.Center,
+                            Column(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(12.dp),
-                            )
+                                horizontalAlignment = Alignment.End,
+                            ) {
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically,
+                                ) {
+                                    Text(
+                                        text = "🔄",
+                                        style = MaterialTheme.typography.labelSmall,
+                                        modifier = Modifier.padding(start = 4.dp),
+                                    )
+                                    Text(
+                                        text = stringResource(Res.string.martian_insight_label),
+                                        style = MaterialTheme.typography.labelMedium,
+                                        fontWeight = FontWeight.Bold,
+                                        color = MaterialTheme.colorScheme.secondary,
+                                    )
+                                }
+                                Text(
+                                    text = quote,
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    fontStyle = FontStyle.Italic,
+                                    textAlign = TextAlign.Center,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(top = 8.dp),
+                                )
+                            }
                         }
                     }
                 }
@@ -236,7 +281,7 @@ fun WaterTrackerContent(
                 // Today's Entries Header
                 item {
                     Text(
-                        text = stringResource(Res.string.todays_entries),
+                        text = stringResource(Res.string.todays_rituals),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.padding(top = 8.dp),

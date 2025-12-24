@@ -55,7 +55,7 @@ fun HydrationCircle(
     )
 
     val color by animateColorAsState(
-        targetValue = if (isGoalReached) Color(0xFF4CAF50) else MaterialTheme.colorScheme.primary,
+        targetValue = if (isGoalReached) Color(0xFF00CED1) else MaterialTheme.colorScheme.secondary,
         animationSpec = tween(1000),
         label = "colorAnimation",
     )
@@ -98,7 +98,7 @@ fun HydrationCircle(
                 fontWeight = FontWeight.Bold,
             )
             Text(
-                text = if (isGoalReached) "🎉" else "💧",
+                text = if (isGoalReached) "🤝" else "💧", // Water sharing handshake
                 style = MaterialTheme.typography.displaySmall,
             )
         }
